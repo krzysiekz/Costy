@@ -57,7 +57,7 @@ public class ExpenseCalculatorTest {
         //then
         assertThat(expenseReport.getEntries()).hasSize(1);
         assertThat(expenseReport.getEntries()).extracting("sender", "receiver", "amount").
-                contains(tuple(kateExpense.getUser(), johnExpense.getUser(), new BigDecimal(15)));
+                contains(tuple(kateExpense.getUser(), johnExpense.getUser(), new BigDecimal("15.000")));
     }
 
     @Test
@@ -71,6 +71,27 @@ public class ExpenseCalculatorTest {
         ExpenseReport expenseReport = expenseCalculator.calculate(expenseProject);
         //then
         assertThat(expenseReport.getEntries()).isEmpty();
+    }
+
+    @Test
+    public void shouldReturnProperReportForMultipleUsers() {
+        //given
+        UserExpense johnExpense = createExpense("John", 9);
+        UserExpense kateExpense = createExpense("Kate", 18);
+        UserExpense bobExpense = createExpense("Bob", 27);
+        //when
+        expenseProject.addExpense(johnExpense);
+        expenseProject.addExpense(kateExpense);
+        expenseProject.addExpense(bobExpense);
+        ExpenseReport expenseReport = expenseCalculator.calculate(expenseProject);
+        //then
+        assertThat(expenseReport.getEntries()).hasSize(3);
+        assertThat(expenseReport.getEntries()).extracting("sender", "receiver", "amount").
+                containsOnly(
+                        tuple(johnExpense.getUser(), kateExpense.getUser(), new BigDecimal("3.000")),
+                        tuple(johnExpense.getUser(), bobExpense.getUser(), new BigDecimal("6.000")),
+                        tuple(kateExpense.getUser(), bobExpense.getUser(), new BigDecimal("3.000"))
+                );
     }
 
     private UserExpense createExpense(String userName, int amount) {

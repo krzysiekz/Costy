@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
 
 public class DefaultExpenseCalculator implements ExpenseCalculator {
@@ -24,15 +23,15 @@ public class DefaultExpenseCalculator implements ExpenseCalculator {
     public ExpenseReport calculate(ExpenseProject expenseProject) {
 
         List<UserExpense> userExpenses = expenseProject.getExpenses();
-        List<User> allUsers = getUsers(userExpenses);
 
         Map<User, Map<User, BigDecimal>> calculations = new HashMap<>();
 
         for (UserExpense userExpense : userExpenses) {
+            List<User> receivers = userExpense.getReceivers();
             BigDecimal amountPerUser = userExpense.getAmount().
-                    divide(new BigDecimal(allUsers.size()), DECIMAL_PLACES, RoundingMode.HALF_UP);
+                    divide(new BigDecimal(receivers.size()), DECIMAL_PLACES, RoundingMode.HALF_UP);
 
-            StreamSupport.stream(allUsers).filter(u -> !userExpense.getUser().equals(u)).forEach(
+            StreamSupport.stream(receivers).filter(u -> !userExpense.getUser().equals(u)).forEach(
                     u -> {
                         if (calculations.containsKey(userExpense.getUser())
                                 && calculations.get(userExpense.getUser()).containsKey(u)) {
@@ -75,11 +74,5 @@ public class DefaultExpenseCalculator implements ExpenseCalculator {
                 }
         );
         return report;
-    }
-
-    private List<User> getUsers(List<UserExpense> userExpenses) {
-        return StreamSupport.stream(userExpenses).
-                map(UserExpense::getUser).
-                collect(Collectors.toList());
     }
 }

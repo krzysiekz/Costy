@@ -1,15 +1,18 @@
 package com.krzysiekz.costy.model;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class UserExpense {
 
+    private List<User> receivers;
     private User user;
     private BigDecimal amount;
 
-    public UserExpense(User user, BigDecimal amount) {
+    public UserExpense(User user, BigDecimal amount, List<User> receivers) {
         this.user = user;
         this.amount = amount;
+        this.receivers = receivers;
     }
 
     public BigDecimal getAmount() {
@@ -20,6 +23,10 @@ public class UserExpense {
         return user;
     }
 
+    public List<User> getReceivers() {
+        return receivers;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -27,6 +34,8 @@ public class UserExpense {
 
         UserExpense that = (UserExpense) o;
 
+        if (receivers != null ? !receivers.equals(that.receivers) : that.receivers != null)
+            return false;
         if (user != null ? !user.equals(that.user) : that.user != null) return false;
         return amount != null ? amount.equals(that.amount) : that.amount == null;
 
@@ -34,7 +43,8 @@ public class UserExpense {
 
     @Override
     public int hashCode() {
-        int result = user != null ? user.hashCode() : 0;
+        int result = receivers != null ? receivers.hashCode() : 0;
+        result = 31 * result + (user != null ? user.hashCode() : 0);
         result = 31 * result + (amount != null ? amount.hashCode() : 0);
         return result;
     }
@@ -42,7 +52,8 @@ public class UserExpense {
     @Override
     public String toString() {
         return "UserExpense{" +
-                "user=" + user +
+                "receivers=" + receivers +
+                ", user=" + user +
                 ", amount=" + amount +
                 '}';
     }

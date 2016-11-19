@@ -75,7 +75,7 @@ public class ExpenseCalculatorTest {
                         createExpense("Kate", 30, Arrays.asList("John", "Kate", "Bob")),
                         createExpense("Bob", 45, Arrays.asList("John", "Kate", "Bob"))
                 ),
-                Arrays.asList("John -> Kate: 2,5",
+                Arrays.asList("John -> Kate: 2.5",
                         "Kate -> Bob: 5",
                         "John -> Bob: 15")
         };

@@ -2,6 +2,7 @@ package com.krzysiekz.costy.model;
 
 import java.math.BigDecimal;
 import java.text.MessageFormat;
+import java.util.Locale;
 
 public class ReportEntry {
     private User sender;
@@ -54,6 +55,7 @@ public class ReportEntry {
 
     @Override
     public String toString() {
-        return MessageFormat.format("{0} -> {1}: {2}", sender, receiver, amount);
+        return new MessageFormat("{0} -> {1}: {2}", Locale.US).
+                format(new Object[]{sender, receiver, amount});
     }
 }

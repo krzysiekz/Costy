@@ -1,60 +1,63 @@
 package costy.krzysiekz.com.costy.view.activity;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
-import org.robolectric.util.ActivityController;
 
 import costy.krzysiekz.com.costy.BuildConfig;
-import costy.krzysiekz.com.costy.presenter.impl.ProjectsPresenter;
+import costy.krzysiekz.com.costy.TestCostyApplication;
+import costy.krzysiekz.com.costy.model.di.PresenterModuleMock;
 import costy.krzysiekz.com.costy.view.ProjectsView;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 23)
+@Config(constants = BuildConfig.class, sdk = 23,
+        application = TestCostyApplication.class)
 public class ProjectsActivityTest {
 
-    private ActivityController<ProjectsActivity> projectsActivityController;
+    private ProjectsActivity projectsActivity;
+    private PresenterModuleMock presenterModuleMock;
 
     @Before
     public void setUp() throws Exception {
         //given
-        projectsActivityController = Robolectric.buildActivity(ProjectsActivity.class);
+        setUpModulesMocks();
+        projectsActivity = Robolectric.buildActivity(ProjectsActivity.class).create().get();
+    }
+
+    private void setUpModulesMocks() {
+        TestCostyApplication app = (TestCostyApplication) RuntimeEnvironment.application;
+        presenterModuleMock = new PresenterModuleMock();
+        app.setPresenterModule(presenterModuleMock);
     }
 
     @Test
     public void shouldExist() {
-        //when
-        ProjectsActivity activity = projectsActivityController.create().get();
         //then
-        assertThat(activity).isNotNull();
+        assertThat(projectsActivity).isNotNull();
     }
 
     @Test
     public void shouldImplementProjectsView() {
-        //when
-        ProjectsActivity activity = projectsActivityController.create().get();
         //then
-        assertThat(activity).isInstanceOf(ProjectsView.class);
+        assertThat(projectsActivity).isInstanceOf(ProjectsView.class);
     }
 
     @Test
-    @Ignore
-    public void shouldAttachViewToThePresenter() {
-        //given
-        ProjectsActivity activity = projectsActivityController.get();
-        ProjectsPresenter presenter = mock(ProjectsPresenter.class);
-        //when
-        activity.setPresenter(presenter);
-        this.projectsActivityController.create();
+    public void shouldInjectPresenter() {
         //then
-        verify(presenter).attachView(activity);
+        assertThat(projectsActivity.getPresenter()).isNotNull();
+    }
+
+    @Test
+    public void shouldAttachViewToThePresenter() {
+        //then
+        verify(presenterModuleMock.getProjectsPresenter()).attachView(projectsActivity);
     }
 }

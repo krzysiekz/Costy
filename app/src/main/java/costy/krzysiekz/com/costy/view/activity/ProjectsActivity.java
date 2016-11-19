@@ -6,6 +6,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import javax.inject.Inject;
+
+import costy.krzysiekz.com.costy.CostyApplication;
 import costy.krzysiekz.com.costy.R;
 import costy.krzysiekz.com.costy.presenter.impl.ProjectsPresenter;
 import costy.krzysiekz.com.costy.view.ProjectsView;
@@ -19,6 +22,9 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_projects);
 
+        CostyApplication.component().inject(this);
+        presenter.attachView(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -27,7 +33,12 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView 
                 .setAction("Action", null).show());
     }
 
+    @Inject
     void setPresenter(ProjectsPresenter presenter) {
         this.presenter = presenter;
+    }
+
+    ProjectsPresenter getPresenter() {
+        return presenter;
     }
 }

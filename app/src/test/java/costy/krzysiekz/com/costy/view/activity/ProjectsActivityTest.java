@@ -1,5 +1,7 @@
 package costy.krzysiekz.com.costy.view.activity;
 
+import android.support.v4.app.Fragment;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +14,7 @@ import costy.krzysiekz.com.costy.BuildConfig;
 import costy.krzysiekz.com.costy.TestCostyApplication;
 import costy.krzysiekz.com.costy.model.di.PresenterModuleMock;
 import costy.krzysiekz.com.costy.view.ProjectsView;
+import costy.krzysiekz.com.costy.view.activity.dialog.AddProjectDialogFragment;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -28,7 +31,8 @@ public class ProjectsActivityTest {
     public void setUp() throws Exception {
         //given
         setUpModulesMocks();
-        projectsActivity = Robolectric.buildActivity(ProjectsActivity.class).create().get();
+        projectsActivity = Robolectric.buildActivity(ProjectsActivity.class).
+                create().start().resume().get();
     }
 
     private void setUpModulesMocks() {
@@ -52,12 +56,29 @@ public class ProjectsActivityTest {
     @Test
     public void shouldInjectPresenter() {
         //then
-        assertThat(projectsActivity.getPresenter()).isNotNull();
+        assertThat(projectsActivity.presenter).isNotNull();
     }
 
     @Test
     public void shouldAttachViewToThePresenter() {
         //then
         verify(presenterModuleMock.getProjectsPresenter()).attachView(projectsActivity);
+    }
+
+    @Test
+    public void shouldBindAddProjectButton() {
+        //then
+        assertThat(projectsActivity.addProjectButton).isNotNull();
+    }
+
+    @Test
+    public void shouldCallDialogFragmentAfterClickingAddProjectButton() {
+        //when
+        projectsActivity.addProjectButton.performClick();
+        Fragment fragment = projectsActivity.getSupportFragmentManager().
+                findFragmentByTag(AddProjectDialogFragment.TAG);
+        //then
+        assertThat(fragment).isNotNull();
+        assertThat(fragment).isInstanceOf(AddProjectDialogFragment.class);
     }
 }

@@ -2,4 +2,6 @@
     <string name="app_name">Costy</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_projects">ProjectsActivity</string>
+    <string name="project_name_hint">Type a project name</string>
+    <string name="confirm_project_name">OK</string>
 </resources>

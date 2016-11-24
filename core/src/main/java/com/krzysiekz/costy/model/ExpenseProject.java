@@ -5,9 +5,11 @@ import java.util.List;
 
 public class ExpenseProject {
     private List<UserExpense> expenses;
+    private String name;
 
     public ExpenseProject(String projectName) {
         this.expenses = new ArrayList<>();
+        this.name = projectName;
     }
 
     public void addExpense(UserExpense userExpense) {
@@ -18,26 +20,35 @@ public class ExpenseProject {
         return expenses;
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ExpenseProject that = (ExpenseProject) o;
+        ExpenseProject project = (ExpenseProject) o;
 
-        return expenses != null ? expenses.equals(that.expenses) : that.expenses == null;
+        if (expenses != null ? !expenses.equals(project.expenses) : project.expenses != null)
+            return false;
+        return name != null ? name.equals(project.name) : project.name == null;
 
     }
 
     @Override
     public int hashCode() {
-        return expenses != null ? expenses.hashCode() : 0;
+        int result = expenses != null ? expenses.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString() {
         return "ExpenseProject{" +
                 "expenses=" + expenses +
+                ", name='" + name + '\'' +
                 '}';
     }
 }

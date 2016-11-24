@@ -14,4 +14,9 @@ public class ProjectsPresenter implements Presenter<ProjectsView> {
     public void detachView() {
 
     }
+
+    @Override
+    public void addProject(String projectName) {
+
+    }
 }

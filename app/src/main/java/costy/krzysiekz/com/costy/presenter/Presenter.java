@@ -7,4 +7,6 @@ public interface Presenter<V extends MVPView> {
     void attachView(V view);
 
     void detachView();
+
+    void addProject(String projectName);
 }

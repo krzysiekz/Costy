@@ -1,6 +1,9 @@
 package costy.krzysiekz.com.costy.view.activity;
 
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
+
+import com.krzysiekz.costy.model.ExpenseProject;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,10 +13,13 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.util.Arrays;
+
 import costy.krzysiekz.com.costy.BuildConfig;
 import costy.krzysiekz.com.costy.TestCostyApplication;
 import costy.krzysiekz.com.costy.model.di.PresenterModuleMock;
 import costy.krzysiekz.com.costy.view.ProjectsView;
+import costy.krzysiekz.com.costy.view.activity.adapter.ProjectAdapter;
 import costy.krzysiekz.com.costy.view.activity.dialog.AddProjectDialogFragment;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -80,5 +86,30 @@ public class ProjectsActivityTest {
         //then
         assertThat(fragment).isNotNull();
         assertThat(fragment).isInstanceOf(AddProjectDialogFragment.class);
+    }
+
+    @Test
+    public void shouldCallPresenterWhenProjectNameConfirmed() {
+        //given
+        String projectName = "Some project";
+        //when
+        projectsActivity.onProjectNameConfirmed(projectName);
+        //then
+        verify(presenterModuleMock.getProjectsPresenter()).addProject(projectName);
+    }
+
+    @Test
+    public void shouldShowProjects() {
+        //given
+        ExpenseProject project1 = new ExpenseProject("Project 1");
+        ExpenseProject project2 = new ExpenseProject("Project 2");
+        //when
+        RecyclerView recyclerView = projectsActivity.projectsRecyclerView;
+        projectsActivity.showProjects(Arrays.asList(project1, project2));
+        //then
+        assertThat(recyclerView).isNotNull();
+        assertThat(recyclerView.getAdapter()).isInstanceOf(ProjectAdapter.class);
+        assertThat(recyclerView.getAdapter().getItemCount()).isEqualTo(2);
+        assertThat(((ProjectAdapter) recyclerView.getAdapter()).getItems()).containsOnly(project1, project2);
     }
 }

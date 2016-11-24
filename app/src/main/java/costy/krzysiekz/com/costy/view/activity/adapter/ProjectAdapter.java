@@ -20,10 +20,10 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
+        View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_project, parent, false);
 
-        return new ViewHolder(v);
+        return new ViewHolder(itemView);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
 
         ViewHolder(View view) {
             super(view);
-            projectNameTextView = (TextView) view;
+            projectNameTextView = (TextView) view.findViewById(R.id.item_project_name);
         }
     }
 }

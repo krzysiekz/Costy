@@ -4,6 +4,8 @@ import android.app.Application;
 
 import javax.inject.Singleton;
 
+import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
+import costy.krzysiekz.com.costy.model.dao.impl.InMemoryProjectsRepository;
 import dagger.Module;
 import dagger.Provides;
 
@@ -20,5 +22,11 @@ public class MainModule {
     @Singleton
     Application provideApplication() {
         return application;
+    }
+
+    @Provides
+    @Singleton
+    ProjectsRepository provideProjectsRepository() {
+        return new InMemoryProjectsRepository();
     }
 }

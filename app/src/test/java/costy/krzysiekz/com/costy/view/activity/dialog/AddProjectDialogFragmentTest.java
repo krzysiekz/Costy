@@ -67,4 +67,18 @@ public class AddProjectDialogFragmentTest {
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).performClick();
         verify(projectsActivityMock).onProjectNameConfirmed(projectName);
     }
+
+    @Test
+    public void shouldCallListenerWhenNameEmpty() {
+        //given
+        String projectName = "";
+        ProjectsActivity projectsActivityMock = mock(ProjectsActivity.class);
+        //when
+        fragment.setListenerActivity(projectsActivityMock);
+        EditText projectNameText = (EditText) dialog.findViewById(R.id.project_name);
+        projectNameText.setText(projectName);
+        //then
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).performClick();
+        verify(projectsActivityMock).showWrongNameError();
+    }
 }

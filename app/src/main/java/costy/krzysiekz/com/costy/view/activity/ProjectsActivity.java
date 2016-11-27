@@ -5,6 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
 import com.krzysiekz.costy.model.ExpenseProject;
 
@@ -66,6 +67,11 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
     @Override
     public void onProjectNameConfirmed(String projectName) {
         presenter.addProject(projectName);
+    }
+
+    @Override
+    public void showWrongNameError() {
+        Toast.makeText(this.getApplicationContext(), R.string.wrong_project_name, Toast.LENGTH_SHORT).show();
     }
 
     @Override

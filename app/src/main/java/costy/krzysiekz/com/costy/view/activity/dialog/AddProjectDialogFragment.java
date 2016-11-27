@@ -32,11 +32,17 @@ public class AddProjectDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         builder.setView(inflater.inflate(R.layout.dialog_add_project, null))
-                .setPositiveButton(R.string.confirm_project_name, (dialog, id) -> {
-                    EditText projectNameText = (EditText) ((Dialog) dialog).findViewById(R.id.project_name);
-                    addProjectDialogListener.onProjectNameConfirmed((projectNameText).getText().toString());
-                });
+                .setPositiveButton(R.string.confirm_project_name, (dialog, id) -> positiveButtonClicked((Dialog) dialog));
         return builder.create();
+    }
+
+    private void positiveButtonClicked(Dialog dialog) {
+        EditText projectNameText = (EditText) dialog.findViewById(R.id.project_name);
+        if (projectNameText.length() > 0) {
+            addProjectDialogListener.onProjectNameConfirmed((projectNameText).getText().toString());
+        } else {
+            addProjectDialogListener.showWrongNameError();
+        }
     }
 
     AddProjectDialogListener getListenerActivity() {

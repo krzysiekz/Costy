@@ -1,5 +1,6 @@
 package costy.krzysiekz.com.costy.view.activity;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 
@@ -14,6 +15,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import costy.krzysiekz.com.costy.BuildConfig;
 import costy.krzysiekz.com.costy.TestCostyApplication;
@@ -24,6 +26,7 @@ import costy.krzysiekz.com.costy.view.activity.dialog.AddProjectDialogFragment;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 23,
@@ -111,5 +114,22 @@ public class ProjectsActivityTest {
         assertThat(recyclerView.getAdapter()).isInstanceOf(ProjectAdapter.class);
         assertThat(recyclerView.getAdapter().getItemCount()).isEqualTo(2);
         assertThat(((ProjectAdapter) recyclerView.getAdapter()).getItems()).containsOnly(project1, project2);
+    }
+
+    @Test
+    public void shouldStartExpensesActivityAfterClickingOnProject() {
+        //given
+        ExpenseProject project1 = new ExpenseProject("Project 1");
+        //when
+        projectsActivity.showProjects(Collections.singletonList(project1));
+        projectsActivity.projectsRecyclerView.measure(0, 0);
+        projectsActivity.projectsRecyclerView.layout(0, 0, 100, 10000);
+        projectsActivity.projectsRecyclerView.findViewHolderForAdapterPosition(0).
+                itemView.performClick();
+        Intent intent = shadowOf(projectsActivity).peekNextStartedActivity();
+        //then
+        assertThat(intent.getComponent().getClassName()).isEqualTo(ExpensesActivity.class.getName());
+        assertThat(intent.getStringExtra(ExpensesActivity.PROJECT_NAME)).isEqualTo(project1.getName());
+
     }
 }

@@ -1,5 +1,6 @@
 package costy.krzysiekz.com.costy.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -20,11 +21,12 @@ import costy.krzysiekz.com.costy.R;
 import costy.krzysiekz.com.costy.presenter.impl.ProjectsPresenter;
 import costy.krzysiekz.com.costy.view.ProjectsView;
 import costy.krzysiekz.com.costy.view.activity.adapter.ProjectAdapter;
+import costy.krzysiekz.com.costy.view.activity.adapter.ProjectAdapterListener;
 import costy.krzysiekz.com.costy.view.activity.dialog.AddProjectDialogFragment;
 import costy.krzysiekz.com.costy.view.activity.dialog.AddProjectDialogListener;
 
 public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
-        AddProjectDialogListener {
+        AddProjectDialogListener, ProjectAdapterListener {
 
     ProjectsPresenter presenter;
 
@@ -54,7 +56,7 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
     }
 
     private void setupProjectsRecycleView() {
-        ProjectAdapter adapter = new ProjectAdapter();
+        ProjectAdapter adapter = new ProjectAdapter(this);
         projectsRecyclerView.setAdapter(adapter);
         projectsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -79,5 +81,12 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
         ProjectAdapter adapter = (ProjectAdapter) projectsRecyclerView.getAdapter();
         adapter.setProjects(expenseProjects);
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onProjectSelected(ExpenseProject expenseProject) {
+        Intent intent = new Intent(this, ExpensesActivity.class);
+        intent.putExtra(ExpensesActivity.PROJECT_NAME, expenseProject.getName());
+        startActivity(intent);
     }
 }

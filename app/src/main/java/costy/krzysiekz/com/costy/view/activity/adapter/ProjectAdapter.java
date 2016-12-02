@@ -17,6 +17,11 @@ import costy.krzysiekz.com.costy.R;
 public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHolder> {
 
     private List<ExpenseProject> items = new ArrayList<>();
+    private ProjectAdapterListener listener;
+
+    public ProjectAdapter(ProjectAdapterListener listener) {
+        this.listener = listener;
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -30,6 +35,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
     public void onBindViewHolder(ViewHolder holder, int position) {
         ExpenseProject project = items.get(position);
         holder.projectNameTextView.setText(project.getName());
+        holder.itemView.setOnClickListener(__ -> listener.onProjectSelected(project));
     }
 
     @Override

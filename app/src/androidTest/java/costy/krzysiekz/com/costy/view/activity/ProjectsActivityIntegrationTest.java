@@ -1,7 +1,8 @@
 package costy.krzysiekz.com.costy.view.activity;
 
+import android.support.test.espresso.contrib.RecyclerViewActions;
+import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.filters.LargeTest;
-import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Rule;
@@ -16,6 +17,9 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static android.support.test.espresso.matcher.RootMatchers.isDialog;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
@@ -30,8 +34,8 @@ import static org.hamcrest.Matchers.not;
 public class ProjectsActivityIntegrationTest {
 
     @Rule
-    public ActivityTestRule<ProjectsActivity> mActivityRule =
-            new ActivityTestRule<>(ProjectsActivity.class);
+    public IntentsTestRule<ProjectsActivity> mActivityRule =
+            new IntentsTestRule<>(ProjectsActivity.class);
 
     @Test
     public void shouldShowPopupWhenAddingNewProject() {
@@ -49,7 +53,9 @@ public class ProjectsActivityIntegrationTest {
         String projectName = "Some project";
         //when
         onView(withId(R.id.add_project_button)).perform(click());
-        onView(withId(R.id.project_name)).perform(typeText(projectName), closeSoftKeyboard());
+        onView(withId(R.id.project_name)).
+                check(matches(isDisplayed())).
+                perform(typeText(projectName), closeSoftKeyboard());
         onView(withId(android.R.id.button1)).perform(click());
         //then
         onView(withId(R.id.projects_recycler_view)).check(new RecyclerViewItemCountAssertion(1));
@@ -65,12 +71,31 @@ public class ProjectsActivityIntegrationTest {
         String projectName = "";
         //when
         onView(withId(R.id.add_project_button)).perform(click());
-        onView(withId(R.id.project_name)).perform(typeText(projectName), closeSoftKeyboard());
+        onView(withId(R.id.project_name)).
+                check(matches(isDisplayed())).
+                perform(typeText(projectName), closeSoftKeyboard());
         onView(withId(android.R.id.button1)).perform(click());
         //then
         onView(withText(R.string.wrong_project_name))
                 .inRoot(withDecorView(not(mActivityRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
         onView(withId(R.id.projects_recycler_view)).check(new RecyclerViewItemCountAssertion(0));
+    }
+
+    @Test
+    public void shouldStartExpensesActivityWhenUserClicksOnProject() {
+        //given
+        String projectName = "Some project 2";
+        //when
+        onView(withId(R.id.add_project_button)).perform(click());
+        onView(withId(R.id.project_name)).
+                check(matches(isDisplayed())).
+                perform(typeText(projectName), closeSoftKeyboard());
+        onView(withId(android.R.id.button1)).perform(click());
+        onView(withId(R.id.projects_recycler_view)).
+                perform(RecyclerViewActions.actionOnItem(hasDescendant(withText(projectName)), click()));
+        //then
+        intended(hasComponent(ExpensesActivity.class.getName()));
+        intended(hasExtra(ExpensesActivity.PROJECT_NAME, projectName));
     }
 }

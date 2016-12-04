@@ -1,33 +1,33 @@
 package costy.krzysiekz.com.costy.view.activity;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 
+import javax.inject.Inject;
+
+import costy.krzysiekz.com.costy.CostyApplication;
 import costy.krzysiekz.com.costy.R;
+import costy.krzysiekz.com.costy.presenter.impl.ExpensesPresenter;
+import costy.krzysiekz.com.costy.view.ExpensesView;
 
-public class ExpensesActivity extends AppCompatActivity {
+public class ExpensesActivity extends AppCompatActivity implements ExpensesView {
 
     public static final String PROJECT_NAME = "PROJECT_NAME";
+    ExpensesPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expenses);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        CostyApplication.component().inject(this);
+        presenter.attachView(this);
+
+    }
+
+    @Inject
+    void setPresenter(ExpensesPresenter presenter) {
+        this.presenter = presenter;
     }
 
 }

@@ -24,7 +24,6 @@ public class ProjectsPresenter implements Presenter<ProjectsView> {
         this.projectsView = null;
     }
 
-    @Override
     public void addProject(String projectName) {
         projectsRepository.addProject(projectName);
         projectsView.showProjects(projectsRepository.getAllProjects());

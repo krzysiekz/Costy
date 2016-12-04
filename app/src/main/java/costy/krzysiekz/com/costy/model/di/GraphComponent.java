@@ -2,6 +2,7 @@ package costy.krzysiekz.com.costy.model.di;
 
 import javax.inject.Singleton;
 
+import costy.krzysiekz.com.costy.view.activity.ExpensesActivity;
 import costy.krzysiekz.com.costy.view.activity.ProjectsActivity;
 import dagger.Component;
 
@@ -9,5 +10,7 @@ import dagger.Component;
 @Component(modules = {MainModule.class, PresenterModule.class})
 public interface GraphComponent {
 
-    void inject(ProjectsActivity mainActivity);
+    void inject(ProjectsActivity projectsActivity);
+
+    void inject(ExpensesActivity expensesActivity);
 }

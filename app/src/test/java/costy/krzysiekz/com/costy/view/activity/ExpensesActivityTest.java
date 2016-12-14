@@ -1,6 +1,8 @@
 package costy.krzysiekz.com.costy.view.activity;
 
 
+import android.content.Intent;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,6 +10,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowApplication;
 
 import costy.krzysiekz.com.costy.BuildConfig;
 import costy.krzysiekz.com.costy.TestCostyApplication;
@@ -22,6 +25,8 @@ import static org.mockito.Mockito.verify;
         application = TestCostyApplication.class)
 public class ExpensesActivityTest {
 
+    private static final String PROJECT_NAME = "Some project name";
+
     private ExpensesActivity expensesActivity;
     private PresenterModuleMock presenterModuleMock;
 
@@ -29,7 +34,9 @@ public class ExpensesActivityTest {
     public void setUp() throws Exception {
         //given
         setUpModulesMocks();
-        expensesActivity = Robolectric.buildActivity(ExpensesActivity.class).
+        Intent intent = new Intent(ShadowApplication.getInstance().getApplicationContext(), ExpensesActivity.class);
+        intent.putExtra(ExpensesActivity.PROJECT_NAME, PROJECT_NAME);
+        expensesActivity = Robolectric.buildActivity(ExpensesActivity.class).withIntent(intent).
                 create().start().resume().get();
 
     }
@@ -56,5 +63,11 @@ public class ExpensesActivityTest {
     public void shouldAttachViewToThePresenter() {
         //then
         verify(presenterModuleMock.getExpensesPresenter()).attachView(expensesActivity);
+    }
+
+    @Test
+    public void shouldLoadProjectUponActivityStart() {
+        //then
+        verify(presenterModuleMock.getExpensesPresenter()).loadProjectExpenses(PROJECT_NAME);
     }
 }

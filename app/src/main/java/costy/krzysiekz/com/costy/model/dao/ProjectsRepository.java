@@ -8,4 +8,6 @@ public interface ProjectsRepository {
     void addProject(String projectName);
 
     List<ExpenseProject> getAllProjects();
+
+    ExpenseProject getProject(String s);
 }

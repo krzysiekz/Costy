@@ -19,7 +19,7 @@ public class PresenterModule {
 
     @Singleton
     @Provides
-    ExpensesPresenter provideExpensesPresenter() {
-        return new ExpensesPresenter();
+    ExpensesPresenter provideExpensesPresenter(ProjectsRepository repository) {
+        return new ExpensesPresenter(repository);
     }
 }

@@ -20,7 +20,7 @@ public class PresenterModuleMock extends PresenterModule {
     }
 
     @Override
-    ExpensesPresenter provideExpensesPresenter() {
+    ExpensesPresenter provideExpensesPresenter(ProjectsRepository projectsRepository) {
         if (expensesPresenter == null) {
             expensesPresenter = mock(ExpensesPresenter.class);
         }

@@ -3,6 +3,10 @@ package costy.krzysiekz.com.costy.view.activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.krzysiekz.costy.model.UserExpense;
+
+import java.util.List;
+
 import javax.inject.Inject;
 
 import costy.krzysiekz.com.costy.CostyApplication;
@@ -22,6 +26,7 @@ public class ExpensesActivity extends AppCompatActivity implements ExpensesView 
 
         CostyApplication.component().inject(this);
         presenter.attachView(this);
+        presenter.loadProjectExpenses(getIntent().getStringExtra(PROJECT_NAME));
 
     }
 
@@ -30,4 +35,8 @@ public class ExpensesActivity extends AppCompatActivity implements ExpensesView 
         this.presenter = presenter;
     }
 
+    @Override
+    public void showExpenses(List<UserExpense> expenses) {
+
+    }
 }

@@ -20,4 +20,14 @@ public class InMemoryProjectsRepository implements ProjectsRepository {
     public List<ExpenseProject> getAllProjects() {
         return projects;
     }
+
+    @Override
+    public ExpenseProject getProject(String s) {
+        for (ExpenseProject project : projects) {
+            if (project.getName().equals(s)) {
+                return project;
+            }
+        }
+        return null;
+    }
 }

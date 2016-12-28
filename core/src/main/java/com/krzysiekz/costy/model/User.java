@@ -18,6 +18,10 @@ public class User {
 
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public int hashCode() {
         return name != null ? name.hashCode() : 0;

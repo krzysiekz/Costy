@@ -6,4 +6,11 @@
     <string name="confirm_project_name">OK</string>
     <string name="wrong_project_name">Wrong project name!</string>
     <string name="title_activity_expenses">ExpensesActivity</string>
+
+    <string name="sample_project_name">Project Name</string>
+    <string name="sample_expense_description">Sample description</string>
+    <string name="sample_expense_from">John</string>
+    <string name="expense_separator"> ----> </string>
+    <string name="sample_expense_to">Kate</string>
+    <string name="sample_expense_amount">123.34$</string>
 </resources>

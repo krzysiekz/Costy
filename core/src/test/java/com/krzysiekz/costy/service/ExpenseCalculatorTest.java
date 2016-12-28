@@ -137,6 +137,6 @@ public class ExpenseCalculatorTest {
     private UserExpense createExpense(String userName, int amount, List<String> receivers) {
         User john = new User(userName);
         List<User> userList = StreamSupport.stream(receivers).map(User::new).collect(Collectors.toList());
-        return new UserExpense(john, new BigDecimal(amount), userList);
+        return new UserExpense(john, new BigDecimal(amount), userList, "");
     }
 }

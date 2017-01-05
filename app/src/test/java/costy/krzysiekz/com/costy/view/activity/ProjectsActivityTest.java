@@ -128,8 +128,8 @@ public class ProjectsActivityTest {
                 itemView.performClick();
         Intent intent = shadowOf(projectsActivity).peekNextStartedActivity();
         //then
-        assertThat(intent.getComponent().getClassName()).isEqualTo(ExpensesActivity.class.getName());
-        assertThat(intent.getStringExtra(ExpensesActivity.PROJECT_NAME)).isEqualTo(project1.getName());
+        assertThat(intent.getComponent().getClassName()).isEqualTo(SelectedProjectActivity.class.getName());
+        assertThat(intent.getStringExtra(SelectedProjectActivity.PROJECT_NAME)).isEqualTo(project1.getName());
 
     }
 }

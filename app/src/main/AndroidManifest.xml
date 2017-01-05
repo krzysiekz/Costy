@@ -20,9 +20,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activity.ExpensesActivity"
+            android:name=".view.activity.SelectedProjectActivity"
             android:label="@string/title_activity_expenses"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

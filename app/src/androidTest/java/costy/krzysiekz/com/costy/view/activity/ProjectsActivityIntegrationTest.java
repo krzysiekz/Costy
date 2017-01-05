@@ -95,7 +95,7 @@ public class ProjectsActivityIntegrationTest {
         onView(withId(R.id.projects_recycler_view)).
                 perform(RecyclerViewActions.actionOnItem(hasDescendant(withText(projectName)), click()));
         //then
-        intended(hasComponent(ExpensesActivity.class.getName()));
-        intended(hasExtra(ExpensesActivity.PROJECT_NAME, projectName));
+        intended(hasComponent(SelectedProjectActivity.class.getName()));
+        intended(hasExtra(SelectedProjectActivity.PROJECT_NAME, projectName));
     }
 }

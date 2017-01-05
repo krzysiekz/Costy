@@ -13,4 +13,8 @@
     <string name="expense_separator"> ----> </string>
     <string name="sample_expense_to">Kate</string>
     <string name="sample_expense_amount">123.34$</string>
+    <string name="title_activity_selected_project">SelectedProjectActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

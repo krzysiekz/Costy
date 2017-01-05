@@ -85,8 +85,8 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
 
     @Override
     public void onProjectSelected(ExpenseProject expenseProject) {
-        Intent intent = new Intent(this, ExpensesActivity.class);
-        intent.putExtra(ExpensesActivity.PROJECT_NAME, expenseProject.getName());
+        Intent intent = new Intent(this, SelectedProjectActivity.class);
+        intent.putExtra(SelectedProjectActivity.PROJECT_NAME, expenseProject.getName());
         startActivity(intent);
     }
 }

@@ -10,8 +10,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="costy.krzysiekz.com.costy.view.activity.ExpensesActivity"
-    tools:showIn="@layout/activity_expenses">
+    tools:context="costy.krzysiekz.com.costy.view.activity.SelectedProjectActivity"
+    tools:showIn="@layout/fragment_expenses">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/expenses_recycler_view"

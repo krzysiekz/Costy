@@ -13,9 +13,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import costy.krzysiekz.com.costy.CostyApplication;
 import costy.krzysiekz.com.costy.R;
+import costy.krzysiekz.com.costy.presenter.impl.SelectedProjectPresenter;
 import costy.krzysiekz.com.costy.view.activity.fragment.ExpensesFragment;
 import costy.krzysiekz.com.costy.view.activity.fragment.PeopleFragment;
 import costy.krzysiekz.com.costy.view.activity.fragment.SettingsFragment;
@@ -33,13 +37,24 @@ public class SelectedProjectActivity extends AppCompatActivity implements
 
     private String projectName;
 
+    SelectedProjectPresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selected_project);
 
+        CostyApplication.component().inject(this);
         ButterKnife.bind(this);
 
+        setUpNavigationDrawer();
+
+        projectName = getIntent().getStringExtra(PROJECT_NAME);
+
+        setInitialFragment();
+    }
+
+    private void setUpNavigationDrawer() {
         setSupportActionBar(toolbar);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -49,9 +64,14 @@ public class SelectedProjectActivity extends AppCompatActivity implements
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.selected_project_nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
 
-        projectName = getIntent().getStringExtra(PROJECT_NAME);
-        showFragment(new PeopleFragment());
+    private void setInitialFragment() {
+        if (presenter.checkIfPeopleAdded(projectName)) {
+            showFragment(new ExpensesFragment());
+        } else {
+            showFragment(new PeopleFragment());
+        }
     }
 
 
@@ -119,5 +139,10 @@ public class SelectedProjectActivity extends AppCompatActivity implements
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Inject
+    void setPresenter(SelectedProjectPresenter presenter) {
+        this.presenter = presenter;
     }
 }

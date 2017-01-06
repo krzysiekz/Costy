@@ -20,6 +20,7 @@ import costy.krzysiekz.com.costy.BuildConfig;
 import costy.krzysiekz.com.costy.R;
 import costy.krzysiekz.com.costy.TestCostyApplication;
 import costy.krzysiekz.com.costy.model.di.PresenterModuleMock;
+import costy.krzysiekz.com.costy.presenter.impl.SelectedProjectPresenter;
 import costy.krzysiekz.com.costy.view.activity.fragment.ExpensesFragment;
 import costy.krzysiekz.com.costy.view.activity.fragment.PeopleFragment;
 import costy.krzysiekz.com.costy.view.activity.fragment.SettingsFragment;
@@ -27,6 +28,9 @@ import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 23, application = TestCostyApplication.class)
@@ -41,25 +45,20 @@ public class SelectedProjectActivityTest {
     public void setUp() throws Exception {
         //given
         setUpModulesMocks();
+        initActivity();
+    }
+
+    private void initActivity() {
         Intent intent = new Intent(ShadowApplication.getInstance().getApplicationContext(), SelectedProjectActivity.class);
         intent.putExtra(SelectedProjectActivity.PROJECT_NAME, PROJECT_NAME);
         selectedProjectActivity = Robolectric.buildActivity(SelectedProjectActivity.class).withIntent(intent).
                 create().start().resume().get();
-
     }
 
     private void setUpModulesMocks() {
         TestCostyApplication app = (TestCostyApplication) RuntimeEnvironment.application;
         presenterModuleMock = new PresenterModuleMock();
         app.setPresenterModule(presenterModuleMock);
-    }
-
-    @Test
-    public void shouldShowPeopleFragmentUponStart() {
-        //then
-        List<Fragment> fragments = selectedProjectActivity.getSupportFragmentManager().getFragments();
-        assertThat(fragments).isNotEmpty().hasSize(1);
-        assertThat(fragments.get(0)).isInstanceOf(PeopleFragment.class);
     }
 
     @Test
@@ -101,5 +100,39 @@ public class SelectedProjectActivityTest {
         fragments = StreamSupport.stream(fragments).filter(e -> e != null).collect(Collectors.toList());
         assertThat(fragments).isNotEmpty().hasSize(1);
         assertThat(fragments.get(0)).isInstanceOf(PeopleFragment.class);
+    }
+
+    @Test
+    public void shouldInjectPresenter() {
+        //then
+        assertThat(selectedProjectActivity.presenter).isNotNull().
+                isInstanceOf(SelectedProjectPresenter.class);
+    }
+
+    @Test
+    public void shouldShowPeopleFragmentIfNoPeopleInProject() {
+        //given
+        SelectedProjectPresenter presenter = presenterModuleMock.getSelectedProjectPresenter();
+        //then
+        verify(presenter).checkIfPeopleAdded(PROJECT_NAME);
+        List<Fragment> fragments = selectedProjectActivity.getSupportFragmentManager().getFragments();
+        assertThat(fragments).isNotEmpty().hasSize(1);
+        assertThat(fragments.get(0)).isInstanceOf(PeopleFragment.class);
+    }
+
+    @Test
+    public void shouldShowExpensesFragmentIfPeopleAddedToProject() throws Exception {
+        //given
+        SelectedProjectPresenter presenter = mock(SelectedProjectPresenter.class);
+        //when
+        when(presenter.checkIfPeopleAdded(PROJECT_NAME)).thenReturn(true);
+        setUpModulesMocks();
+        presenterModuleMock.setSelectedProjectPresenter(presenter);
+        initActivity();
+        //then
+        verify(presenter).checkIfPeopleAdded(PROJECT_NAME);
+        List<Fragment> fragments = selectedProjectActivity.getSupportFragmentManager().getFragments();
+        assertThat(fragments).isNotEmpty().hasSize(1);
+        assertThat(fragments.get(0)).isInstanceOf(ExpensesFragment.class);
     }
 }

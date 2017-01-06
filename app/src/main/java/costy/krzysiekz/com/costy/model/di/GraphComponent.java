@@ -14,4 +14,6 @@ public interface GraphComponent {
     void inject(ProjectsActivity projectsActivity);
 
     void inject(ExpensesFragment expensesFragment);
+
+    void inject(SelectedProjectActivity selectedProjectActivity);
 }

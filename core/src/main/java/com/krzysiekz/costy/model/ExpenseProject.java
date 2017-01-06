@@ -6,14 +6,20 @@ import java.util.List;
 public class ExpenseProject {
     private List<UserExpense> expenses;
     private String name;
+    private List<User> users;
 
     public ExpenseProject(String projectName) {
         this.expenses = new ArrayList<>();
         this.name = projectName;
+        this.users = new ArrayList<>();
     }
 
     public void addExpense(UserExpense userExpense) {
         expenses.add(userExpense);
+    }
+
+    public void addUser(User user) {
+        this.users.add(user);
     }
 
     public List<UserExpense> getExpenses() {
@@ -22,6 +28,10 @@ public class ExpenseProject {
 
     public String getName() {
         return name;
+    }
+
+    public List<User> getUsers() {
+        return users;
     }
 
     @Override
@@ -33,7 +43,8 @@ public class ExpenseProject {
 
         if (expenses != null ? !expenses.equals(project.expenses) : project.expenses != null)
             return false;
-        return name != null ? name.equals(project.name) : project.name == null;
+        if (name != null ? !name.equals(project.name) : project.name != null) return false;
+        return users != null ? users.equals(project.users) : project.users == null;
 
     }
 
@@ -41,6 +52,7 @@ public class ExpenseProject {
     public int hashCode() {
         int result = expenses != null ? expenses.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (users != null ? users.hashCode() : 0);
         return result;
     }
 
@@ -49,6 +61,7 @@ public class ExpenseProject {
         return "ExpenseProject{" +
                 "expenses=" + expenses +
                 ", name='" + name + '\'' +
+                ", users=" + users +
                 '}';
     }
 }

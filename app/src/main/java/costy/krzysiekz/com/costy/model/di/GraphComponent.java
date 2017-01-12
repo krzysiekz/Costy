@@ -2,9 +2,10 @@ package costy.krzysiekz.com.costy.model.di;
 
 import javax.inject.Singleton;
 
-import costy.krzysiekz.com.costy.view.activity.SelectedProjectActivity;
 import costy.krzysiekz.com.costy.view.activity.ProjectsActivity;
+import costy.krzysiekz.com.costy.view.activity.SelectedProjectActivity;
 import costy.krzysiekz.com.costy.view.activity.fragment.ExpensesFragment;
+import costy.krzysiekz.com.costy.view.activity.fragment.PeopleFragment;
 import dagger.Component;
 
 @Singleton
@@ -16,4 +17,6 @@ public interface GraphComponent {
     void inject(ExpensesFragment expensesFragment);
 
     void inject(SelectedProjectActivity selectedProjectActivity);
+
+    void inject(PeopleFragment peopleFragment);
 }

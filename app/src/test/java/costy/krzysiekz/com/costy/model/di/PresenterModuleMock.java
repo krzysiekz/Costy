@@ -2,6 +2,7 @@ package costy.krzysiekz.com.costy.model.di;
 
 import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
 import costy.krzysiekz.com.costy.presenter.impl.ExpensesPresenter;
+import costy.krzysiekz.com.costy.presenter.impl.PeoplePresenter;
 import costy.krzysiekz.com.costy.presenter.impl.ProjectsPresenter;
 import costy.krzysiekz.com.costy.presenter.impl.SelectedProjectPresenter;
 
@@ -12,6 +13,7 @@ public class PresenterModuleMock extends PresenterModule {
     private ProjectsPresenter projectsPresenter;
     private ExpensesPresenter expensesPresenter;
     private SelectedProjectPresenter selectedProjectPresenter;
+    private PeoplePresenter peoplePresenter;
 
     @Override
     ProjectsPresenter provideProjectsPresenter(ProjectsRepository projectsRepository) {
@@ -37,6 +39,14 @@ public class PresenterModuleMock extends PresenterModule {
         return selectedProjectPresenter;
     }
 
+    @Override
+    PeoplePresenter providePeoplePresenter(ProjectsRepository projectsRepository) {
+        if (peoplePresenter == null) {
+            peoplePresenter = mock(PeoplePresenter.class);
+        }
+        return peoplePresenter;
+    }
+
     public ProjectsPresenter getProjectsPresenter() {
         return projectsPresenter;
     }
@@ -47,6 +57,10 @@ public class PresenterModuleMock extends PresenterModule {
 
     public SelectedProjectPresenter getSelectedProjectPresenter() {
         return selectedProjectPresenter;
+    }
+
+    public PeoplePresenter getPeoplePresenter() {
+        return peoplePresenter;
     }
 
     public void setSelectedProjectPresenter(SelectedProjectPresenter selectedProjectPresenter) {

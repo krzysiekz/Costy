@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
 import com.krzysiekz.costy.model.User;
-import com.krzysiekz.costy.model.UserExpense;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,33 +13,31 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.support.v4.SupportFragmentTestUtil;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 
 import costy.krzysiekz.com.costy.BuildConfig;
 import costy.krzysiekz.com.costy.TestCostyApplication;
 import costy.krzysiekz.com.costy.model.di.PresenterModuleMock;
-import costy.krzysiekz.com.costy.presenter.impl.ExpensesPresenter;
-import costy.krzysiekz.com.costy.view.ExpensesView;
+import costy.krzysiekz.com.costy.presenter.impl.PeoplePresenter;
 import costy.krzysiekz.com.costy.view.activity.SelectedProjectActivity;
-import costy.krzysiekz.com.costy.view.activity.adapter.ExpensesAdapter;
+import costy.krzysiekz.com.costy.view.activity.adapter.PeopleAdapter;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 23, application = TestCostyApplication.class)
-public class ExpensesFragmentTest {
+public class PeopleFragmentTest {
 
     private PresenterModuleMock presenterModuleMock;
-    private ExpensesFragment fragment;
+    private PeopleFragment fragment;
     private static final String PROJECT_NAME = "Some project name";
 
     @Before
     public void setUp() throws Exception {
         //given
         setUpModulesMocks();
-        fragment = new ExpensesFragment();
+        fragment = new PeopleFragment();
         Bundle bundle = new Bundle();
         bundle.putString(SelectedProjectActivity.PROJECT_NAME, PROJECT_NAME);
         fragment.setArguments(bundle);
@@ -57,41 +54,34 @@ public class ExpensesFragmentTest {
     @Test
     public void shouldInjectPresenter() {
         //then
-        assertThat(fragment.presenter).isNotNull().isInstanceOf(ExpensesPresenter.class);
+        assertThat(fragment.presenter).isNotNull().isInstanceOf(PeoplePresenter.class);
     }
 
     @Test
     public void shouldAttachViewToThePresenter() {
         //then
-        verify(presenterModuleMock.getExpensesPresenter()).attachView(fragment);
+        verify(presenterModuleMock.getPeoplePresenter()).attachView(fragment);
     }
 
     @Test
-    public void shouldPassExpensesToAdapter() {
+    public void shouldLoadPeopleUponActivityStart() {
+        //then
+        verify(presenterModuleMock.getPeoplePresenter()).loadProjectPeople(PROJECT_NAME);
+    }
+
+    @Test
+    public void shouldPassPeopleToAdapter() {
         //given
         User kate = new User("Kate");
         User john = new User("John");
-        UserExpense firstExpense = new UserExpense(kate, new BigDecimal("10.50"), Arrays.asList(kate, john), "");
-        UserExpense secondExpense = new UserExpense(john, new BigDecimal("13"), Arrays.asList(kate, john), "");
         //when
-        RecyclerView recyclerView = fragment.expensesRecyclerView;
-        fragment.showExpenses(Arrays.asList(firstExpense, secondExpense));
+        RecyclerView recyclerView = fragment.peopleRecyclerView;
+        fragment.showPeople(Arrays.asList(kate, john));
         //then
         assertThat(recyclerView).isNotNull();
-        assertThat(recyclerView.getAdapter()).isInstanceOf(ExpensesAdapter.class);
+        assertThat(recyclerView.getAdapter()).isInstanceOf(PeopleAdapter.class);
         assertThat(recyclerView.getAdapter().getItemCount()).isEqualTo(2);
-        assertThat(((ExpensesAdapter) recyclerView.getAdapter()).getItems()).containsOnly(firstExpense, secondExpense);
+        assertThat(((PeopleAdapter) recyclerView.getAdapter()).getPeople()).containsOnly(kate, john);
     }
 
-    @Test
-    public void shouldImplementProjectsView() {
-        //then
-        assertThat(fragment).isInstanceOf(ExpensesView.class);
-    }
-
-    @Test
-    public void shouldLoadProjectUponActivityStart() {
-        //then
-        verify(presenterModuleMock.getExpensesPresenter()).loadProjectExpenses(PROJECT_NAME);
-    }
 }

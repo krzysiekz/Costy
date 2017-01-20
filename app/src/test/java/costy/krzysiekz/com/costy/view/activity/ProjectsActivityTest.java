@@ -1,5 +1,6 @@
 package costy.krzysiekz.com.costy.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -13,11 +14,13 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowToast;
 
 import java.util.Arrays;
 import java.util.Collections;
 
 import costy.krzysiekz.com.costy.BuildConfig;
+import costy.krzysiekz.com.costy.R;
 import costy.krzysiekz.com.costy.TestCostyApplication;
 import costy.krzysiekz.com.costy.model.di.PresenterModuleMock;
 import costy.krzysiekz.com.costy.view.ProjectsView;
@@ -131,5 +134,16 @@ public class ProjectsActivityTest {
         assertThat(intent.getComponent().getClassName()).isEqualTo(SelectedProjectActivity.class.getName());
         assertThat(intent.getStringExtra(SelectedProjectActivity.PROJECT_NAME)).isEqualTo(project1.getName());
 
+    }
+
+    @Test
+    public void shouldShowToastWhenWrongName() {
+        //given
+        final Context context = RuntimeEnvironment.application;
+        //when
+        projectsActivity.showWrongNameError();
+        //then
+        assertThat(ShadowToast.getLatestToast()).isNotNull();
+        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(context.getString(R.string.wrong_project_name));
     }
 }

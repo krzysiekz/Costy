@@ -1,5 +1,6 @@
 package costy.krzysiekz.com.costy.view.activity.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -12,11 +13,13 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowToast;
 import org.robolectric.shadows.support.v4.SupportFragmentTestUtil;
 
 import java.util.Arrays;
 
 import costy.krzysiekz.com.costy.BuildConfig;
+import costy.krzysiekz.com.costy.R;
 import costy.krzysiekz.com.costy.TestCostyApplication;
 import costy.krzysiekz.com.costy.model.di.PresenterModuleMock;
 import costy.krzysiekz.com.costy.presenter.impl.PeoplePresenter;
@@ -107,4 +110,14 @@ public class PeopleFragmentTest {
         verify(presenterModuleMock.getPeoplePresenter()).addPerson(PROJECT_NAME, personName);
     }
 
+    @Test
+    public void shouldShowToastWhenWrongName() {
+        //given
+        final Context context = RuntimeEnvironment.application;
+        //when
+        fragment.showWrongNameError();
+        //then
+        assertThat(ShadowToast.getLatestToast()).isNotNull();
+        assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(context.getString(R.string.wrong_person_name));
+    }
 }

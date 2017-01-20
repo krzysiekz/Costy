@@ -69,8 +69,10 @@ public class SelectedProjectActivity extends AppCompatActivity implements
     private void setInitialFragment() {
         if (presenter.checkIfPeopleAdded(projectName)) {
             showFragment(new ExpensesFragment());
+            setTitle(R.string.nav_drawer_option_expenses);
         } else {
             showFragment(new PeopleFragment());
+            setTitle(R.string.nav_drawer_option_people);
         }
     }
 

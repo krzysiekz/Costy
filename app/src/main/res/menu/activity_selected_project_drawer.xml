@@ -5,15 +5,15 @@
         <item
             android:id="@+id/nav_people"
             android:icon="@drawable/ic_menu_camera"
-            android:title="People" />
+            android:title="@string/nav_drawer_option_people" />
         <item
             android:id="@+id/nav_expenses"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Expenses" />
+            android:title="@string/nav_drawer_option_expenses" />
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Settings" />
+            android:title="@string/nav_drawer_option_settings" />
     </group>
 
     <item android:title="Other">
@@ -22,7 +22,7 @@
             <item
                 android:id="@+id/nav_change_project"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Change Project" />
+                android:title="@string/nav_drawer_option_change_project" />
         </menu>
     </item>
 

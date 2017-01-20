@@ -28,7 +28,7 @@ public class SelectedProjectPresenterTest {
     }
 
     @Test
-    public void shouldReturnTrueIfNoPeopleInProject() {
+    public void shouldReturnTrueIfPeopleInProject() {
         //given
         User john = new User("John");
         //when
@@ -40,7 +40,7 @@ public class SelectedProjectPresenterTest {
     }
 
     @Test
-    public void shouldReturnFalseIfPeopleInProject() {
+    public void shouldReturnFalseIfNoPeopleInProject() {
         //when
         when(repository.getProject(PROJECT_NAME)).thenReturn(project);
         Boolean result = presenter.checkIfPeopleAdded(PROJECT_NAME);

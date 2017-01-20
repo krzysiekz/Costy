@@ -30,4 +30,9 @@ public class InMemoryProjectsRepository implements ProjectsRepository {
         }
         return null;
     }
+
+    @Override
+    public void updateProject(ExpenseProject project) {
+
+    }
 }

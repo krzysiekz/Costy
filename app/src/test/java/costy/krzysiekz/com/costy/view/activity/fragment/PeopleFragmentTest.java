@@ -1,6 +1,7 @@
 package costy.krzysiekz.com.costy.view.activity.fragment;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 
 import com.krzysiekz.costy.model.User;
@@ -21,6 +22,7 @@ import costy.krzysiekz.com.costy.model.di.PresenterModuleMock;
 import costy.krzysiekz.com.costy.presenter.impl.PeoplePresenter;
 import costy.krzysiekz.com.costy.view.activity.SelectedProjectActivity;
 import costy.krzysiekz.com.costy.view.activity.adapter.PeopleAdapter;
+import costy.krzysiekz.com.costy.view.activity.dialog.AddPersonDialogFragment;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -82,6 +84,27 @@ public class PeopleFragmentTest {
         assertThat(recyclerView.getAdapter()).isInstanceOf(PeopleAdapter.class);
         assertThat(recyclerView.getAdapter().getItemCount()).isEqualTo(2);
         assertThat(((PeopleAdapter) recyclerView.getAdapter()).getPeople()).containsOnly(kate, john);
+    }
+
+    @Test
+    public void shouldCallDialogFragmentAfterClickingAddPersonButton() {
+        //when
+        fragment.addPersonButton.performClick();
+        Fragment popup = fragment.getActivity().getSupportFragmentManager().
+                findFragmentByTag(AddPersonDialogFragment.TAG);
+        //then
+        assertThat(popup).isNotNull();
+        assertThat(popup).isInstanceOf(AddPersonDialogFragment.class);
+    }
+
+    @Test
+    public void shouldCallPresenterWhenPersonNameConfirmed() {
+        //given
+        String personName = "John";
+        //when
+        fragment.onPersonNameConfirmed(personName);
+        //then
+        verify(presenterModuleMock.getPeoplePresenter()).addPerson(PROJECT_NAME, personName);
     }
 
 }

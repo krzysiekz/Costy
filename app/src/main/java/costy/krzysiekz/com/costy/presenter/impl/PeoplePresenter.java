@@ -1,5 +1,6 @@
 package costy.krzysiekz.com.costy.presenter.impl;
 
+import com.krzysiekz.costy.model.ExpenseProject;
 import com.krzysiekz.costy.model.User;
 
 import java.util.List;
@@ -30,5 +31,12 @@ public class PeoplePresenter implements Presenter<PeopleView> {
     public void loadProjectPeople(String projectName) {
         List<User> users = this.repository.getProject(projectName).getUsers();
         view.showPeople(users);
+    }
+
+    public void addPerson(String projectName, String personName) {
+        ExpenseProject project = this.repository.getProject(projectName);
+        project.addUser(new User(personName));
+        this.repository.updateProject(project);
+        view.showPeople(project.getUsers());
     }
 }

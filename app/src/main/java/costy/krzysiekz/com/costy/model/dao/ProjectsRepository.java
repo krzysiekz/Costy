@@ -10,4 +10,6 @@ public interface ProjectsRepository {
     List<ExpenseProject> getAllProjects();
 
     ExpenseProject getProject(String s);
+
+    void updateProject(ExpenseProject project);
 }

@@ -12,6 +12,7 @@ import java.util.Collections;
 import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
 import costy.krzysiekz.com.costy.view.PeopleView;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,5 +46,20 @@ public class PeoplePresenterTest {
         presenter.loadProjectPeople(PROJECT_NAME);
         //then
         verify(peopleView).showPeople(Collections.singletonList(kate));
+    }
+
+    @Test
+    public void shouldAddUserAndCallUpdate() {
+        //given
+        String personName = "John";
+        ExpenseProject expenseProject = new ExpenseProject(PROJECT_NAME);
+        //when
+        when(repository.getProject(PROJECT_NAME)).thenReturn(expenseProject);
+        presenter.attachView(peopleView);
+        presenter.addPerson(PROJECT_NAME, personName);
+        //then
+        assertThat(expenseProject.getUsers()).isNotEmpty().extracting("name").containsOnly(personName);
+        verify(repository).updateProject(expenseProject);
+        verify(peopleView).showPeople(expenseProject.getUsers());
     }
 }

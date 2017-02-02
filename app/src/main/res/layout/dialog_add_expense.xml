@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/add_expense_from_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:text="@string/add_expense_from_label" />
+
+    <Spinner
+        android:id="@+id/add_expense_dialog_from"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:inputType="text"
+        android:layout_toEndOf="@id/add_expense_from_text_view"/>
+
+    <TextView
+        android:id="@+id/add_expense_to_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:text="@string/add_expense_to_label"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_below="@id/add_expense_dialog_from"/>
+
+    <costy.krzysiekz.com.costy.view.utils.MultiSelectSpinner
+        android:id="@+id/add_expense_receivers"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:layout_below="@id/add_expense_dialog_from"
+        android:layout_toEndOf="@id/add_expense_from_text_view"/>
+
+    <EditText
+        android:id="@+id/add_expense_amount"
+        android:inputType="numberDecimal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:textSize="15sp"
+        android:layout_below="@id/add_expense_to_text_view"
+        android:maxLength="20"
+        android:hint="@string/add_expense_amount_hint" />
+
+    <EditText
+        android:id="@+id/add_expense_description"
+        android:inputType="textMultiLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:textSize="15sp"
+        android:layout_below="@id/add_expense_amount"
+        android:maxLength="500"
+        android:hint="@string/add_expense_description_hint" />
+
+</RelativeLayout>

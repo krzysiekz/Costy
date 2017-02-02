@@ -25,4 +25,9 @@
     <string name="nav_drawer_option_expenses">Expenses</string>
     <string name="nav_drawer_option_settings">Settings</string>
     <string name="nav_drawer_option_change_project">Change Project</string>
+
+    <string name="add_expense_from_label">From:</string>
+    <string name="add_expense_to_label">Paid for:</string>
+    <string name="add_expense_description_hint">Description</string>
+    <string name="add_expense_amount_hint">Amount</string>
 </resources>

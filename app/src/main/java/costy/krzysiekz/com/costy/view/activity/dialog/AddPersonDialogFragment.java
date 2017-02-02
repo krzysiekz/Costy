@@ -27,9 +27,9 @@ public class AddPersonDialogFragment extends DialogFragment {
     }
 
     private void positiveButtonClicked(Dialog dialog) {
-        EditText projectNameText = (EditText) dialog.findViewById(R.id.person_name);
-        if (projectNameText.length() > 0) {
-            addPersonDialogListener.onPersonNameConfirmed((projectNameText).getText().toString());
+        EditText personNameText = (EditText) dialog.findViewById(R.id.person_name);
+        if (personNameText.length() > 0) {
+            addPersonDialogListener.onPersonNameConfirmed((personNameText).getText().toString());
         } else {
             addPersonDialogListener.showWrongNameError();
         }

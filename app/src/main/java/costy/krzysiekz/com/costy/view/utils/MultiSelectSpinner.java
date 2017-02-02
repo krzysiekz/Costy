@@ -98,4 +98,12 @@ public class MultiSelectSpinner extends Spinner implements
     public void setSpinnerTitle(String spinnerTitle) {
         this.spinnerTitle = spinnerTitle;
     }
+
+    public List<String> getItems() {
+        return items;
+    }
+
+    public boolean[] getSelected() {
+        return selected;
+    }
 }

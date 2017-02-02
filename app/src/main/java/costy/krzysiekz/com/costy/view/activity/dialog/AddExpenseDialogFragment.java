@@ -45,6 +45,7 @@ public class AddExpenseDialogFragment extends DialogFragment implements MultiSel
     private void setUpReceiversSpinner(View inflate, List<String> userNames) {
         MultiSelectSpinner multiSpinner = (MultiSelectSpinner) inflate.findViewById(R.id.add_expense_receivers);
         multiSpinner.setItems(userNames, getString(R.string.add_expense_text_when_receivers_selected), this);
+        multiSpinner.setSpinnerTitle(getString(R.string.add_expense_select_receivers_dialog_title));
     }
 
     private void setUpPayerSpinner(View inflate, List<String> userNames) {

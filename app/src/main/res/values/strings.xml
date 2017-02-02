@@ -31,4 +31,5 @@
     <string name="add_expense_description_hint">Description</string>
     <string name="add_expense_amount_hint">Amount</string>
     <string name="add_expense_text_when_receivers_selected">"Default (paid for all)"</string>
+    <string name="add_expense_select_receivers_dialog_title">"Select receivers"</string>
 </resources>

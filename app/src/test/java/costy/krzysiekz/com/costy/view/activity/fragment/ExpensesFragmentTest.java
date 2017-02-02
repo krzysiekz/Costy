@@ -1,7 +1,6 @@
 package costy.krzysiekz.com.costy.view.activity.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 
 import com.krzysiekz.costy.model.User;
@@ -25,7 +24,6 @@ import costy.krzysiekz.com.costy.presenter.impl.ExpensesPresenter;
 import costy.krzysiekz.com.costy.view.ExpensesView;
 import costy.krzysiekz.com.costy.view.activity.SelectedProjectActivity;
 import costy.krzysiekz.com.costy.view.activity.adapter.ExpensesAdapter;
-import costy.krzysiekz.com.costy.view.activity.dialog.AddExpenseDialogFragment;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -101,11 +99,8 @@ public class ExpensesFragmentTest {
     public void shouldCallDialogFragmentAfterClickingAddExpenseButton() {
         //when
         fragment.addExpenseButton.performClick();
-        Fragment popup = fragment.getActivity().getSupportFragmentManager().
-                findFragmentByTag(AddExpenseDialogFragment.TAG);
         //then
-        assertThat(popup).isNotNull();
-        assertThat(popup).isInstanceOf(AddExpenseDialogFragment.class);
+        verify(presenterModuleMock.getExpensesPresenter()).showAddExpenseDialog(PROJECT_NAME);
     }
 
 

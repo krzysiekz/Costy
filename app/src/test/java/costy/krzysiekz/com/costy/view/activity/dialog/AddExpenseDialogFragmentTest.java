@@ -1,19 +1,26 @@
 package costy.krzysiekz.com.costy.view.activity.dialog;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
 import com.krzysiekz.costy.model.User;
+import com.krzysiekz.costy.model.UserExpense;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowAlertDialog;
+import org.robolectric.shadows.ShadowToast;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +34,7 @@ import costy.krzysiekz.com.costy.view.utils.MultiSelectSpinner;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 23)
@@ -107,6 +115,118 @@ public class AddExpenseDialogFragmentTest {
         for (boolean sel : selected) {
             assertThat(sel).isTrue();
         }
+    }
+
+    @Test
+    public void shouldAddExpenseWithProperAmountAndDescriptionWhenAllReceiversSelected() {
+        //given
+        String sampleAmount = "10.50";
+        String sampleDescription = "This is sample description";
+
+        Spinner payerSpinner = (Spinner) dialog.findViewById(R.id.add_expense_dialog_from);
+        EditText amount = (EditText) dialog.findViewById(R.id.add_expense_amount);
+        EditText description = (EditText) dialog.findViewById(R.id.add_expense_description);
+        ArgumentCaptor<UserExpense> expenseCaptor = ArgumentCaptor.forClass(UserExpense.class);
+        //when
+        payerSpinner.setSelection(1);
+        amount.setText(sampleAmount);
+        description.setText(sampleDescription);
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).performClick();
+        //then
+        verify(expensesFragment).onExpenseConfirmed(expenseCaptor.capture());
+        assertThat(expenseCaptor.getValue().getUser().getName()).isEqualTo("John");
+        assertThat(expenseCaptor.getValue().getAmount()).isEqualTo(new BigDecimal(sampleAmount));
+        assertThat(expenseCaptor.getValue().getDescription()).isEqualTo(sampleDescription);
+        assertThat(expenseCaptor.getValue().getReceivers()).hasSize(2).extracting("name").contains("John", "Kate");
+    }
+
+    @Test
+    public void shouldAddExpenseWithProperAmountAndDescriptionWhenOneReceiverSelected() {
+        //given
+        String sampleAmount = "10.50";
+        String sampleDescription = "This is sample description";
+        int johnItemIndex = 1;
+
+        Spinner payerSpinner = (Spinner) dialog.findViewById(R.id.add_expense_dialog_from);
+        EditText amount = (EditText) dialog.findViewById(R.id.add_expense_amount);
+        EditText description = (EditText) dialog.findViewById(R.id.add_expense_description);
+        MultiSelectSpinner receiversSpinner = (MultiSelectSpinner) dialog.findViewById(R.id.add_expense_receivers);
+        ArgumentCaptor<UserExpense> expenseCaptor = ArgumentCaptor.forClass(UserExpense.class);
+        //when
+        payerSpinner.setSelection(1);
+        amount.setText(sampleAmount);
+        description.setText(sampleDescription);
+        receiversSpinner.performClick();
+        AlertDialog receiversSelection = ShadowAlertDialog.getLatestAlertDialog();
+        receiversSelection.getListView().performItemClick(
+                receiversSelection.getListView().getAdapter().getView(johnItemIndex, null, null), johnItemIndex, johnItemIndex);
+        receiversSelection.getButton(DialogInterface.BUTTON_POSITIVE).performClick();
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).performClick();
+        //then
+        verify(expensesFragment).onExpenseConfirmed(expenseCaptor.capture());
+        assertThat(expenseCaptor.getValue().getUser().getName()).isEqualTo("John");
+        assertThat(expenseCaptor.getValue().getAmount()).isEqualTo(new BigDecimal(sampleAmount));
+        assertThat(expenseCaptor.getValue().getDescription()).isEqualTo(sampleDescription);
+        assertThat(expenseCaptor.getValue().getReceivers()).hasSize(1).extracting("name").contains("Kate");
+    }
+
+    @Test
+    public void shouldShowErrorWhenDescriptionNotProvided() {
+        //given
+        String sampleAmount = "10.50";
+        EditText amount = (EditText) dialog.findViewById(R.id.add_expense_amount);
+        //when
+        amount.setText(sampleAmount);
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).performClick();
+        //then
+        assertThat(dialog.isShowing()).isTrue();
+        assertThat(ShadowToast.getLatestToast()).isNotNull();
+        assertThat(ShadowToast.getTextOfLatestToast()).
+                isEqualTo(fragment.getString(R.string.add_expense_provide_description_error));
+    }
+
+    @Test
+    public void shouldShowErrorWhenAmountNotProvided() {
+        //given
+        String sampleDescription = "This is sample description";
+        EditText description = (EditText) dialog.findViewById(R.id.add_expense_description);
+        //when
+        description.setText(sampleDescription);
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).performClick();
+        //then
+        assertThat(dialog.isShowing()).isTrue();
+        assertThat(ShadowToast.getLatestToast()).isNotNull();
+        assertThat(ShadowToast.getTextOfLatestToast()).
+                isEqualTo(fragment.getString(R.string.add_expense_provide_amount_error));
+    }
+
+    @Test
+    public void shouldShowErrorWhenReceiversNotSelected() {
+        //given
+        String sampleAmount = "10.50";
+        String sampleDescription = "This is sample description";
+        int johnItemIndex = 1;
+        int kateItemIndex = 0;
+
+        EditText amount = (EditText) dialog.findViewById(R.id.add_expense_amount);
+        EditText description = (EditText) dialog.findViewById(R.id.add_expense_description);
+        MultiSelectSpinner receiversSpinner = (MultiSelectSpinner) dialog.findViewById(R.id.add_expense_receivers);
+        //when
+        amount.setText(sampleAmount);
+        description.setText(sampleDescription);
+        receiversSpinner.performClick();
+        AlertDialog receiversSelection = ShadowAlertDialog.getLatestAlertDialog();
+        receiversSelection.getListView().performItemClick(
+                receiversSelection.getListView().getAdapter().getView(johnItemIndex, null, null), johnItemIndex, johnItemIndex);
+        receiversSelection.getListView().performItemClick(
+                receiversSelection.getListView().getAdapter().getView(kateItemIndex, null, null), kateItemIndex, kateItemIndex);
+        receiversSelection.getButton(DialogInterface.BUTTON_POSITIVE).performClick();
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).performClick();
+        //then
+        assertThat(dialog.isShowing()).isTrue();
+        assertThat(ShadowToast.getLatestToast()).isNotNull();
+        assertThat(ShadowToast.getTextOfLatestToast()).
+                isEqualTo(fragment.getString(R.string.add_expense_select_receivers_error));
     }
 
     private List<User> createUsers() {

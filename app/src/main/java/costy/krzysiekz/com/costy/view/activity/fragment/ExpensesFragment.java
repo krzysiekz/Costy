@@ -82,6 +82,7 @@ public class ExpensesFragment extends Fragment implements ExpensesView, AddExpen
     public void showAddExpenseDialog(List<User> people) {
         AddExpenseDialogFragment dialogFragment = new AddExpenseDialogFragment();
         dialogFragment.setUsers(people);
+        dialogFragment.setListener(this);
         dialogFragment.show(getFragmentManager(), AddExpenseDialogFragment.TAG);
     }
 

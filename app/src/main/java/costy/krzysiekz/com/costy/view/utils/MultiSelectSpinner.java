@@ -16,7 +16,6 @@ public class MultiSelectSpinner extends Spinner implements
     private boolean[] selected;
     private String defaultText;
     private String spinnerTitle;
-    private MultiSpinnerListener listener;
 
     public MultiSelectSpinner(Context context) {
         super(context);
@@ -60,7 +59,6 @@ public class MultiSelectSpinner extends Spinner implements
                 android.R.layout.simple_spinner_item,
                 new String[]{spinnerText});
         setAdapter(adapter);
-        listener.onItemsSelected(selected);
     }
 
     @Override
@@ -75,10 +73,9 @@ public class MultiSelectSpinner extends Spinner implements
     }
 
 
-    public void setItems(List<String> items, String allText, MultiSpinnerListener listener) {
+    public void setItems(List<String> items, String allText) {
         this.items = items;
         this.defaultText = allText;
-        this.listener = listener;
 
         selected = new boolean[items.size()];
         for (int i = 0; i < selected.length; i++)
@@ -89,10 +86,6 @@ public class MultiSelectSpinner extends Spinner implements
         setAdapter(adapter);
 
         onCancel(null);
-    }
-
-    public interface MultiSpinnerListener {
-        void onItemsSelected(boolean[] selected);
     }
 
     public void setSpinnerTitle(String spinnerTitle) {

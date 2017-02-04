@@ -52,13 +52,13 @@
 
     <EditText
         android:id="@+id/add_expense_description"
-        android:inputType="textMultiLine"
+        android:inputType="textAutoComplete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
         android:textSize="15sp"
         android:layout_below="@id/add_expense_amount"
-        android:maxLength="500"
+        android:maxLength="100"
         android:hint="@string/add_expense_description_hint" />
 
 </RelativeLayout>

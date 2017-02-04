@@ -22,7 +22,7 @@
         <TextView
             android:id="@+id/item_expense_amount"
             android:text="@string/sample_expense_amount"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
         <TextView
             android:id="@+id/item_expense_description"
             android:text="@string/sample_expense_description"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
             <TextView
                 android:id="@+id/item_expense_from"
                 android:text="@string/sample_expense_from"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -64,7 +64,7 @@
             <TextView
                 android:id="@+id/item_expense_arrow"
                 android:text="@string/expense_separator"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
             <TextView
                 android:id="@+id/item_expense_to"
                 android:text="@string/sample_expense_to"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

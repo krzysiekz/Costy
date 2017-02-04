@@ -2,6 +2,7 @@ package costy.krzysiekz.com.costy.presenter.impl;
 
 import com.krzysiekz.costy.model.ExpenseProject;
 import com.krzysiekz.costy.model.User;
+import com.krzysiekz.costy.model.UserExpense;
 
 import java.util.List;
 
@@ -36,5 +37,12 @@ public class ExpensesPresenter implements Presenter<ExpensesView> {
     public void showAddExpenseDialog(String projectName) {
         List<User> users = this.repository.getProject(projectName).getUsers();
         view.showAddExpenseDialog(users);
+    }
+
+    public void addExpense(String projectName, UserExpense expense) {
+        ExpenseProject project = repository.getProject(projectName);
+        project.addExpense(expense);
+        repository.updateProject(project);
+        view.showExpenses(project.getExpenses());
     }
 }

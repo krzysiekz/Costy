@@ -103,5 +103,16 @@ public class ExpensesFragmentTest {
         verify(presenterModuleMock.getExpensesPresenter()).showAddExpenseDialog(PROJECT_NAME);
     }
 
-
+    @Test
+    public void shouldCallPresenterWhenExpenseConfirmed() {
+        //given
+        User john = new User("John");
+        User kate = new User("Kate");
+        UserExpense expense = new UserExpense(john, new BigDecimal("10"),
+                Arrays.asList(john, kate), "Sample expense");
+        //when
+        fragment.onExpenseConfirmed(expense);
+        //then
+        verify(presenterModuleMock.getExpensesPresenter()).addExpense(PROJECT_NAME, expense);
+    }
 }

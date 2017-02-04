@@ -31,6 +31,8 @@ import static costy.krzysiekz.com.costy.view.activity.SelectedProjectActivity.PR
 
 public class ExpensesFragment extends Fragment implements ExpensesView, AddExpenseDialogListener {
 
+    private String projectName;
+
     ExpensesPresenter presenter;
 
     @BindView(R.id.expenses_recycler_view)
@@ -51,7 +53,7 @@ public class ExpensesFragment extends Fragment implements ExpensesView, AddExpen
         CostyApplication.component().inject(this);
 
         setupExpensesRecycleView();
-        String projectName = getArguments().getString(PROJECT_NAME);
+        projectName = getArguments().getString(PROJECT_NAME);
 
         presenter.attachView(this);
         presenter.loadProjectExpenses(projectName);
@@ -88,6 +90,6 @@ public class ExpensesFragment extends Fragment implements ExpensesView, AddExpen
 
     @Override
     public void onExpenseConfirmed(UserExpense expense) {
-
+        presenter.addExpense(projectName, expense);
     }
 }

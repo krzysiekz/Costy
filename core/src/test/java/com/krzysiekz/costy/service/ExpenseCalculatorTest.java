@@ -16,9 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import java8.util.stream.Collectors;
-import java8.util.stream.StreamSupport;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
@@ -49,7 +48,7 @@ public class ExpenseCalculatorTest {
     @Parameters(method = "prepareTestCases")
     public void shouldCreateProperReport(List<UserExpense> expenses, List<String> expectedEntries) {
         //when
-        StreamSupport.stream(expenses).forEach(e -> expenseProject.addExpense(e));
+        expenses.stream().forEach(e -> expenseProject.addExpense(e));
         ExpenseReport expenseReport = expenseCalculator.calculate(expenseProject);
         //then
         assertThat(expenseReport.getEntries()).hasSize(expectedEntries.size());
@@ -136,7 +135,7 @@ public class ExpenseCalculatorTest {
 
     private UserExpense createExpense(String userName, int amount, List<String> receivers) {
         User john = new User(userName);
-        List<User> userList = StreamSupport.stream(receivers).map(User::new).collect(Collectors.toList());
+        List<User> userList = receivers.stream().map(User::new).collect(Collectors.toList());
         return new UserExpense(john, new BigDecimal(amount), userList, "");
     }
 }

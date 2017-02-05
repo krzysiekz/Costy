@@ -4,10 +4,6 @@
     android:layout_height="match_parent"
     tools:context="costy.krzysiekz.com.costy.view.activity.fragment.ReportFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Report" />
+    <include layout="@layout/content_report" />
 
 </FrameLayout>

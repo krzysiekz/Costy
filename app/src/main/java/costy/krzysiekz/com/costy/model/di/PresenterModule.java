@@ -1,5 +1,7 @@
 package costy.krzysiekz.com.costy.model.di;
 
+import com.krzysiekz.costy.service.ExpenseCalculator;
+
 import javax.inject.Singleton;
 
 import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
@@ -40,7 +42,7 @@ public class PresenterModule {
 
     @Singleton
     @Provides
-    ReportPresenter provideReportPresenter(ProjectsRepository repository) {
-        return new ReportPresenter(repository);
+    ReportPresenter provideReportPresenter(ProjectsRepository repository, ExpenseCalculator calculator) {
+        return new ReportPresenter(repository, calculator);
     }
 }

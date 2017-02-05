@@ -35,7 +35,7 @@ public class ExpensesPresenterTest {
     }
 
     @Test
-    public void shouldCallViewWithProperObjectsWHenLoadingProject() {
+    public void shouldCallViewWithProperObjectsWhenLoadingProject() {
         //given
         ExpenseProject project = createExpenseProject();
         ExpensesPresenter presenter = new ExpensesPresenter(repository);

@@ -1,6 +1,10 @@
 package costy.krzysiekz.com.costy.view.activity.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+
+import com.krzysiekz.costy.model.ReportEntry;
+import com.krzysiekz.costy.model.User;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,11 +14,15 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.support.v4.SupportFragmentTestUtil;
 
+import java.math.BigDecimal;
+import java.util.Collections;
+
 import costy.krzysiekz.com.costy.BuildConfig;
 import costy.krzysiekz.com.costy.TestCostyApplication;
 import costy.krzysiekz.com.costy.model.di.PresenterModuleMock;
 import costy.krzysiekz.com.costy.presenter.impl.ReportPresenter;
 import costy.krzysiekz.com.costy.view.activity.SelectedProjectActivity;
+import costy.krzysiekz.com.costy.view.activity.adapter.ReportEntryAdapter;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -62,6 +70,22 @@ public class ReportFragmentTest {
     public void shouldLoadReportEntriesUponActivityStart() {
         //then
         verify(presenterModuleMock.getReportPresenter()).loadReportEntries(PROJECT_NAME);
+    }
+
+    @Test
+    public void shouldPassReportEntriesToAdapter() {
+        //given
+        User kate = new User("Kate");
+        User john = new User("John");
+        ReportEntry entry = new ReportEntry(kate, john, new BigDecimal("10"));
+        //when
+        RecyclerView recyclerView = fragment.reportEntriesRecyclerView;
+        fragment.showReportEntries(Collections.singletonList(entry));
+        //then
+        assertThat(recyclerView).isNotNull();
+        assertThat(recyclerView.getAdapter()).isInstanceOf(ReportEntryAdapter.class);
+        assertThat(recyclerView.getAdapter().getItemCount()).isEqualTo(1);
+        assertThat(((ReportEntryAdapter) recyclerView.getAdapter()).getReportEntries()).containsOnly(entry);
     }
 
 }

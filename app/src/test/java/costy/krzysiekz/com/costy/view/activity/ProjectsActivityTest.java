@@ -32,7 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 23,
+@Config(constants = BuildConfig.class, sdk = 24,
         application = TestCostyApplication.class)
 public class ProjectsActivityTest {
 

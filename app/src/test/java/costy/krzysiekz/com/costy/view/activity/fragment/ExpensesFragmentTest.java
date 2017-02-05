@@ -29,7 +29,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 23, application = TestCostyApplication.class)
+@Config(constants = BuildConfig.class, sdk = 24, application = TestCostyApplication.class)
 public class ExpensesFragmentTest {
 
     private PresenterModuleMock presenterModuleMock;

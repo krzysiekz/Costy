@@ -22,6 +22,7 @@ import costy.krzysiekz.com.costy.R;
 import costy.krzysiekz.com.costy.presenter.impl.SelectedProjectPresenter;
 import costy.krzysiekz.com.costy.view.activity.fragment.ExpensesFragment;
 import costy.krzysiekz.com.costy.view.activity.fragment.PeopleFragment;
+import costy.krzysiekz.com.costy.view.activity.fragment.ReportFragment;
 import costy.krzysiekz.com.costy.view.activity.fragment.SettingsFragment;
 
 public class SelectedProjectActivity extends AppCompatActivity implements
@@ -88,6 +89,8 @@ public class SelectedProjectActivity extends AppCompatActivity implements
             fragment = new PeopleFragment();
         } else if (id == R.id.nav_settings) {
             fragment = new SettingsFragment();
+        } else if (id == R.id.nav_report) {
+            fragment = new ReportFragment();
         } else if (id == R.id.nav_change_project) {
 
         }

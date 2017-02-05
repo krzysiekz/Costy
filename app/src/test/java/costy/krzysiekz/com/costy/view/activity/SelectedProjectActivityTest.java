@@ -23,6 +23,7 @@ import costy.krzysiekz.com.costy.model.di.PresenterModuleMock;
 import costy.krzysiekz.com.costy.presenter.impl.SelectedProjectPresenter;
 import costy.krzysiekz.com.costy.view.activity.fragment.ExpensesFragment;
 import costy.krzysiekz.com.costy.view.activity.fragment.PeopleFragment;
+import costy.krzysiekz.com.costy.view.activity.fragment.ReportFragment;
 import costy.krzysiekz.com.costy.view.activity.fragment.SettingsFragment;
 import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
@@ -33,7 +34,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 23, application = TestCostyApplication.class)
+@Config(constants = BuildConfig.class, sdk = 24, application = TestCostyApplication.class)
 public class SelectedProjectActivityTest {
 
     private static final String PROJECT_NAME = "Some project name";
@@ -134,5 +135,20 @@ public class SelectedProjectActivityTest {
         List<Fragment> fragments = selectedProjectActivity.getSupportFragmentManager().getFragments();
         assertThat(fragments).isNotEmpty().hasSize(1);
         assertThat(fragments.get(0)).isInstanceOf(ExpensesFragment.class);
+    }
+
+    @Test
+    public void shouldShowReportFragment() {
+        //given
+        RoboMenuItem item = new RoboMenuItem(R.id.nav_settings);
+        RoboMenuItem reportItem = new RoboMenuItem(R.id.nav_report);
+        //when
+        selectedProjectActivity.onNavigationItemSelected(item);
+        selectedProjectActivity.onNavigationItemSelected(reportItem);
+        //then
+        List<Fragment> fragments = selectedProjectActivity.getSupportFragmentManager().getFragments();
+        fragments = StreamSupport.stream(fragments).filter(e -> e != null).collect(Collectors.toList());
+        assertThat(fragments).isNotEmpty().hasSize(1);
+        assertThat(fragments.get(0)).isInstanceOf(ReportFragment.class);
     }
 }

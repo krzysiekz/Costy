@@ -4,6 +4,7 @@ import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
 import costy.krzysiekz.com.costy.presenter.impl.ExpensesPresenter;
 import costy.krzysiekz.com.costy.presenter.impl.PeoplePresenter;
 import costy.krzysiekz.com.costy.presenter.impl.ProjectsPresenter;
+import costy.krzysiekz.com.costy.presenter.impl.ReportPresenter;
 import costy.krzysiekz.com.costy.presenter.impl.SelectedProjectPresenter;
 
 import static org.mockito.Mockito.mock;
@@ -14,6 +15,7 @@ public class PresenterModuleMock extends PresenterModule {
     private ExpensesPresenter expensesPresenter;
     private SelectedProjectPresenter selectedProjectPresenter;
     private PeoplePresenter peoplePresenter;
+    private ReportPresenter reportPresenter;
 
     @Override
     ProjectsPresenter provideProjectsPresenter(ProjectsRepository projectsRepository) {
@@ -47,6 +49,14 @@ public class PresenterModuleMock extends PresenterModule {
         return peoplePresenter;
     }
 
+    @Override
+    ReportPresenter provideReportPresenter(ProjectsRepository repository) {
+        if (reportPresenter == null) {
+            reportPresenter = mock(ReportPresenter.class);
+        }
+        return reportPresenter;
+    }
+
     public ProjectsPresenter getProjectsPresenter() {
         return projectsPresenter;
     }
@@ -65,5 +75,9 @@ public class PresenterModuleMock extends PresenterModule {
 
     public void setSelectedProjectPresenter(SelectedProjectPresenter selectedProjectPresenter) {
         this.selectedProjectPresenter = selectedProjectPresenter;
+    }
+
+    public ReportPresenter getReportPresenter() {
+        return reportPresenter;
     }
 }

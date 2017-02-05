@@ -6,6 +6,7 @@ import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
 import costy.krzysiekz.com.costy.presenter.impl.ExpensesPresenter;
 import costy.krzysiekz.com.costy.presenter.impl.PeoplePresenter;
 import costy.krzysiekz.com.costy.presenter.impl.ProjectsPresenter;
+import costy.krzysiekz.com.costy.presenter.impl.ReportPresenter;
 import costy.krzysiekz.com.costy.presenter.impl.SelectedProjectPresenter;
 import dagger.Module;
 import dagger.Provides;
@@ -35,5 +36,11 @@ public class PresenterModule {
     @Provides
     PeoplePresenter providePeoplePresenter(ProjectsRepository repository) {
         return new PeoplePresenter(repository);
+    }
+
+    @Singleton
+    @Provides
+    ReportPresenter provideReportPresenter(ProjectsRepository repository) {
+        return new ReportPresenter(repository);
     }
 }

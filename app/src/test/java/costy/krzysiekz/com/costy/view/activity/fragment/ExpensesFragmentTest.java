@@ -1,7 +1,9 @@
 package costy.krzysiekz.com.costy.view.activity.fragment;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 
 import com.krzysiekz.costy.model.User;
 import com.krzysiekz.costy.model.UserExpense;
@@ -16,14 +18,21 @@ import org.robolectric.shadows.support.v4.SupportFragmentTestUtil;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import costy.krzysiekz.com.costy.BuildConfig;
+import costy.krzysiekz.com.costy.R;
 import costy.krzysiekz.com.costy.TestCostyApplication;
 import costy.krzysiekz.com.costy.model.di.PresenterModuleMock;
 import costy.krzysiekz.com.costy.presenter.impl.ExpensesPresenter;
 import costy.krzysiekz.com.costy.view.ExpensesView;
 import costy.krzysiekz.com.costy.view.activity.SelectedProjectActivity;
 import costy.krzysiekz.com.costy.view.activity.adapter.ExpensesAdapter;
+import costy.krzysiekz.com.costy.view.activity.dialog.AddExpenseDialogFragment;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -45,7 +54,8 @@ public class ExpensesFragmentTest {
         bundle.putString(SelectedProjectActivity.PROJECT_NAME, PROJECT_NAME);
         fragment.setArguments(bundle);
         //when
-        SupportFragmentTestUtil.startVisibleFragment(fragment);
+        SupportFragmentTestUtil.startVisibleFragment(fragment,
+                SelectedProjectActivity.class, R.id.selected_project_content);
     }
 
     private void setUpModulesMocks() {
@@ -114,5 +124,104 @@ public class ExpensesFragmentTest {
         fragment.onExpenseConfirmed(expense);
         //then
         verify(presenterModuleMock.getExpensesPresenter()).addExpense(PROJECT_NAME, expense);
+    }
+
+    @Test
+    public void longClickShouldStartSelectionModeAndSelectItem() {
+        //given
+        RecyclerView recyclerView = fragment.expensesRecyclerView;
+        ExpensesAdapter adapter = (ExpensesAdapter) recyclerView.getAdapter();
+        User kate = new User("Kate");
+        User john = new User("John");
+        UserExpense firstExpense = new UserExpense(kate, new BigDecimal("10.50"), Arrays.asList(kate, john), "");
+        UserExpense secondExpense = new UserExpense(john, new BigDecimal("13"), Arrays.asList(kate, john), "");
+        //when
+        fragment.showExpenses(Arrays.asList(firstExpense, secondExpense));
+        fragment.onItemLongClicked(0);
+        //then
+        assertThat(fragment.actionMode).isNotNull();
+        assertThat(adapter.getSelectedItemCount()).isEqualTo(1);
+        assertThat(adapter.getSelectedItems()).isNotEmpty().containsOnly(0);
+    }
+
+    @Test
+    public void shortClickShouldSelectItemInSelectionMode() {
+        //given
+        RecyclerView recyclerView = fragment.expensesRecyclerView;
+        ExpensesAdapter adapter = (ExpensesAdapter) recyclerView.getAdapter();
+        User kate = new User("Kate");
+        User john = new User("John");
+        UserExpense firstExpense = new UserExpense(kate, new BigDecimal("10.50"), Arrays.asList(kate, john), "");
+        UserExpense secondExpense = new UserExpense(john, new BigDecimal("13"), Arrays.asList(kate, john), "");
+        //when
+        fragment.showExpenses(Arrays.asList(firstExpense, secondExpense));
+        fragment.onItemLongClicked(0);
+        fragment.onItemClicked(1);
+        //then
+        assertThat(adapter.getSelectedItemCount()).isEqualTo(2);
+        assertThat(adapter.getSelectedItems()).isNotEmpty().containsOnly(0, 1);
+    }
+
+    @Test
+    public void shouldShowDeleteButtonWhenInSelectionMode() {
+        //given
+        User john = new User("John");
+        UserExpense secondExpense = new UserExpense(john, new BigDecimal("13"), Collections.singletonList(john), "");
+        //when
+        fragment.showExpenses(Collections.singletonList(secondExpense));
+        fragment.onItemLongClicked(0);
+        MenuItem deleteItem = fragment.actionMode.getMenu().findItem(R.id.menu_remove);
+        //then
+        assertThat(deleteItem).isNotNull();
+    }
+
+    @Test
+    public void shouldCallPresenterWhileRemovingItems() {
+        //given
+        User john = new User("John");
+        UserExpense expense = new UserExpense(john, new BigDecimal("13"), Collections.singletonList(john), "");
+        Map<Integer, UserExpense> expectedArgument = new HashMap<>();
+        expectedArgument.put(0, expense);
+        //when
+        fragment.showExpenses(Collections.singletonList(expense));
+        fragment.onItemLongClicked(0);
+        MenuItem deleteItem = fragment.actionMode.getMenu().findItem(R.id.menu_remove);
+        fragment.onActionItemClicked(fragment.actionMode, deleteItem);
+        //then
+        verify(presenterModuleMock.getExpensesPresenter()).removeExpenses(PROJECT_NAME, expectedArgument);
+    }
+
+    @Test
+    public void shouldRemoveExpensesFromView() {
+        //given
+        int itemPosition = 0;
+        RecyclerView recyclerView = fragment.expensesRecyclerView;
+        ExpensesAdapter adapter = (ExpensesAdapter) recyclerView.getAdapter();
+        Set<Integer> positions = new HashSet<>();
+        positions.add(itemPosition);
+        User john = new User("John");
+        UserExpense secondExpense = new UserExpense(john, new BigDecimal("13"), Collections.singletonList(john), "");
+        //when
+        fragment.showExpenses(Collections.singletonList(secondExpense));
+        fragment.onItemLongClicked(itemPosition);
+        fragment.removeExpenses(positions);
+        //then
+        assertThat(adapter.getSelectedItemCount()).isEqualTo(0);
+        assertThat(adapter.getSelectedItems()).isEmpty();
+        assertThat(adapter.getItemCount()).isEqualTo(0);
+        assertThat(adapter.getItems()).isEmpty();
+    }
+
+    @Test
+    public void shouldShowAddExpenseDialog() {
+        //given
+        User john = new User("John");
+        //when
+        fragment.showAddExpenseDialog(Collections.singletonList(john));
+        Fragment dialog = fragment.getActivity().getSupportFragmentManager().
+                findFragmentByTag(AddExpenseDialogFragment.TAG);
+        //then
+        assertThat(dialog).isNotNull();
+        assertThat(dialog).isInstanceOf(AddExpenseDialogFragment.class);
     }
 }

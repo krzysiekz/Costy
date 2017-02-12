@@ -5,6 +5,7 @@ import com.krzysiekz.costy.model.User;
 import com.krzysiekz.costy.model.UserExpense;
 
 import java.util.List;
+import java.util.Map;
 
 import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
 import costy.krzysiekz.com.costy.presenter.Presenter;
@@ -44,5 +45,12 @@ public class ExpensesPresenter implements Presenter<ExpensesView> {
         project.addExpense(expense);
         repository.updateProject(project);
         view.showExpenses(project.getExpenses());
+    }
+
+    public void removeExpenses(String projectName, Map<Integer, UserExpense> selectedExpenses) {
+        ExpenseProject project = repository.getProject(projectName);
+        project.removeExpenses(selectedExpenses.values());
+        repository.updateProject(project);
+        view.removeExpenses(selectedExpenses.keySet());
     }
 }

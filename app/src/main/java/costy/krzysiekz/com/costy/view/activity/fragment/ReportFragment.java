@@ -3,6 +3,7 @@ package costy.krzysiekz.com.costy.view.activity.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -56,6 +57,7 @@ public class ReportFragment extends Fragment implements ReportView {
     private void setupReportEntriesRecyclerView() {
         ReportEntryAdapter adapter = new ReportEntryAdapter();
         reportEntriesRecyclerView.setAdapter(adapter);
+        reportEntriesRecyclerView.setItemAnimator(new DefaultItemAnimator());
         reportEntriesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 

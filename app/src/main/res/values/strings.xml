@@ -35,4 +35,5 @@
     <string name="add_expense_provide_amount_error">"Provide amount!"</string>
     <string name="add_expense_provide_description_error">"Provide description!"</string>
     <string name="add_expense_select_receivers_error">"Select receivers!"</string>
+    <string name="delete_item">Delete</string>
 </resources>

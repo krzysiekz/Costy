@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
@@ -58,6 +59,7 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
     private void setupProjectsRecycleView() {
         ProjectAdapter adapter = new ProjectAdapter(this);
         projectsRecyclerView.setAdapter(adapter);
+        projectsRecyclerView.setItemAnimator(new DefaultItemAnimator());
         projectsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 

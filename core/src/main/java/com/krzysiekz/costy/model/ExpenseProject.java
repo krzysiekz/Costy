@@ -1,6 +1,7 @@
 package com.krzysiekz.costy.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ExpenseProject {
@@ -63,5 +64,9 @@ public class ExpenseProject {
                 ", name='" + name + '\'' +
                 ", users=" + users +
                 '}';
+    }
+
+    public void removeExpenses(Collection<UserExpense> selectedExpenses) {
+        this.expenses.removeAll(selectedExpenses);
     }
 }

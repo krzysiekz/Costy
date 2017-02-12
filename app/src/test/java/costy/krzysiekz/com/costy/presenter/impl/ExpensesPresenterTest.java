@@ -12,6 +12,9 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
 import costy.krzysiekz.com.costy.view.ExpensesView;
@@ -27,18 +30,19 @@ public class ExpensesPresenterTest {
 
     private ExpensesView expensesView;
     private ProjectsRepository repository;
+    private ExpensesPresenter presenter;
 
     @Before
     public void setUp() throws Exception {
         expensesView = mock(ExpensesView.class);
         repository = mock(ProjectsRepository.class);
+        presenter = new ExpensesPresenter(repository);
     }
 
     @Test
     public void shouldCallViewWithProperObjectsWhenLoadingProject() {
         //given
         ExpenseProject project = createExpenseProject();
-        ExpensesPresenter presenter = new ExpensesPresenter(repository);
         //when
         when(repository.getProject(PROJECT_NAME)).thenReturn(project);
         presenter.attachView(expensesView);
@@ -52,7 +56,6 @@ public class ExpensesPresenterTest {
     public void shouldCallViewWithProperObjectsWhenShowingAddExpenseDialog() {
         //given
         ExpenseProject project = createExpenseProject();
-        ExpensesPresenter presenter = new ExpensesPresenter(repository);
         //when
         when(repository.getProject(PROJECT_NAME)).thenReturn(project);
         presenter.attachView(expensesView);
@@ -70,7 +73,6 @@ public class ExpensesPresenterTest {
         UserExpense expense = new UserExpense(john, new BigDecimal("10"),
                 Arrays.asList(john, kate), "Sample expense");
         ExpenseProject project = new ExpenseProject(PROJECT_NAME);
-        ExpensesPresenter presenter = new ExpensesPresenter(repository);
         //when
         when(repository.getProject(PROJECT_NAME)).thenReturn(project);
         presenter.attachView(expensesView);
@@ -79,6 +81,27 @@ public class ExpensesPresenterTest {
         assertThat(project.getExpenses()).isNotEmpty().containsOnly(expense);
         verify(repository).updateProject(project);
         verify(expensesView).showExpenses(Collections.singletonList(expense));
+    }
+
+    @Test
+    public void shouldRemoveExpensesFromProjectAndCallUpdate() {
+        //given
+        User john = new User("John");
+        User kate = new User("Kate");
+        UserExpense expense = new UserExpense(john, new BigDecimal("10"),
+                Arrays.asList(john, kate), "Sample expense");
+        ExpenseProject project = new ExpenseProject(PROJECT_NAME);
+        project.addExpense(expense);
+        Map<Integer, UserExpense> selected = new HashMap<>();
+        selected.put(0, expense);
+        //when
+        when(repository.getProject(PROJECT_NAME)).thenReturn(project);
+        presenter.attachView(expensesView);
+        presenter.removeExpenses(PROJECT_NAME, selected);
+        //then
+        assertThat(project.getExpenses()).isEmpty();
+        verify(repository).updateProject(project);
+        verify(expensesView).removeExpenses(new HashSet<>(Collections.singletonList(0)));
     }
 
     @NonNull

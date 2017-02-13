@@ -6,6 +6,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
 import costy.krzysiekz.com.costy.model.dao.impl.InMemoryProjectsRepository;
@@ -19,11 +22,12 @@ public class ProjectsPresenterTest {
 
     private ProjectsView projectsView;
     private ProjectsPresenter presenter;
+    private ProjectsRepository repository;
 
     @Before
     public void setUp() throws Exception {
         //given
-        ProjectsRepository repository = new InMemoryProjectsRepository();
+        repository = new InMemoryProjectsRepository();
         projectsView = mock(ProjectsView.class);
         presenter = new ProjectsPresenter(repository);
     }
@@ -54,5 +58,21 @@ public class ProjectsPresenterTest {
         presenter.addProject("Some project");
         //then
         verify(projectsView).showProjects(Collections.singletonList(expenseProject));
+    }
+
+    @Test
+    public void shouldRemoveProjects() {
+        //given
+        Integer position = 0;
+        ExpenseProject expenseProject = new ExpenseProject("Some project");
+        Map<Integer, ExpenseProject> toRemove = new HashMap<>();
+        toRemove.put(position, expenseProject);
+        //when
+        presenter.attachView(projectsView);
+        presenter.addProject("Some project");
+        presenter.removeProjects(toRemove);
+        //then
+        assertThat(repository.getAllProjects()).isEmpty();
+        verify(projectsView).removeProjects(new HashSet<>(Collections.singletonList(position)));
     }
 }

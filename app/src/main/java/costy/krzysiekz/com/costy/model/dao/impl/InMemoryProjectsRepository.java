@@ -3,6 +3,7 @@ package costy.krzysiekz.com.costy.model.dao.impl;
 import com.krzysiekz.costy.model.ExpenseProject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
@@ -34,5 +35,10 @@ public class InMemoryProjectsRepository implements ProjectsRepository {
     @Override
     public void updateProject(ExpenseProject project) {
 
+    }
+
+    @Override
+    public void removeProjects(Collection<ExpenseProject> projects) {
+        this.projects.removeAll(projects);
     }
 }

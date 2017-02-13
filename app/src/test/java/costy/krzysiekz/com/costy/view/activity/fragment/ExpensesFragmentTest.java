@@ -163,6 +163,23 @@ public class ExpensesFragmentTest {
     }
 
     @Test
+    public void shortClickShouldDoNothingWhenNotInSelectionMode() {
+        //given
+        RecyclerView recyclerView = fragment.expensesRecyclerView;
+        ExpensesAdapter adapter = (ExpensesAdapter) recyclerView.getAdapter();
+        User kate = new User("Kate");
+        User john = new User("John");
+        UserExpense firstExpense = new UserExpense(kate, new BigDecimal("10.50"), Arrays.asList(kate, john), "");
+        UserExpense secondExpense = new UserExpense(john, new BigDecimal("13"), Arrays.asList(kate, john), "");
+        //when
+        fragment.showExpenses(Arrays.asList(firstExpense, secondExpense));
+        fragment.onItemClicked(1);
+        //then
+        assertThat(adapter.getSelectedItemCount()).isEqualTo(0);
+        assertThat(adapter.getSelectedItems()).isEmpty();
+    }
+
+    @Test
     public void shouldShowDeleteButtonWhenInSelectionMode() {
         //given
         User john = new User("John");

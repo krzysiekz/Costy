@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 
 import com.krzysiekz.costy.model.ExpenseProject;
 
@@ -18,6 +19,10 @@ import org.robolectric.shadows.ShadowToast;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import costy.krzysiekz.com.costy.BuildConfig;
 import costy.krzysiekz.com.costy.R;
@@ -133,7 +138,6 @@ public class ProjectsActivityTest {
         //then
         assertThat(intent.getComponent().getClassName()).isEqualTo(SelectedProjectActivity.class.getName());
         assertThat(intent.getStringExtra(SelectedProjectActivity.PROJECT_NAME)).isEqualTo(project1.getName());
-
     }
 
     @Test
@@ -145,5 +149,85 @@ public class ProjectsActivityTest {
         //then
         assertThat(ShadowToast.getLatestToast()).isNotNull();
         assertThat(ShadowToast.getTextOfLatestToast()).isEqualTo(context.getString(R.string.wrong_project_name));
+    }
+
+    @Test
+    public void longClickShouldStartSelectionModeAndSelectItem() {
+        //given
+        RecyclerView recyclerView = projectsActivity.projectsRecyclerView;
+        ProjectAdapter adapter = (ProjectAdapter) recyclerView.getAdapter();
+        ExpenseProject firstProject = new ExpenseProject("First project");
+        ExpenseProject secondProject = new ExpenseProject("Second project");
+        //when
+        projectsActivity.showProjects(Arrays.asList(firstProject, secondProject));
+        projectsActivity.onItemLongClicked(1);
+        //then
+        assertThat(projectsActivity.actionMode).isNotNull();
+        assertThat(adapter.getSelectedItemCount()).isEqualTo(1);
+        assertThat(adapter.getSelectedItems()).isNotEmpty().containsOnly(1);
+    }
+
+    @Test
+    public void shortClickShouldSelectItemInSelectionMode() {
+        //given
+        RecyclerView recyclerView = projectsActivity.projectsRecyclerView;
+        ProjectAdapter adapter = (ProjectAdapter) recyclerView.getAdapter();
+        ExpenseProject firstProject = new ExpenseProject("First project");
+        ExpenseProject secondProject = new ExpenseProject("Second project");
+        //when
+        projectsActivity.showProjects(Arrays.asList(firstProject, secondProject));
+        projectsActivity.onItemLongClicked(0);
+        projectsActivity.onItemClicked(1);
+        //then
+        assertThat(projectsActivity.actionMode).isNotNull();
+        assertThat(adapter.getSelectedItemCount()).isEqualTo(2);
+        assertThat(adapter.getSelectedItems()).isNotEmpty().containsOnly(0, 1);
+    }
+
+    @Test
+    public void shouldShowDeleteButtonWhenInSelectionMode() {
+        //given
+        ExpenseProject firstProject = new ExpenseProject("First project");
+        //when
+        projectsActivity.showProjects(Collections.singletonList(firstProject));
+        projectsActivity.onItemLongClicked(0);
+        MenuItem deleteItem = projectsActivity.actionMode.getMenu().findItem(R.id.menu_remove);
+        //then
+        assertThat(deleteItem).isNotNull();
+    }
+
+    @Test
+    public void shouldCallPresenterWhileRemovingItems() {
+        //given
+        ExpenseProject project = new ExpenseProject("First project");
+        Map<Integer, ExpenseProject> expectedArgument = new HashMap<>();
+        expectedArgument.put(0, project);
+        //when
+        projectsActivity.showProjects(Collections.singletonList(project));
+        projectsActivity.onItemLongClicked(0);
+        MenuItem deleteItem = projectsActivity.actionMode.getMenu().findItem(R.id.menu_remove);
+        projectsActivity.onActionItemClicked(projectsActivity.actionMode, deleteItem);
+        //then
+        verify(presenterModuleMock.getProjectsPresenter()).removeProjects(expectedArgument);
+    }
+
+    @Test
+    public void shouldRemoveExpensesFromView() {
+        //given
+        int itemPosition = 0;
+        RecyclerView recyclerView = projectsActivity.projectsRecyclerView;
+        ProjectAdapter adapter = (ProjectAdapter) recyclerView.getAdapter();
+        Set<Integer> positions = new HashSet<>();
+        positions.add(itemPosition);
+        ExpenseProject project = new ExpenseProject("First project");
+        //when
+        projectsActivity.showProjects(Collections.singletonList(project));
+        projectsActivity.onItemLongClicked(0);
+        projectsActivity.removeProjects(positions);
+        //then
+        assertThat(adapter.getSelectedItemCount()).isEqualTo(0);
+        assertThat(adapter.getSelectedItems()).isEmpty();
+        assertThat(adapter.getItemCount()).isEqualTo(0);
+        assertThat(adapter.getItems()).isEmpty();
     }
 }

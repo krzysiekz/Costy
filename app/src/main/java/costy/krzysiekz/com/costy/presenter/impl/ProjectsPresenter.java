@@ -1,6 +1,10 @@
 package costy.krzysiekz.com.costy.presenter.impl;
 
 
+import com.krzysiekz.costy.model.ExpenseProject;
+
+import java.util.Map;
+
 import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
 import costy.krzysiekz.com.costy.presenter.Presenter;
 import costy.krzysiekz.com.costy.view.ProjectsView;
@@ -31,5 +35,10 @@ public class ProjectsPresenter implements Presenter<ProjectsView> {
 
     ProjectsView getProjectsView() {
         return projectsView;
+    }
+
+    public void removeProjects(Map<Integer, ExpenseProject> projects) {
+        projectsRepository.removeProjects(projects.values());
+        projectsView.removeProjects(projects.keySet());
     }
 }

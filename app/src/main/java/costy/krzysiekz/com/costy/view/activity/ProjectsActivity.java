@@ -4,14 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.krzysiekz.costy.model.ExpenseProject;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -21,14 +26,15 @@ import costy.krzysiekz.com.costy.CostyApplication;
 import costy.krzysiekz.com.costy.R;
 import costy.krzysiekz.com.costy.presenter.impl.ProjectsPresenter;
 import costy.krzysiekz.com.costy.view.ProjectsView;
+import costy.krzysiekz.com.costy.view.activity.adapter.ClickListener;
 import costy.krzysiekz.com.costy.view.activity.adapter.ProjectAdapter;
-import costy.krzysiekz.com.costy.view.activity.adapter.ProjectAdapterListener;
 import costy.krzysiekz.com.costy.view.activity.dialog.AddProjectDialogFragment;
 import costy.krzysiekz.com.costy.view.activity.dialog.AddProjectDialogListener;
 
 public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
-        AddProjectDialogListener, ProjectAdapterListener {
+        AddProjectDialogListener, ClickListener, ActionMode.Callback {
 
+    ActionMode actionMode;
     ProjectsPresenter presenter;
 
     @BindView(R.id.add_project_button)
@@ -86,9 +92,75 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
     }
 
     @Override
-    public void onProjectSelected(ExpenseProject expenseProject) {
-        Intent intent = new Intent(this, SelectedProjectActivity.class);
-        intent.putExtra(SelectedProjectActivity.PROJECT_NAME, expenseProject.getName());
-        startActivity(intent);
+    public void removeProjects(Set<Integer> positions) {
+        ProjectAdapter adapter = (ProjectAdapter) projectsRecyclerView.getAdapter();
+        adapter.removeItems(new ArrayList<>(positions));
+        actionMode.finish();
+    }
+
+    @Override
+    public void onItemClicked(int position) {
+        if (actionMode != null) {
+            toggleSelection(position);
+        } else {
+            ProjectAdapter adapter = (ProjectAdapter) projectsRecyclerView.getAdapter();
+            Intent intent = new Intent(this, SelectedProjectActivity.class);
+            intent.putExtra(SelectedProjectActivity.PROJECT_NAME,
+                    adapter.getItems().get(position).getName());
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public boolean onItemLongClicked(int position) {
+        if (actionMode == null) {
+            actionMode = startSupportActionMode(this);
+        }
+
+        toggleSelection(position);
+        return true;
+    }
+
+    private void toggleSelection(int position) {
+        ProjectAdapter adapter = (ProjectAdapter) projectsRecyclerView.getAdapter();
+        adapter.toggleSelection(position);
+        int count = adapter.getSelectedItemCount();
+
+        if (count == 0) {
+            actionMode.finish();
+        } else {
+            actionMode.setTitle(String.valueOf(count));
+            actionMode.invalidate();
+        }
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        mode.getMenuInflater().inflate(R.menu.selected_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        ProjectAdapter adapter = (ProjectAdapter) projectsRecyclerView.getAdapter();
+        switch (item.getItemId()) {
+            case R.id.menu_remove:
+                presenter.removeProjects(adapter.getSelectedProjects());
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+        ProjectAdapter adapter = (ProjectAdapter) projectsRecyclerView.getAdapter();
+        adapter.clearSelection();
+        actionMode = null;
     }
 }

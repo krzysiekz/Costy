@@ -88,7 +88,7 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
     @Override
     public void showProjects(List<ExpenseProject> expenseProjects) {
         ProjectAdapter adapter = (ProjectAdapter) projectsRecyclerView.getAdapter();
-        adapter.setProjects(expenseProjects);
+        adapter.setItems(expenseProjects);
         adapter.notifyDataSetChanged();
     }
 
@@ -151,7 +151,7 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
         ProjectAdapter adapter = (ProjectAdapter) projectsRecyclerView.getAdapter();
         switch (item.getItemId()) {
             case R.id.menu_remove:
-                presenter.removeProjects(adapter.getSelectedProjects());
+                presenter.removeProjects(adapter.getSelectedItemObjects());
                 return true;
             default:
                 return false;

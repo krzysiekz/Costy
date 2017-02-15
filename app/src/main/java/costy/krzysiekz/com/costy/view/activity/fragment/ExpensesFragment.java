@@ -83,7 +83,7 @@ public class ExpensesFragment extends Fragment
     @Override
     public void showExpenses(List<UserExpense> expenses) {
         ExpensesAdapter adapter = (ExpensesAdapter) expensesRecyclerView.getAdapter();
-        adapter.setExpenses(expenses);
+        adapter.setItems(expenses);
         adapter.notifyDataSetChanged();
     }
 
@@ -152,7 +152,7 @@ public class ExpensesFragment extends Fragment
         ExpensesAdapter adapter = (ExpensesAdapter) expensesRecyclerView.getAdapter();
         switch (item.getItemId()) {
             case R.id.menu_remove:
-                presenter.removeExpenses(projectName, adapter.getSelectedExpenses());
+                presenter.removeExpenses(projectName, adapter.getSelectedItemObjects());
                 return true;
             default:
                 return false;

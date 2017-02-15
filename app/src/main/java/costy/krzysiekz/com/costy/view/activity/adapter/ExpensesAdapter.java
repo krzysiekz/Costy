@@ -10,24 +10,14 @@ import android.widget.TextView;
 import com.krzysiekz.costy.model.User;
 import com.krzysiekz.costy.model.UserExpense;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import costy.krzysiekz.com.costy.R;
-import java8.util.function.Functions;
 import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
 
-public class ExpensesAdapter extends SelectableAdapter<ExpensesAdapter.ViewHolder> {
-
-    private List<UserExpense> userExpenses = new ArrayList<>();
-    private ClickListener listener;
+public class ExpensesAdapter extends SelectableAdapter<ExpensesAdapter.ViewHolder, UserExpense> {
 
     public ExpensesAdapter(ClickListener listener) {
-        super();
-        this.listener = listener;
+        super(listener);
     }
 
     @Override
@@ -40,7 +30,7 @@ public class ExpensesAdapter extends SelectableAdapter<ExpensesAdapter.ViewHolde
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        UserExpense expense = userExpenses.get(position);
+        UserExpense expense = items.get(position);
         holder.expenseDescription.setText(expense.getDescription());
         holder.expenseFrom.setText(expense.getUser().getName());
         String recipients = TextUtils.join(", ", StreamSupport.stream(expense.getReceivers()).
@@ -49,66 +39,6 @@ public class ExpensesAdapter extends SelectableAdapter<ExpensesAdapter.ViewHolde
         holder.expenseAmount.setText(expense.getAmount().toPlainString());
 
         holder.expenseSelectedOverlay.setBackgroundResource(isSelected(position) ? R.color.colorSelected : R.color.colorUnselected);
-    }
-
-    @Override
-    public int getItemCount() {
-        return userExpenses.size();
-    }
-
-    public List<UserExpense> getItems() {
-        return userExpenses;
-    }
-
-    public void setExpenses(List<UserExpense> expenses) {
-        this.userExpenses = new ArrayList<>(expenses);
-    }
-
-    private void removeItem(int position) {
-        userExpenses.remove(position);
-        notifyItemRemoved(position);
-    }
-
-    public void removeItems(List<Integer> positions) {
-        // Reverse-sort the list
-        Collections.sort(positions, (lhs, rhs) -> rhs - lhs);
-
-        // Split the list in ranges
-        while (!positions.isEmpty()) {
-            if (positions.size() == 1) {
-                removeItem(positions.get(0));
-                positions.remove(0);
-            } else {
-                int count = 1;
-                while (positions.size() > count && positions.get(count).equals(positions.get(count - 1) - 1)) {
-                    ++count;
-                }
-
-                if (count == 1) {
-                    removeItem(positions.get(0));
-                } else {
-                    removeRange(positions.get(count - 1), count);
-                }
-
-                for (int i = 0; i < count; ++i) {
-                    positions.remove(0);
-                }
-            }
-        }
-    }
-
-
-    public Map<Integer, UserExpense> getSelectedExpenses() {
-        List<Integer> selectedItems = getSelectedItems();
-        return StreamSupport.stream(selectedItems).
-                collect(Collectors.toMap(Functions.identity(), i -> userExpenses.get(i)));
-    }
-
-    private void removeRange(int positionStart, int itemCount) {
-        for (int i = 0; i < itemCount; ++i) {
-            userExpenses.remove(positionStart);
-        }
-        notifyItemRangeRemoved(positionStart, itemCount);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder

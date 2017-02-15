@@ -230,4 +230,10 @@ public class ProjectsActivityTest {
         assertThat(adapter.getItemCount()).isEqualTo(0);
         assertThat(adapter.getItems()).isEmpty();
     }
+
+    @Test
+    public void shouldLoadProjectsUponActivityStart() {
+        //then
+        verify(presenterModuleMock.getProjectsPresenter()).loadProjects();
+    }
 }

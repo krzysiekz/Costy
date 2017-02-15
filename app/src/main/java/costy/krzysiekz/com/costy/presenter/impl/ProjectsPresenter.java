@@ -41,4 +41,8 @@ public class ProjectsPresenter implements Presenter<ProjectsView> {
         projectsRepository.removeProjects(projects.values());
         projectsView.removeProjects(projects.keySet());
     }
+
+    public void loadProjects() {
+        projectsView.showProjects(projectsRepository.getAllProjects());
+    }
 }

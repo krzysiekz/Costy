@@ -75,4 +75,16 @@ public class ProjectsPresenterTest {
         assertThat(repository.getAllProjects()).isEmpty();
         verify(projectsView).removeProjects(new HashSet<>(Collections.singletonList(position)));
     }
+
+    @Test
+    public void shouldLoadProjectsAndPassToView() {
+        //given
+        ExpenseProject expenseProject = new ExpenseProject("Some project");
+        //when
+        repository.addProject("Some project");
+        presenter.attachView(projectsView);
+        presenter.loadProjects();
+        //then
+        verify(projectsView).showProjects(Collections.singletonList(expenseProject));
+    }
 }

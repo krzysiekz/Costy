@@ -55,6 +55,7 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
         setupProjectsRecycleView();
 
         addProjectButton.setOnClickListener(__ -> showAddProjectDialog());
+        presenter.loadProjects();
     }
 
     private void showAddProjectDialog() {

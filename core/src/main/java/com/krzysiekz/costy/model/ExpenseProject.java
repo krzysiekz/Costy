@@ -69,4 +69,24 @@ public class ExpenseProject {
     public void removeExpenses(Collection<UserExpense> selectedExpenses) {
         this.expenses.removeAll(selectedExpenses);
     }
+
+    public void removeUsers(Collection<User> users) {
+        this.users.removeAll(users);
+    }
+
+    public boolean areUsersUsedInExpenses(Collection<User> users) {
+        for (User user : users) {
+            if (isUserUsedInExpenses(user)) return true;
+        }
+        return false;
+    }
+
+    private boolean isUserUsedInExpenses(User user) {
+        for (UserExpense expense : expenses) {
+            if (expense.isUserUsed(user)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

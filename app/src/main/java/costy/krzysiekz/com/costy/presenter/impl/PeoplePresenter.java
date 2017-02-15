@@ -4,6 +4,7 @@ import com.krzysiekz.costy.model.ExpenseProject;
 import com.krzysiekz.costy.model.User;
 
 import java.util.List;
+import java.util.Map;
 
 import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
 import costy.krzysiekz.com.costy.presenter.Presenter;
@@ -38,5 +39,16 @@ public class PeoplePresenter implements Presenter<PeopleView> {
         project.addUser(new User(personName));
         this.repository.updateProject(project);
         view.showPeople(project.getUsers());
+    }
+
+    public void removeUsers(String projectName, Map<Integer, User> selectedUsers) {
+        ExpenseProject project = this.repository.getProject(projectName);
+        if (project.areUsersUsedInExpenses(selectedUsers.values())) {
+            view.showPeopleUsedInExpensesError();
+        } else {
+            project.removeUsers(selectedUsers.values());
+            repository.updateProject(project);
+            view.removePeople(selectedUsers.keySet());
+        }
     }
 }

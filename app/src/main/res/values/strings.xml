@@ -7,6 +7,7 @@
     <string name="confirm_project_name">OK</string>
     <string name="wrong_project_name">Wrong project name!</string>
     <string name="wrong_person_name">Wrong person name!</string>
+    <string name="cannot_delete_users_error">You cannot remove users that are used in expenses!</string>
     <string name="title_activity_expenses">ExpensesActivity</string>
 
     <string name="sample_project_name">Project Name</string>

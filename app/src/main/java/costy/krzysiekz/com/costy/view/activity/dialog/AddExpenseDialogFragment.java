@@ -28,6 +28,8 @@ import java8.util.stream.StreamSupport;
 public class AddExpenseDialogFragment extends DialogFragment {
 
     public static final String TAG = "ADD_PERSON_DIALOG";
+    public static final String STATE_USERS = "STATE_USERS";
+
     private AddExpenseDialogListener listener;
     private List<User> users;
 
@@ -38,6 +40,10 @@ public class AddExpenseDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View inflate = inflater.inflate(R.layout.dialog_add_expense, null);
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(STATE_USERS)) {
+            users = getUsersState(savedInstanceState);
+        }
 
         List<String> userNames = StreamSupport.stream(users).map(User::getName).collect(Collectors.toList());
 
@@ -55,6 +61,17 @@ public class AddExpenseDialogFragment extends DialogFragment {
 
 
         return dialog;
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<User> getUsersState(Bundle savedInstanceState) {
+        return (List<User>) savedInstanceState.getSerializable(STATE_USERS);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(STATE_USERS, new ArrayList<>(users));
+        super.onSaveInstanceState(outState);
     }
 
     private void positiveButtonClicked(Dialog dialog) {

@@ -70,6 +70,15 @@ public class ExpensesFragment extends Fragment
         presenter.loadProjectExpenses(projectName);
 
         addExpenseButton.setOnClickListener(__ -> presenter.showAddExpenseDialog(projectName));
+
+        if (savedInstanceState != null) {
+            AddExpenseDialogFragment dialogFragment = (AddExpenseDialogFragment) getFragmentManager().
+                    findFragmentByTag(AddExpenseDialogFragment.TAG);
+            if (dialogFragment != null) {
+                dialogFragment.setListener(this);
+            }
+        }
+
         return view;
     }
 

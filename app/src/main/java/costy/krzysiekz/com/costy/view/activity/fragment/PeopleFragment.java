@@ -66,6 +66,15 @@ public class PeopleFragment extends Fragment
         presenter.loadProjectPeople(projectName);
 
         addPersonButton.setOnClickListener(__ -> showAddPersonDialog());
+
+        if (savedInstanceState != null) {
+            AddPersonDialogFragment dialogFragment = (AddPersonDialogFragment) getFragmentManager().
+                    findFragmentByTag(AddPersonDialogFragment.TAG);
+            if (dialogFragment != null) {
+                dialogFragment.setListener(this);
+            }
+        }
+
         return view;
     }
 

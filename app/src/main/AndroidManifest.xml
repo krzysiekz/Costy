@@ -11,7 +11,6 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".view.activity.ProjectsActivity"
-            android:label="@string/title_activity_projects"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,7 +20,6 @@
         </activity>
         <activity
             android:name=".view.activity.SelectedProjectActivity"
-            android:label="@string/title_activity_expenses"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

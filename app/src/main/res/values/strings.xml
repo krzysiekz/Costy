@@ -1,11 +1,14 @@
 <resources>
     <string name="app_name">Costy</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_projects">ProjectsActivity</string>
+
+    <string name="projects_activity_title">Add/Select Project</string>
     <string name="project_name_hint">Type a project name</string>
+    <string name="wrong_project_name">Wrong project name!</string>
+
+    <string name="action_settings">Settings</string>
     <string name="person_name_hint">Type a person name</string>
     <string name="confirm_project_name">OK</string>
-    <string name="wrong_project_name">Wrong project name!</string>
+
     <string name="wrong_person_name">Wrong person name!</string>
     <string name="cannot_delete_users_error">You cannot remove users that are used in expenses!</string>
     <string name="title_activity_expenses">ExpensesActivity</string>
@@ -37,4 +40,5 @@
     <string name="add_expense_provide_description_error">"Provide description!"</string>
     <string name="add_expense_select_receivers_error">"Select receivers!"</string>
     <string name="delete_item">Delete</string>
+
 </resources>

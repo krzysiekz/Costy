@@ -13,28 +13,28 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/container_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:local="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/selected_project_toolbar"
+        <LinearLayout
+            android:id="@+id/container_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            local:theme="@style/AppTheme.AppBarOverlay"
-            local:popupTheme="@style/AppTheme.PopupOverlay" />
-    </LinearLayout>
+            android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/selected_project_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+            <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:local="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/selected_project_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                android:minHeight="?attr/actionBarSize"
+                app:titleTextAppearance="@style/Toolbar.TitleText"
+                local:popupTheme="@style/AppTheme.PopupOverlay"
+                local:theme="@style/AppTheme.AppBarOverlay" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/selected_project_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 

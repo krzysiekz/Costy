@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import javax.inject.Inject;
 
@@ -35,6 +36,9 @@ public class SelectedProjectActivity extends AppCompatActivity implements
     @BindView(R.id.selected_project_toolbar)
     Toolbar toolbar;
 
+    @BindView(R.id.selected_project_nav_view)
+    NavigationView navigationView;
+
     private String projectName;
 
     SelectedProjectPresenter presenter;
@@ -51,6 +55,7 @@ public class SelectedProjectActivity extends AppCompatActivity implements
 
         projectName = getIntent().getStringExtra(PROJECT_NAME);
 
+
         setInitialFragment();
     }
 
@@ -62,7 +67,11 @@ public class SelectedProjectActivity extends AppCompatActivity implements
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.selected_project_nav_view);
+        navigationView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            TextView projectNameTextView = (TextView) v.findViewById(R.id.nav_header_project_name);
+            projectNameTextView.setText(projectName);
+        });
+
         navigationView.setNavigationItemSelectedListener(this);
     }
 

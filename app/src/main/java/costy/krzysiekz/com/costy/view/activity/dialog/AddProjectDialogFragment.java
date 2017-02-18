@@ -33,6 +33,7 @@ public class AddProjectDialogFragment extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         builder.setView(inflater.inflate(R.layout.dialog_add_project, null))
                 .setPositiveButton(R.string.confirm_project_name, (dialog, id) -> positiveButtonClicked((Dialog) dialog));
+        builder.setNegativeButton(android.R.string.cancel, null);
         return builder.create();
     }
 

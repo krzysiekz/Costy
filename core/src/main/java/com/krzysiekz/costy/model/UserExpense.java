@@ -68,6 +68,6 @@ public class UserExpense {
     }
 
     boolean isUserUsed(User user) {
-        return user.equals(user) || receivers.contains(user);
+        return this.user.equals(user) || receivers.contains(user);
     }
 }

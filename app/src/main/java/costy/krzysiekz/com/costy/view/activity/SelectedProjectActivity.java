@@ -29,6 +29,7 @@ public class SelectedProjectActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
 
     public static final String PROJECT_NAME = "PROJECT_NAME";
+    private static final String STATE_FRAGMENT = "STATE_FRAGMENT";
 
     @BindView(R.id.selected_project_nav_drawer_layout)
     DrawerLayout drawerLayout;
@@ -40,6 +41,7 @@ public class SelectedProjectActivity extends AppCompatActivity implements
     NavigationView navigationView;
 
     private String projectName;
+    private int currentFragment;
 
     SelectedProjectPresenter presenter;
 
@@ -55,8 +57,12 @@ public class SelectedProjectActivity extends AppCompatActivity implements
 
         projectName = getIntent().getStringExtra(PROJECT_NAME);
 
-
-        setInitialFragment();
+        if (savedInstanceState != null && savedInstanceState.containsKey(STATE_FRAGMENT)) {
+            MenuItem item = navigationView.getMenu().findItem(savedInstanceState.getInt(STATE_FRAGMENT));
+            onNavigationItemSelected(item);
+        } else {
+            setInitialFragment();
+        }
     }
 
     private void setUpNavigationDrawer() {
@@ -69,7 +75,9 @@ public class SelectedProjectActivity extends AppCompatActivity implements
 
         navigationView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
             TextView projectNameTextView = (TextView) v.findViewById(R.id.nav_header_project_name);
-            projectNameTextView.setText(projectName);
+            if (projectNameTextView != null) {
+                projectNameTextView.setText(projectName);
+            }
         });
 
         navigationView.setNavigationItemSelectedListener(this);
@@ -79,9 +87,11 @@ public class SelectedProjectActivity extends AppCompatActivity implements
         if (presenter.checkIfPeopleAdded(projectName)) {
             showFragment(new ExpensesFragment());
             setTitle(R.string.nav_drawer_option_expenses);
+            currentFragment = R.id.nav_expenses;
         } else {
             showFragment(new PeopleFragment());
             setTitle(R.string.nav_drawer_option_people);
+            currentFragment = R.id.nav_people;
         }
     }
 
@@ -108,6 +118,7 @@ public class SelectedProjectActivity extends AppCompatActivity implements
             item.setChecked(true);
             setTitle(item.getTitle());
             drawerLayout.closeDrawers();
+            currentFragment = id;
             return true;
         } else {
             return false;
@@ -130,6 +141,12 @@ public class SelectedProjectActivity extends AppCompatActivity implements
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(STATE_FRAGMENT, currentFragment);
+        super.onSaveInstanceState(outState);
     }
 
     @Inject

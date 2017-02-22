@@ -9,6 +9,8 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.widget.EditText;
 
+import com.krzysiekz.costy.model.Currency;
+
 import costy.krzysiekz.com.costy.R;
 import costy.krzysiekz.com.costy.view.activity.ProjectsActivity;
 
@@ -40,7 +42,10 @@ public class AddProjectDialogFragment extends DialogFragment {
     private void positiveButtonClicked(Dialog dialog) {
         EditText projectNameText = (EditText) dialog.findViewById(R.id.project_name);
         if (projectNameText.length() > 0) {
-            addProjectDialogListener.onProjectNameConfirmed((projectNameText).getText().toString());
+            //TODO implement adding default currency
+            Currency defaultCurrency = null;
+            addProjectDialogListener.
+                    onProjectNameConfirmed((projectNameText).getText().toString(), defaultCurrency);
         } else {
             addProjectDialogListener.showWrongNameError();
         }

@@ -1,6 +1,7 @@
 package costy.krzysiekz.com.costy.presenter.impl;
 
 
+import com.krzysiekz.costy.model.Currency;
 import com.krzysiekz.costy.model.ExpenseProject;
 import com.krzysiekz.costy.model.User;
 import com.krzysiekz.costy.model.UserExpense;
@@ -27,6 +28,7 @@ public class PeoplePresenterTest {
 
     private static final String PROJECT_NAME = "Some project";
     private static final String USER_NAME = "Kate";
+    private static final String DEFAULT_CURRENCY = "EUR";
 
     private PeopleView peopleView;
     private PeoplePresenter presenter;
@@ -43,7 +45,8 @@ public class PeoplePresenterTest {
     @Test
     public void shouldCallRepositoryWhenAddingPerson() {
         //given
-        ExpenseProject expenseProject = new ExpenseProject(PROJECT_NAME);
+        Currency defaultCurrency = new Currency(DEFAULT_CURRENCY);
+        ExpenseProject expenseProject = new ExpenseProject(PROJECT_NAME, defaultCurrency);
         User kate = new User(USER_NAME);
         expenseProject.addUser(kate);
         //when
@@ -58,7 +61,8 @@ public class PeoplePresenterTest {
     public void shouldAddUserAndCallUpdate() {
         //given
         String personName = "John";
-        ExpenseProject expenseProject = new ExpenseProject(PROJECT_NAME);
+        Currency defaultCurrency = new Currency(DEFAULT_CURRENCY);
+        ExpenseProject expenseProject = new ExpenseProject(PROJECT_NAME, defaultCurrency);
         //when
         when(repository.getProject(PROJECT_NAME)).thenReturn(expenseProject);
         presenter.attachView(peopleView);
@@ -73,7 +77,8 @@ public class PeoplePresenterTest {
     public void shouldRemoveUsersFromProjectAndNotifyView() {
         //given
         User user = new User("John");
-        ExpenseProject expenseProject = new ExpenseProject(PROJECT_NAME);
+        Currency defaultCurrency = new Currency(DEFAULT_CURRENCY);
+        ExpenseProject expenseProject = new ExpenseProject(PROJECT_NAME, defaultCurrency);
         expenseProject.addUser(user);
         Map<Integer, User> selected = new HashMap<>();
         selected.put(0, user);
@@ -92,11 +97,14 @@ public class PeoplePresenterTest {
         //given
         User john = new User("John");
         User kate = new User("Kate");
-        ExpenseProject expenseProject = new ExpenseProject(PROJECT_NAME);
+        Currency defaultCurrency = new Currency(DEFAULT_CURRENCY);
+        ExpenseProject expenseProject = new ExpenseProject(PROJECT_NAME, defaultCurrency);
         expenseProject.addUser(john);
         expenseProject.addUser(kate);
-        UserExpense expense =
-                new UserExpense(john, new BigDecimal("10"), Arrays.asList(john, kate), "Description");
+        UserExpense expense = new UserExpense.UserExpenseBuilder().
+                withUser(john).withAmount(new BigDecimal("10")).
+                withReceivers(Arrays.asList(john, kate)).withDescription("Description").
+                withCurrency(defaultCurrency).build();
         expenseProject.addExpense(expense);
         Map<Integer, User> selected = new HashMap<>();
         selected.put(0, kate);

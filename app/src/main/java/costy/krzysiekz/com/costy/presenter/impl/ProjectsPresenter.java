@@ -1,6 +1,7 @@
 package costy.krzysiekz.com.costy.presenter.impl;
 
 
+import com.krzysiekz.costy.model.Currency;
 import com.krzysiekz.costy.model.ExpenseProject;
 
 import java.util.Map;
@@ -28,8 +29,8 @@ public class ProjectsPresenter implements Presenter<ProjectsView> {
         this.projectsView = null;
     }
 
-    public void addProject(String projectName) {
-        projectsRepository.addProject(projectName);
+    public void addProject(String projectName, Currency currency) {
+        projectsRepository.addProject(projectName, currency);
         projectsView.showProjects(projectsRepository.getAllProjects());
     }
 

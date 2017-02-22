@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 
+import com.krzysiekz.costy.model.Currency;
 import com.krzysiekz.costy.model.User;
 import com.krzysiekz.costy.model.UserExpense;
 
@@ -44,6 +45,7 @@ public class ExpensesFragmentTest {
     private PresenterModuleMock presenterModuleMock;
     private ExpensesFragment fragment;
     private static final String PROJECT_NAME = "Some project name";
+    private static final String DEFAULT_CURRENCY = "EUR";
 
     @Before
     public void setUp() throws Exception {
@@ -81,8 +83,15 @@ public class ExpensesFragmentTest {
         //given
         User kate = new User("Kate");
         User john = new User("John");
-        UserExpense firstExpense = new UserExpense(kate, new BigDecimal("10.50"), Arrays.asList(kate, john), "");
-        UserExpense secondExpense = new UserExpense(john, new BigDecimal("13"), Arrays.asList(kate, john), "");
+        Currency currency = new Currency(DEFAULT_CURRENCY);
+        UserExpense firstExpense = new UserExpense.UserExpenseBuilder().
+                withUser(kate).withAmount(new BigDecimal("10.50")).
+                withReceivers(Arrays.asList(john, kate)).withDescription("").
+                withCurrency(currency).build();
+        UserExpense secondExpense = new UserExpense.UserExpenseBuilder().
+                withUser(john).withAmount(new BigDecimal("13")).
+                withReceivers(Arrays.asList(john, kate)).withDescription("").
+                withCurrency(currency).build();
         //when
         RecyclerView recyclerView = fragment.expensesRecyclerView;
         fragment.showExpenses(Arrays.asList(firstExpense, secondExpense));
@@ -118,8 +127,11 @@ public class ExpensesFragmentTest {
         //given
         User john = new User("John");
         User kate = new User("Kate");
-        UserExpense expense = new UserExpense(john, new BigDecimal("10"),
-                Arrays.asList(john, kate), "Sample expense");
+        Currency currency = new Currency(DEFAULT_CURRENCY);
+        UserExpense expense = new UserExpense.UserExpenseBuilder().
+                withUser(john).withAmount(new BigDecimal("10")).
+                withReceivers(Arrays.asList(john, kate)).withDescription("Sample expense").
+                withCurrency(currency).build();
         //when
         fragment.onExpenseConfirmed(expense);
         //then
@@ -133,8 +145,15 @@ public class ExpensesFragmentTest {
         ExpensesAdapter adapter = (ExpensesAdapter) recyclerView.getAdapter();
         User kate = new User("Kate");
         User john = new User("John");
-        UserExpense firstExpense = new UserExpense(kate, new BigDecimal("10.50"), Arrays.asList(kate, john), "");
-        UserExpense secondExpense = new UserExpense(john, new BigDecimal("13"), Arrays.asList(kate, john), "");
+        Currency currency = new Currency(DEFAULT_CURRENCY);
+        UserExpense firstExpense = new UserExpense.UserExpenseBuilder().
+                withUser(kate).withAmount(new BigDecimal("10.50")).
+                withReceivers(Arrays.asList(john, kate)).withDescription("").
+                withCurrency(currency).build();
+        UserExpense secondExpense = new UserExpense.UserExpenseBuilder().
+                withUser(john).withAmount(new BigDecimal("13")).
+                withReceivers(Arrays.asList(john, kate)).withDescription("").
+                withCurrency(currency).build();
         //when
         fragment.showExpenses(Arrays.asList(firstExpense, secondExpense));
         fragment.onItemLongClicked(0);
@@ -151,8 +170,15 @@ public class ExpensesFragmentTest {
         ExpensesAdapter adapter = (ExpensesAdapter) recyclerView.getAdapter();
         User kate = new User("Kate");
         User john = new User("John");
-        UserExpense firstExpense = new UserExpense(kate, new BigDecimal("10.50"), Arrays.asList(kate, john), "");
-        UserExpense secondExpense = new UserExpense(john, new BigDecimal("13"), Arrays.asList(kate, john), "");
+        Currency currency = new Currency(DEFAULT_CURRENCY);
+        UserExpense firstExpense = new UserExpense.UserExpenseBuilder().
+                withUser(kate).withAmount(new BigDecimal("10.50")).
+                withReceivers(Arrays.asList(john, kate)).withDescription("").
+                withCurrency(currency).build();
+        UserExpense secondExpense = new UserExpense.UserExpenseBuilder().
+                withUser(john).withAmount(new BigDecimal("13")).
+                withReceivers(Arrays.asList(john, kate)).withDescription("").
+                withCurrency(currency).build();
         //when
         fragment.showExpenses(Arrays.asList(firstExpense, secondExpense));
         fragment.onItemLongClicked(0);
@@ -169,8 +195,15 @@ public class ExpensesFragmentTest {
         ExpensesAdapter adapter = (ExpensesAdapter) recyclerView.getAdapter();
         User kate = new User("Kate");
         User john = new User("John");
-        UserExpense firstExpense = new UserExpense(kate, new BigDecimal("10.50"), Arrays.asList(kate, john), "");
-        UserExpense secondExpense = new UserExpense(john, new BigDecimal("13"), Arrays.asList(kate, john), "");
+        Currency currency = new Currency(DEFAULT_CURRENCY);
+        UserExpense firstExpense = new UserExpense.UserExpenseBuilder().
+                withUser(kate).withAmount(new BigDecimal("10.50")).
+                withReceivers(Arrays.asList(john, kate)).withDescription("").
+                withCurrency(currency).build();
+        UserExpense secondExpense = new UserExpense.UserExpenseBuilder().
+                withUser(john).withAmount(new BigDecimal("13")).
+                withReceivers(Arrays.asList(john, kate)).withDescription("").
+                withCurrency(currency).build();
         //when
         fragment.showExpenses(Arrays.asList(firstExpense, secondExpense));
         fragment.onItemClicked(1);
@@ -183,7 +216,11 @@ public class ExpensesFragmentTest {
     public void shouldShowDeleteButtonWhenInSelectionMode() {
         //given
         User john = new User("John");
-        UserExpense secondExpense = new UserExpense(john, new BigDecimal("13"), Collections.singletonList(john), "");
+        Currency currency = new Currency(DEFAULT_CURRENCY);
+        UserExpense secondExpense = new UserExpense.UserExpenseBuilder().
+                withUser(john).withAmount(new BigDecimal("13")).
+                withReceivers(Collections.singletonList(john)).withDescription("").
+                withCurrency(currency).build();
         //when
         fragment.showExpenses(Collections.singletonList(secondExpense));
         fragment.onItemLongClicked(0);
@@ -196,7 +233,11 @@ public class ExpensesFragmentTest {
     public void shouldCallPresenterWhileRemovingItems() {
         //given
         User john = new User("John");
-        UserExpense expense = new UserExpense(john, new BigDecimal("13"), Collections.singletonList(john), "");
+        Currency currency = new Currency(DEFAULT_CURRENCY);
+        UserExpense expense = new UserExpense.UserExpenseBuilder().
+                withUser(john).withAmount(new BigDecimal("13")).
+                withReceivers(Collections.singletonList(john)).withDescription("").
+                withCurrency(currency).build();
         Map<Integer, UserExpense> expectedArgument = new HashMap<>();
         expectedArgument.put(0, expense);
         //when
@@ -217,7 +258,11 @@ public class ExpensesFragmentTest {
         Set<Integer> positions = new HashSet<>();
         positions.add(itemPosition);
         User john = new User("John");
-        UserExpense secondExpense = new UserExpense(john, new BigDecimal("13"), Collections.singletonList(john), "");
+        Currency currency = new Currency(DEFAULT_CURRENCY);
+        UserExpense secondExpense = new UserExpense.UserExpenseBuilder().
+                withUser(john).withAmount(new BigDecimal("13")).
+                withReceivers(Collections.singletonList(john)).withDescription("").
+                withCurrency(currency).build();
         //when
         fragment.showExpenses(Collections.singletonList(secondExpense));
         fragment.onItemLongClicked(itemPosition);

@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 
+import com.krzysiekz.costy.model.Currency;
 import com.krzysiekz.costy.model.ExpenseProject;
 
 import org.junit.Before;
@@ -103,17 +104,19 @@ public class ProjectsActivityTest {
     public void shouldCallPresenterWhenProjectNameConfirmed() {
         //given
         String projectName = "Some project";
+        Currency defaultCurrency = new Currency("EUR");
         //when
-        projectsActivity.onProjectNameConfirmed(projectName);
+        projectsActivity.onProjectNameConfirmed(projectName, defaultCurrency);
         //then
-        verify(presenterModuleMock.getProjectsPresenter()).addProject(projectName);
+        verify(presenterModuleMock.getProjectsPresenter()).addProject(projectName, defaultCurrency);
     }
 
     @Test
     public void shouldShowProjects() {
         //given
-        ExpenseProject project1 = new ExpenseProject("Project 1");
-        ExpenseProject project2 = new ExpenseProject("Project 2");
+        Currency defaultCurrency = new Currency("EUR");
+        ExpenseProject project1 = new ExpenseProject("Project 1", defaultCurrency);
+        ExpenseProject project2 = new ExpenseProject("Project 2", defaultCurrency);
         //when
         RecyclerView recyclerView = projectsActivity.projectsRecyclerView;
         projectsActivity.showProjects(Arrays.asList(project1, project2));
@@ -127,7 +130,8 @@ public class ProjectsActivityTest {
     @Test
     public void shouldStartExpensesActivityAfterClickingOnProject() {
         //given
-        ExpenseProject project1 = new ExpenseProject("Project 1");
+        Currency defaultCurrency = new Currency("EUR");
+        ExpenseProject project1 = new ExpenseProject("Project 1", defaultCurrency);
         //when
         projectsActivity.showProjects(Collections.singletonList(project1));
         projectsActivity.projectsRecyclerView.measure(0, 0);
@@ -154,10 +158,11 @@ public class ProjectsActivityTest {
     @Test
     public void longClickShouldStartSelectionModeAndSelectItem() {
         //given
+        Currency defaultCurrency = new Currency("EUR");
         RecyclerView recyclerView = projectsActivity.projectsRecyclerView;
         ProjectAdapter adapter = (ProjectAdapter) recyclerView.getAdapter();
-        ExpenseProject firstProject = new ExpenseProject("First project");
-        ExpenseProject secondProject = new ExpenseProject("Second project");
+        ExpenseProject firstProject = new ExpenseProject("First project", defaultCurrency);
+        ExpenseProject secondProject = new ExpenseProject("Second project", defaultCurrency);
         //when
         projectsActivity.showProjects(Arrays.asList(firstProject, secondProject));
         projectsActivity.onItemLongClicked(1);
@@ -170,10 +175,11 @@ public class ProjectsActivityTest {
     @Test
     public void shortClickShouldSelectItemInSelectionMode() {
         //given
+        Currency defaultCurrency = new Currency("EUR");
         RecyclerView recyclerView = projectsActivity.projectsRecyclerView;
         ProjectAdapter adapter = (ProjectAdapter) recyclerView.getAdapter();
-        ExpenseProject firstProject = new ExpenseProject("First project");
-        ExpenseProject secondProject = new ExpenseProject("Second project");
+        ExpenseProject firstProject = new ExpenseProject("First project", defaultCurrency);
+        ExpenseProject secondProject = new ExpenseProject("Second project", defaultCurrency);
         //when
         projectsActivity.showProjects(Arrays.asList(firstProject, secondProject));
         projectsActivity.onItemLongClicked(0);
@@ -187,7 +193,8 @@ public class ProjectsActivityTest {
     @Test
     public void shouldShowDeleteButtonWhenInSelectionMode() {
         //given
-        ExpenseProject firstProject = new ExpenseProject("First project");
+        Currency defaultCurrency = new Currency("EUR");
+        ExpenseProject firstProject = new ExpenseProject("First project", defaultCurrency);
         //when
         projectsActivity.showProjects(Collections.singletonList(firstProject));
         projectsActivity.onItemLongClicked(0);
@@ -199,7 +206,8 @@ public class ProjectsActivityTest {
     @Test
     public void shouldCallPresenterWhileRemovingItems() {
         //given
-        ExpenseProject project = new ExpenseProject("First project");
+        Currency defaultCurrency = new Currency("EUR");
+        ExpenseProject project = new ExpenseProject("First project", defaultCurrency);
         Map<Integer, ExpenseProject> expectedArgument = new HashMap<>();
         expectedArgument.put(0, project);
         //when
@@ -215,11 +223,12 @@ public class ProjectsActivityTest {
     public void shouldRemoveExpensesFromView() {
         //given
         int itemPosition = 0;
+        Currency defaultCurrency = new Currency("EUR");
         RecyclerView recyclerView = projectsActivity.projectsRecyclerView;
         ProjectAdapter adapter = (ProjectAdapter) recyclerView.getAdapter();
         Set<Integer> positions = new HashSet<>();
         positions.add(itemPosition);
-        ExpenseProject project = new ExpenseProject("First project");
+        ExpenseProject project = new ExpenseProject("First project", defaultCurrency);
         //when
         projectsActivity.showProjects(Collections.singletonList(project));
         projectsActivity.onItemLongClicked(0);

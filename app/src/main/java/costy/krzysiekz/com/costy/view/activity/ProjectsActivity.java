@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.krzysiekz.costy.model.Currency;
 import com.krzysiekz.costy.model.ExpenseProject;
 
 import java.util.ArrayList;
@@ -76,8 +77,8 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
     }
 
     @Override
-    public void onProjectNameConfirmed(String projectName) {
-        presenter.addProject(projectName);
+    public void onProjectNameConfirmed(String projectName, Currency currency) {
+        presenter.addProject(projectName, currency);
     }
 
     @Override

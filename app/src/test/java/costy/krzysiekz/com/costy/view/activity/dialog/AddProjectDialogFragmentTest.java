@@ -65,7 +65,7 @@ public class AddProjectDialogFragmentTest {
         projectNameText.setText(projectName);
         //then
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).performClick();
-        verify(projectsActivityMock).onProjectNameConfirmed(projectName);
+        verify(projectsActivityMock).onProjectNameConfirmed(projectName, null);
     }
 
     @Test

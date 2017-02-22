@@ -1,5 +1,6 @@
 package costy.krzysiekz.com.costy.presenter.impl;
 
+import com.krzysiekz.costy.model.Currency;
 import com.krzysiekz.costy.model.ExpenseProject;
 
 import org.junit.Before;
@@ -52,10 +53,11 @@ public class ProjectsPresenterTest {
     @Test
     public void shouldCallRepositoryWhenAddingProject() {
         //given
-        ExpenseProject expenseProject = new ExpenseProject("Some project");
+        Currency defaultCurrency = new Currency("EUR");
+        ExpenseProject expenseProject = new ExpenseProject("Some project", defaultCurrency);
         //when
         presenter.attachView(projectsView);
-        presenter.addProject("Some project");
+        presenter.addProject("Some project", defaultCurrency);
         //then
         verify(projectsView).showProjects(Collections.singletonList(expenseProject));
     }
@@ -64,12 +66,13 @@ public class ProjectsPresenterTest {
     public void shouldRemoveProjects() {
         //given
         Integer position = 0;
-        ExpenseProject expenseProject = new ExpenseProject("Some project");
+        Currency defaultCurrency = new Currency("EUR");
+        ExpenseProject expenseProject = new ExpenseProject("Some project", defaultCurrency);
         Map<Integer, ExpenseProject> toRemove = new HashMap<>();
         toRemove.put(position, expenseProject);
         //when
         presenter.attachView(projectsView);
-        presenter.addProject("Some project");
+        presenter.addProject("Some project", defaultCurrency);
         presenter.removeProjects(toRemove);
         //then
         assertThat(repository.getAllProjects()).isEmpty();
@@ -79,9 +82,10 @@ public class ProjectsPresenterTest {
     @Test
     public void shouldLoadProjectsAndPassToView() {
         //given
-        ExpenseProject expenseProject = new ExpenseProject("Some project");
+        Currency defaultCurrency = new Currency("EUR");
+        ExpenseProject expenseProject = new ExpenseProject("Some project", defaultCurrency);
         //when
-        repository.addProject("Some project");
+        repository.addProject("Some project", defaultCurrency);
         presenter.attachView(projectsView);
         presenter.loadProjects();
         //then

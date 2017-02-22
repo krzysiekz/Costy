@@ -15,8 +15,9 @@ public class UserExpenseTest {
         //given
         User john = new User("John");
         User kate = new User("Kate");
-        UserExpense expense =
-                new UserExpense(john, new BigDecimal("10"), Arrays.asList(john, kate), "Description");
+        UserExpense expense = new UserExpense.UserExpenseBuilder().
+                withUser(john).withAmount(new BigDecimal("10")).
+                withReceivers(Arrays.asList(john, kate)).withDescription("Description").build();
         //when
         boolean johnResult = expense.isUserUsed(john);
         boolean kateResult = expense.isUserUsed(kate);
@@ -30,8 +31,9 @@ public class UserExpenseTest {
         //given
         User john = new User("John");
         User kate = new User("Kate");
-        UserExpense expense =
-                new UserExpense(john, new BigDecimal("10"), Collections.singletonList(john), "Description");
+        UserExpense expense = new UserExpense.UserExpenseBuilder().
+                withUser(john).withAmount(new BigDecimal("10")).
+                withReceivers(Collections.singletonList(john)).withDescription("Description").build();
         //when
         boolean kateResult = expense.isUserUsed(kate);
         //then

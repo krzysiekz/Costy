@@ -1,5 +1,6 @@
 package com.krzysiekz.costy.service;
 
+import com.krzysiekz.costy.model.Currency;
 import com.krzysiekz.costy.model.ExpenseProject;
 import com.krzysiekz.costy.model.ExpenseReport;
 import com.krzysiekz.costy.model.ReportEntry;
@@ -32,7 +33,7 @@ public class ExpenseCalculatorTest {
     @Before
     public void setUp() throws Exception {
         //given
-        expenseProject = new ExpenseProject("Test Project");
+        expenseProject = new ExpenseProject("Test Project", new Currency("EUR"));
         expenseCalculator = new DefaultExpenseCalculator();
     }
 
@@ -136,6 +137,9 @@ public class ExpenseCalculatorTest {
     private UserExpense createExpense(String userName, int amount, List<String> receivers) {
         User john = new User(userName);
         List<User> userList = receivers.stream().map(User::new).collect(Collectors.toList());
-        return new UserExpense(john, new BigDecimal(amount), userList, "");
+
+        return new UserExpense.UserExpenseBuilder().
+                withUser(john).withAmount(new BigDecimal(amount)).
+                withReceivers(userList).withDescription("").build();
     }
 }

@@ -8,11 +8,13 @@ public class ExpenseProject {
     private List<UserExpense> expenses;
     private String name;
     private List<User> users;
+    private Currency defaultCurrency;
 
-    public ExpenseProject(String projectName) {
+    public ExpenseProject(String projectName, Currency defaultCurrency) {
         this.expenses = new ArrayList<>();
         this.name = projectName;
         this.users = new ArrayList<>();
+        this.defaultCurrency = defaultCurrency;
     }
 
     public void addExpense(UserExpense userExpense) {
@@ -35,6 +37,10 @@ public class ExpenseProject {
         return users;
     }
 
+    public Currency getDefaultCurrency() {
+        return defaultCurrency;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -45,7 +51,8 @@ public class ExpenseProject {
         if (expenses != null ? !expenses.equals(project.expenses) : project.expenses != null)
             return false;
         if (name != null ? !name.equals(project.name) : project.name != null) return false;
-        return users != null ? users.equals(project.users) : project.users == null;
+        if (users != null ? !users.equals(project.users) : project.users != null) return false;
+        return defaultCurrency != null ? defaultCurrency.equals(project.defaultCurrency) : project.defaultCurrency == null;
 
     }
 
@@ -54,6 +61,7 @@ public class ExpenseProject {
         int result = expenses != null ? expenses.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (users != null ? users.hashCode() : 0);
+        result = 31 * result + (defaultCurrency != null ? defaultCurrency.hashCode() : 0);
         return result;
     }
 
@@ -63,6 +71,7 @@ public class ExpenseProject {
                 "expenses=" + expenses +
                 ", name='" + name + '\'' +
                 ", users=" + users +
+                ", defaultCurrency=" + defaultCurrency +
                 '}';
     }
 

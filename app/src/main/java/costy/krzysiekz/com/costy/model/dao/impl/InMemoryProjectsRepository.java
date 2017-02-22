@@ -1,5 +1,6 @@
 package costy.krzysiekz.com.costy.model.dao.impl;
 
+import com.krzysiekz.costy.model.Currency;
 import com.krzysiekz.costy.model.ExpenseProject;
 
 import java.util.ArrayList;
@@ -13,8 +14,8 @@ public class InMemoryProjectsRepository implements ProjectsRepository {
     private List<ExpenseProject> projects = new ArrayList<>();
 
     @Override
-    public void addProject(String projectName) {
-        projects.add(new ExpenseProject(projectName));
+    public void addProject(String projectName, Currency currency) {
+        projects.add(new ExpenseProject(projectName, currency));
     }
 
     @Override

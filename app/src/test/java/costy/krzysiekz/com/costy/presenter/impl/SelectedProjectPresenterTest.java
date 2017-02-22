@@ -1,5 +1,6 @@
 package costy.krzysiekz.com.costy.presenter.impl;
 
+import com.krzysiekz.costy.model.Currency;
 import com.krzysiekz.costy.model.ExpenseProject;
 import com.krzysiekz.costy.model.User;
 
@@ -15,6 +16,7 @@ import static org.mockito.Mockito.when;
 public class SelectedProjectPresenterTest {
 
     private static final String PROJECT_NAME = "Project Name";
+    private static final String CURRENCY = "EUR";
 
     private ProjectsRepository repository;
     private ExpenseProject project;
@@ -23,7 +25,7 @@ public class SelectedProjectPresenterTest {
     @Before
     public void setUp() throws Exception {
         repository = mock(ProjectsRepository.class);
-        project = new ExpenseProject(PROJECT_NAME);
+        project = new ExpenseProject(PROJECT_NAME, new Currency(CURRENCY));
         presenter = new SelectedProjectPresenter(repository);
     }
 

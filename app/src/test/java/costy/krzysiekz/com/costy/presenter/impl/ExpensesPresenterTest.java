@@ -2,6 +2,7 @@ package costy.krzysiekz.com.costy.presenter.impl;
 
 import android.support.annotation.NonNull;
 
+import com.krzysiekz.costy.model.Currency;
 import com.krzysiekz.costy.model.ExpenseProject;
 import com.krzysiekz.costy.model.User;
 import com.krzysiekz.costy.model.UserExpense;
@@ -27,6 +28,7 @@ import static org.mockito.Mockito.when;
 public class ExpensesPresenterTest {
 
     private static final String PROJECT_NAME = "Project name";
+    private static final String DEFAULT_CURRENCY = "EUR";
 
     private ExpensesView expensesView;
     private ProjectsRepository repository;
@@ -70,9 +72,12 @@ public class ExpensesPresenterTest {
         //given
         User john = new User("John");
         User kate = new User("Kate");
-        UserExpense expense = new UserExpense(john, new BigDecimal("10"),
-                Arrays.asList(john, kate), "Sample expense");
-        ExpenseProject project = new ExpenseProject(PROJECT_NAME);
+        Currency defaultCurrency = new Currency(DEFAULT_CURRENCY);
+        UserExpense expense = new UserExpense.UserExpenseBuilder().
+                withUser(john).withAmount(new BigDecimal("10")).
+                withReceivers(Arrays.asList(john, kate)).withDescription("Sample expense").
+                withCurrency(defaultCurrency).build();
+        ExpenseProject project = new ExpenseProject(PROJECT_NAME, defaultCurrency);
         //when
         when(repository.getProject(PROJECT_NAME)).thenReturn(project);
         presenter.attachView(expensesView);
@@ -88,9 +93,12 @@ public class ExpensesPresenterTest {
         //given
         User john = new User("John");
         User kate = new User("Kate");
-        UserExpense expense = new UserExpense(john, new BigDecimal("10"),
-                Arrays.asList(john, kate), "Sample expense");
-        ExpenseProject project = new ExpenseProject(PROJECT_NAME);
+        Currency defaultCurrency = new Currency(DEFAULT_CURRENCY);
+        UserExpense expense = new UserExpense.UserExpenseBuilder().
+                withUser(john).withAmount(new BigDecimal("10")).
+                withReceivers(Arrays.asList(john, kate)).withDescription("Sample expense").
+                withCurrency(defaultCurrency).build();
+        ExpenseProject project = new ExpenseProject(PROJECT_NAME, defaultCurrency);
         project.addExpense(expense);
         Map<Integer, UserExpense> selected = new HashMap<>();
         selected.put(0, expense);
@@ -106,7 +114,8 @@ public class ExpensesPresenterTest {
 
     @NonNull
     private ExpenseProject createExpenseProject() {
-        ExpenseProject project = new ExpenseProject(PROJECT_NAME);
+        Currency defaultCurrency = new Currency(DEFAULT_CURRENCY);
+        ExpenseProject project = new ExpenseProject(PROJECT_NAME, defaultCurrency);
 
         UserExpense userExpense = mock(UserExpense.class);
         UserExpense secondUserExpense = mock(UserExpense.class);

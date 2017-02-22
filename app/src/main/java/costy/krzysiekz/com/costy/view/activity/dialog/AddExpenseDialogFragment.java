@@ -91,8 +91,12 @@ public class AddExpenseDialogFragment extends DialogFragment {
         } else {
             User payer = users.get(payerSpinner.getSelectedItemPosition());
 
-            UserExpense expense = new UserExpense(payer, new BigDecimal(amount.getText().toString()),
-                    receivers, description.getText().toString());
+            UserExpense expense = new UserExpense.UserExpenseBuilder().
+                    withUser(payer).
+                    withAmount(new BigDecimal(amount.getText().toString())).
+                    withReceivers(receivers).
+                    withDescription(description.getText().toString()).build();
+
             listener.onExpenseConfirmed(expense);
             dialog.dismiss();
         }

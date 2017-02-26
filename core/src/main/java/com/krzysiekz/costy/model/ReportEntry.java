@@ -8,11 +8,13 @@ public class ReportEntry {
     private User sender;
     private User receiver;
     private BigDecimal amount;
+    private Currency currency;
 
-    public ReportEntry(User sender, User receiver, BigDecimal amount) {
-        this.sender = sender;
-        this.receiver = receiver;
-        this.amount = amount;
+    private ReportEntry(Builder builder) {
+        sender = builder.sender;
+        receiver = builder.receiver;
+        setAmount(builder.amount);
+        currency = builder.currency;
     }
 
     public User getSender() {
@@ -25,6 +27,10 @@ public class ReportEntry {
 
     public BigDecimal getAmount() {
         return amount;
+    }
+
+    public Currency getCurrency() {
+        return currency;
     }
 
     public void setAmount(BigDecimal amount) {
@@ -41,7 +47,8 @@ public class ReportEntry {
         if (sender != null ? !sender.equals(entry.sender) : entry.sender != null) return false;
         if (receiver != null ? !receiver.equals(entry.receiver) : entry.receiver != null)
             return false;
-        return amount != null ? amount.equals(entry.amount) : entry.amount == null;
+        if (amount != null ? !amount.equals(entry.amount) : entry.amount != null) return false;
+        return currency != null ? currency.equals(entry.currency) : entry.currency == null;
 
     }
 
@@ -50,12 +57,47 @@ public class ReportEntry {
         int result = sender != null ? sender.hashCode() : 0;
         result = 31 * result + (receiver != null ? receiver.hashCode() : 0);
         result = 31 * result + (amount != null ? amount.hashCode() : 0);
+        result = 31 * result + (currency != null ? currency.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return new MessageFormat("{0} -> {1}: {2}", Locale.US).
-                format(new Object[]{sender, receiver, amount});
+        return new MessageFormat("{0} -> {1}: {2} {3}", Locale.US).
+                format(new Object[]{sender, receiver, amount, currency});
+    }
+
+    public static final class Builder {
+        private User sender;
+        private User receiver;
+        private BigDecimal amount;
+        private Currency currency;
+
+        public Builder() {
+        }
+
+        public Builder withSender(User val) {
+            sender = val;
+            return this;
+        }
+
+        public Builder withReceiver(User val) {
+            receiver = val;
+            return this;
+        }
+
+        public Builder withAmount(BigDecimal val) {
+            amount = val;
+            return this;
+        }
+
+        public Builder withCurrency(Currency val) {
+            currency = val;
+            return this;
+        }
+
+        public ReportEntry build() {
+            return new ReportEntry(this);
+        }
     }
 }

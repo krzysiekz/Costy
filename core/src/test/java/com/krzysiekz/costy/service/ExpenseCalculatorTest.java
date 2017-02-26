@@ -29,11 +29,12 @@ public class ExpenseCalculatorTest {
 
     private ExpenseProject expenseProject;
     private ExpenseCalculator expenseCalculator;
+    private Currency defaultCurrency =  new Currency("EUR");
 
     @Before
     public void setUp() throws Exception {
         //given
-        expenseProject = new ExpenseProject("Test Project", new Currency("EUR"));
+        expenseProject = new ExpenseProject("Test Project", defaultCurrency);
         expenseCalculator = new DefaultExpenseCalculator();
     }
 
@@ -64,41 +65,63 @@ public class ExpenseCalculatorTest {
                 reportShouldBeEmptyWhenExpensesAreTheSameForAllUsers(),
                 reportShouldBeEmptyWhenExpensesAreTheSameForAllUsers2(),
                 reportShouldBeValidForMultipleUsers(),
-                reportShouldBeValidWhenUserIsNotPayingForAllOtherUsers()
+                reportShouldBeValidWhenUserIsNotPayingForAllOtherUsers(),
+                reportShouldBeValidForTwoUsersAndTwoCurrencies(),
+                reportShouldBeValidForMultipleUsersAndMultipleCurrencies()
         };
     }
 
     private Object[] reportShouldBeValidWhenUserIsNotPayingForAllOtherUsers() {
         return new Object[]{
                 Arrays.asList(
-                        createExpense("John", 15, Arrays.asList("John", "Kate")),
-                        createExpense("Kate", 30, Arrays.asList("John", "Kate", "Bob")),
-                        createExpense("Bob", 45, Arrays.asList("John", "Kate", "Bob"))
+                        createExpense("John", 15, Arrays.asList("John", "Kate"), defaultCurrency),
+                        createExpense("Kate", 30, Arrays.asList("John", "Kate", "Bob"), defaultCurrency),
+                        createExpense("Bob", 45, Arrays.asList("John", "Kate", "Bob"), defaultCurrency)
                 ),
-                Arrays.asList("John -> Kate: 2.5",
-                        "Kate -> Bob: 5",
-                        "John -> Bob: 15")
+                Arrays.asList("John -> Kate: 2.5 EUR",
+                        "Kate -> Bob: 5 EUR",
+                        "John -> Bob: 15 EUR")
         };
     }
 
     private Object[] reportShouldBeValidForMultipleUsers() {
         return new Object[]{
                 Arrays.asList(
-                        createExpense("John", 9, Arrays.asList("John", "Kate", "Bob")),
-                        createExpense("Kate", 18, Arrays.asList("John", "Kate", "Bob")),
-                        createExpense("Bob", 27, Arrays.asList("John", "Kate", "Bob"))
+                        createExpense("John", 9, Arrays.asList("John", "Kate", "Bob"), defaultCurrency),
+                        createExpense("Kate", 18, Arrays.asList("John", "Kate", "Bob"), defaultCurrency),
+                        createExpense("Bob", 27, Arrays.asList("John", "Kate", "Bob"), defaultCurrency)
                 ),
-                Arrays.asList("John -> Kate: 3",
-                        "Kate -> Bob: 3",
-                        "John -> Bob: 6")
+                Arrays.asList("John -> Kate: 3 EUR",
+                        "Kate -> Bob: 3 EUR",
+                        "John -> Bob: 6 EUR")
+        };
+    }
+
+    private Object[] reportShouldBeValidForMultipleUsersAndMultipleCurrencies() {
+        Currency pln = new Currency("PLN");
+        return new Object[]{
+                Arrays.asList(
+                        createExpense("John", 9, Arrays.asList("John", "Kate", "Bob"), defaultCurrency),
+                        createExpense("Kate", 18, Arrays.asList("John", "Kate", "Bob"), defaultCurrency),
+                        createExpense("Bob", 27, Arrays.asList("John", "Kate", "Bob"), defaultCurrency),
+                        createExpense("John", 9, Arrays.asList("John", "Kate", "Bob"), pln),
+                        createExpense("Kate", 18, Arrays.asList("John", "Kate", "Bob"), pln),
+                        createExpense("Bob", 27, Arrays.asList("John", "Kate", "Bob"), pln)
+                ),
+                Arrays.asList("John -> Kate: 3 EUR",
+                        "Kate -> Bob: 3 EUR",
+                        "John -> Bob: 6 EUR",
+                        "John -> Kate: 3 PLN",
+                        "Kate -> Bob: 3 PLN",
+                        "John -> Bob: 6 PLN")
         };
     }
 
     private Object[] reportShouldBeEmptyWhenExpensesAreTheSameForAllUsers() {
         return new Object[]{
                 Arrays.asList(
-                        createExpense("John", 50, Arrays.asList("John", "Kate")),
-                        createExpense("Kate", 50, Arrays.asList("John", "Kate"))
+                        createExpense("John", 50, Arrays.asList("John", "Kate"), defaultCurrency),
+                        createExpense("Kate", 50, Arrays.asList("John", "Kate"), defaultCurrency)
                 ),
                 new ArrayList<>()
         };
@@ -107,9 +130,9 @@ public class ExpenseCalculatorTest {
     private Object[] reportShouldBeEmptyWhenExpensesAreTheSameForAllUsers2() {
         return new Object[]{
                 Arrays.asList(
-                        createExpense("John", 50, Arrays.asList("John", "Kate", "Bob")),
-                        createExpense("Kate", 50, Arrays.asList("John", "Kate", "Bob")),
-                        createExpense("Bob", 50, Arrays.asList("John", "Kate", "Bob"))
+                        createExpense("John", 50, Arrays.asList("John", "Kate", "Bob"), defaultCurrency),
+                        createExpense("Kate", 50, Arrays.asList("John", "Kate", "Bob"), defaultCurrency),
+                        createExpense("Bob", 50, Arrays.asList("John", "Kate", "Bob"), defaultCurrency)
                 ),
                 new ArrayList<>()
         };
@@ -118,28 +141,40 @@ public class ExpenseCalculatorTest {
     private Object[] reportShouldBeValidForTwoUsers() {
         return new Object[]{
                 Arrays.asList(
-                        createExpense("John", 50, Arrays.asList("John", "Kate")),
-                        createExpense("Kate", 20, Arrays.asList("John", "Kate"))
+                        createExpense("John", 50, Arrays.asList("John", "Kate"), defaultCurrency),
+                        createExpense("Kate", 20, Arrays.asList("John", "Kate"), defaultCurrency)
                 ),
-                Collections.singletonList("Kate -> John: 15")
+                Collections.singletonList("Kate -> John: 15 EUR")
+        };
+    }
+
+    private Object[] reportShouldBeValidForTwoUsersAndTwoCurrencies() {
+        return new Object[]{
+                Arrays.asList(
+                        createExpense("John", 50, Arrays.asList("John", "Kate"), defaultCurrency),
+                        createExpense("Kate", 20, Arrays.asList("John", "Kate"), new Currency("PLN"))
+                ),
+                Arrays.asList("Kate -> John: 25 EUR",
+                        "John -> Kate: 10 PLN")
         };
     }
 
     private Object[] reportForSingleUserShouldBeEmpty() {
         return new Object[]{
                 Collections.singletonList(
-                        createExpense("John", 10, Collections.singletonList("John"))
+                        createExpense("John", 10, Collections.singletonList("John"), defaultCurrency)
                 ),
                 new ArrayList<>()
         };
     }
 
-    private UserExpense createExpense(String userName, int amount, List<String> receivers) {
+    private UserExpense createExpense(String userName, int amount, List<String> receivers,
+                                      Currency currency) {
         User john = new User(userName);
         List<User> userList = receivers.stream().map(User::new).collect(Collectors.toList());
 
         return new UserExpense.UserExpenseBuilder().
                 withUser(john).withAmount(new BigDecimal(amount)).
-                withReceivers(userList).withDescription("").build();
+                withReceivers(userList).withDescription("").withCurrency(currency).build();
     }
 }

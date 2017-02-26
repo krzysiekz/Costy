@@ -45,7 +45,7 @@ public class ReportPresenterTest {
     @Test
     public void shouldCallViewWithProperObjectsWhenLoadingProject() {
         //given
-        String expectedReportEntry = "Kate -> John: 20";
+        String expectedReportEntry = "Kate -> John: 20 EUR";
         ExpenseProject project = createExpenseProject();
         ExpenseCalculator calculator = new DefaultExpenseCalculator();
         ReportPresenter presenter = new ReportPresenter(repository, calculator);

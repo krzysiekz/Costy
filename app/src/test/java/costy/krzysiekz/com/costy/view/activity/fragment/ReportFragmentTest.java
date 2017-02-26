@@ -3,6 +3,7 @@ package costy.krzysiekz.com.costy.view.activity.fragment;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
+import com.krzysiekz.costy.model.Currency;
 import com.krzysiekz.costy.model.ReportEntry;
 import com.krzysiekz.costy.model.User;
 
@@ -77,7 +78,11 @@ public class ReportFragmentTest {
         //given
         User kate = new User("Kate");
         User john = new User("John");
-        ReportEntry entry = new ReportEntry(kate, john, new BigDecimal("10"));
+        ReportEntry entry = new ReportEntry.Builder().
+                withSender(kate).
+                withReceiver(john).
+                withAmount(new BigDecimal("10")).
+                withCurrency(new Currency("EUR")).build();
         //when
         RecyclerView recyclerView = fragment.reportEntriesRecyclerView;
         fragment.showReportEntries(Collections.singletonList(entry));

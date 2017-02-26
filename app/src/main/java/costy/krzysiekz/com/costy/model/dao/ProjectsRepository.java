@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface ProjectsRepository {
-    void addProject(String projectName, Currency currency);
+    void addProject(ExpenseProject project);
 
     List<ExpenseProject> getAllProjects();
 
@@ -17,4 +17,6 @@ public interface ProjectsRepository {
 
 
     void removeProjects(Collection<ExpenseProject> projects);
+
+    List<Currency> getAllCurrencies();
 }

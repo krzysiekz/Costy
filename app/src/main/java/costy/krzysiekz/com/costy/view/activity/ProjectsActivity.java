@@ -55,12 +55,14 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
         presenter.attachView(this);
         setupProjectsRecycleView();
 
-        addProjectButton.setOnClickListener(__ -> showAddProjectDialog());
+        addProjectButton.setOnClickListener(__ -> presenter.showAddProjectDialog());
         presenter.loadProjects();
     }
 
-    private void showAddProjectDialog() {
+    @Override
+    public void showAddProjectDialog(List<Currency> currencies) {
         AddProjectDialogFragment dialogFragment = new AddProjectDialogFragment();
+        dialogFragment.setCurrencies(currencies);
         dialogFragment.show(getSupportFragmentManager(), AddProjectDialogFragment.TAG);
     }
 
@@ -77,8 +79,8 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
     }
 
     @Override
-    public void onProjectNameConfirmed(String projectName, Currency currency) {
-        presenter.addProject(projectName, currency);
+    public void onProjectConfirmed(ExpenseProject project) {
+        presenter.addProject(project);
     }
 
     @Override

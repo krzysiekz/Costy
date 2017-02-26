@@ -12,10 +12,16 @@ import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
 public class InMemoryProjectsRepository implements ProjectsRepository {
 
     private List<ExpenseProject> projects = new ArrayList<>();
+    private List<Currency> supportedCurrencies = new ArrayList<>();
+
+    public InMemoryProjectsRepository() {
+        supportedCurrencies.add(new Currency("EUR"));
+        supportedCurrencies.add(new Currency("PLN"));
+    }
 
     @Override
-    public void addProject(String projectName, Currency currency) {
-        projects.add(new ExpenseProject(projectName, currency));
+    public void addProject(ExpenseProject project) {
+        projects.add(project);
     }
 
     @Override
@@ -41,5 +47,10 @@ public class InMemoryProjectsRepository implements ProjectsRepository {
     @Override
     public void removeProjects(Collection<ExpenseProject> projects) {
         this.projects.removeAll(projects);
+    }
+
+    @Override
+    public List<Currency> getAllCurrencies() {
+        return supportedCurrencies;
     }
 }

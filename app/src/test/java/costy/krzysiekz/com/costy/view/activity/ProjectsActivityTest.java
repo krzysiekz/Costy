@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -90,25 +91,36 @@ public class ProjectsActivityTest {
     }
 
     @Test
-    public void shouldCallDialogFragmentAfterClickingAddProjectButton() {
+    public void shouldCallPresenterAfterClickingAddProjectButton() {
         //when
         projectsActivity.addProjectButton.performClick();
+        //then
+        verify(presenterModuleMock.getProjectsPresenter()).showAddProjectDialog();
+    }
+
+    @Test
+    public void shouldCallDialogFragment() {
+        //when
+        List<Currency> currencies = Arrays.asList(new Currency("EUR"), new Currency("PLN"));
+        projectsActivity.showAddProjectDialog(currencies);
         Fragment fragment = projectsActivity.getSupportFragmentManager().
                 findFragmentByTag(AddProjectDialogFragment.TAG);
         //then
         assertThat(fragment).isNotNull();
         assertThat(fragment).isInstanceOf(AddProjectDialogFragment.class);
+        assertThat(((AddProjectDialogFragment)fragment).getCurrencies()).hasSize(2).containsAll(currencies);
     }
 
     @Test
-    public void shouldCallPresenterWhenProjectNameConfirmed() {
+    public void shouldCallPresenterWhenProjectConfirmed() {
         //given
         String projectName = "Some project";
         Currency defaultCurrency = new Currency("EUR");
+        ExpenseProject project = new ExpenseProject(projectName, defaultCurrency);
         //when
-        projectsActivity.onProjectNameConfirmed(projectName, defaultCurrency);
+        projectsActivity.onProjectConfirmed(project);
         //then
-        verify(presenterModuleMock.getProjectsPresenter()).addProject(projectName, defaultCurrency);
+        verify(presenterModuleMock.getProjectsPresenter()).addProject(project);
     }
 
     @Test

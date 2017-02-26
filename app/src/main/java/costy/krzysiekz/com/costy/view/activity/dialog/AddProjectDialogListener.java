@@ -1,10 +1,10 @@
 package costy.krzysiekz.com.costy.view.activity.dialog;
 
 
-import com.krzysiekz.costy.model.Currency;
+import com.krzysiekz.costy.model.ExpenseProject;
 
 public interface AddProjectDialogListener {
-    void onProjectNameConfirmed(String projectName, Currency currency);
+    void onProjectConfirmed(ExpenseProject project);
 
     void showWrongNameError();
 }

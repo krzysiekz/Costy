@@ -6,9 +6,11 @@ import com.krzysiekz.costy.model.ExpenseProject;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
@@ -57,7 +59,7 @@ public class ProjectsPresenterTest {
         ExpenseProject expenseProject = new ExpenseProject("Some project", defaultCurrency);
         //when
         presenter.attachView(projectsView);
-        presenter.addProject("Some project", defaultCurrency);
+        presenter.addProject(expenseProject);
         //then
         verify(projectsView).showProjects(Collections.singletonList(expenseProject));
     }
@@ -72,7 +74,7 @@ public class ProjectsPresenterTest {
         toRemove.put(position, expenseProject);
         //when
         presenter.attachView(projectsView);
-        presenter.addProject("Some project", defaultCurrency);
+        presenter.addProject(expenseProject);
         presenter.removeProjects(toRemove);
         //then
         assertThat(repository.getAllProjects()).isEmpty();
@@ -85,10 +87,21 @@ public class ProjectsPresenterTest {
         Currency defaultCurrency = new Currency("EUR");
         ExpenseProject expenseProject = new ExpenseProject("Some project", defaultCurrency);
         //when
-        repository.addProject("Some project", defaultCurrency);
+        repository.addProject(expenseProject);
         presenter.attachView(projectsView);
         presenter.loadProjects();
         //then
         verify(projectsView).showProjects(Collections.singletonList(expenseProject));
+    }
+
+    @Test
+    public void shouldGatherCurrenciesAndCallProperMethodOnViewWhenShowingAddProjectDialog() {
+        //given
+        List<Currency> defaultCurrencies = Arrays.asList(new Currency("EUR"), new Currency("PLN"));
+        //when
+        presenter.attachView(projectsView);
+        presenter.showAddProjectDialog();
+        //then
+        verify(projectsView).showAddProjectDialog(defaultCurrencies);
     }
 }

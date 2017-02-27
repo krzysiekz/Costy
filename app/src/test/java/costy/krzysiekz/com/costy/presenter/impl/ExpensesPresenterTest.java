@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
@@ -58,13 +59,16 @@ public class ExpensesPresenterTest {
     public void shouldCallViewWithProperObjectsWhenShowingAddExpenseDialog() {
         //given
         ExpenseProject project = createExpenseProject();
+        List<Currency> currencies = Collections.singletonList(project.getDefaultCurrency());
         //when
         when(repository.getProject(PROJECT_NAME)).thenReturn(project);
+        when(repository.getAllCurrencies()).thenReturn(currencies);
         presenter.attachView(expensesView);
         presenter.showAddExpenseDialog(PROJECT_NAME);
         //then
         verify(repository).getProject(PROJECT_NAME);
-        verify(expensesView).showAddExpenseDialog(project.getUsers());
+        verify(expensesView).showAddExpenseDialog(project.getUsers(), currencies,
+                project.getDefaultCurrency());
     }
 
     @Test

@@ -39,6 +39,16 @@
         android:layout_below="@id/add_expense_dialog_from"
         android:layout_toEndOf="@id/add_expense_from_text_view"/>
 
+    <Spinner
+        android:id="@+id/add_expense_currency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:inputType="text"
+        android:layout_below="@id/add_expense_to_text_view"
+        android:layout_centerInParent="true"
+        android:layout_alignParentEnd="true"/>
+
     <EditText
         android:id="@+id/add_expense_amount"
         android:inputType="numberDecimal"
@@ -47,8 +57,10 @@
         android:layout_margin="15dp"
         android:textSize="15sp"
         android:layout_below="@id/add_expense_to_text_view"
+        android:layout_toStartOf="@id/add_expense_currency"
         android:maxLength="20"
         android:hint="@string/add_expense_amount_hint" />
+
 
     <EditText
         android:id="@+id/add_expense_description"

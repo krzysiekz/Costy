@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.krzysiekz.costy.model.Currency;
 import com.krzysiekz.costy.model.User;
 import com.krzysiekz.costy.model.UserExpense;
 
@@ -102,9 +103,12 @@ public class ExpensesFragment extends Fragment
     }
 
     @Override
-    public void showAddExpenseDialog(List<User> people) {
+    public void showAddExpenseDialog(List<User> people, List<Currency> supportedCurrencies,
+                                     Currency defaultCurrency) {
         AddExpenseDialogFragment dialogFragment = new AddExpenseDialogFragment();
         dialogFragment.setUsers(people);
+        dialogFragment.setCurrencies(supportedCurrencies);
+        dialogFragment.setDefaultCurrency(defaultCurrency);
         dialogFragment.setListener(this);
         dialogFragment.show(getFragmentManager(), AddExpenseDialogFragment.TAG);
     }

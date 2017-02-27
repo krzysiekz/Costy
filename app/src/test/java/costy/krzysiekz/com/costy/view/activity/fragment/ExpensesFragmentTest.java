@@ -278,8 +278,10 @@ public class ExpensesFragmentTest {
     public void shouldShowAddExpenseDialog() {
         //given
         User john = new User("John");
+        Currency defaultCurrency = new Currency("PLN");
         //when
-        fragment.showAddExpenseDialog(Collections.singletonList(john));
+        fragment.showAddExpenseDialog(Collections.singletonList(john),
+                Collections.singletonList(defaultCurrency), defaultCurrency);
         Fragment dialog = fragment.getActivity().getSupportFragmentManager().
                 findFragmentByTag(AddExpenseDialogFragment.TAG);
         //then

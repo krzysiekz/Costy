@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.krzysiekz.costy.model.ReportEntry;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,12 +16,15 @@ import costy.krzysiekz.com.costy.R;
 
 public class ReportEntryAdapter extends RecyclerView.Adapter<ReportEntryAdapter.ViewHolder> {
 
+    private String amountCurrencyPattern;
+
     private List<ReportEntry> reportEntries = new ArrayList<>();
 
     @Override
     public ReportEntryAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_report_entry, parent, false);
+        amountCurrencyPattern = parent.getResources().getString(R.string.amount_currency_pattern);
 
         return new ViewHolder(itemView);
     }
@@ -30,7 +34,8 @@ public class ReportEntryAdapter extends RecyclerView.Adapter<ReportEntryAdapter.
         ReportEntry entry = reportEntries.get(position);
         holder.reportEntryFrom.setText(entry.getSender().getName());
         holder.reportEntryTo.setText(entry.getReceiver().getName());
-        holder.reportEntryAmount.setText(entry.getAmount().toPlainString());
+        holder.reportEntryAmount.setText(MessageFormat.format(amountCurrencyPattern,
+                entry.getAmount().toPlainString(), entry.getCurrency().getName()));
     }
 
     @Override

@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.krzysiekz.costy.model.Currency;
 import com.krzysiekz.costy.model.User;
 import com.krzysiekz.costy.model.UserExpense;
 
@@ -29,9 +30,13 @@ public class AddExpenseDialogFragment extends DialogFragment {
 
     public static final String TAG = "ADD_PERSON_DIALOG";
     public static final String STATE_USERS = "STATE_USERS";
+    public static final String STATE_CURRENCIES = "STATE_CURRENCIES";
+    public static final String STATE_DEFAULT_CURRENCY = "STATE_DEFAULT_CURRENCY";
 
     private AddExpenseDialogListener listener;
     private List<User> users;
+    private List<Currency> currencies;
+    private Currency defaultCurrency;
 
     @NonNull
     @Override
@@ -43,12 +48,15 @@ public class AddExpenseDialogFragment extends DialogFragment {
 
         if (savedInstanceState != null && savedInstanceState.containsKey(STATE_USERS)) {
             users = getUsersState(savedInstanceState);
+            currencies = getCurrenciesState(savedInstanceState);
+            defaultCurrency = getDefaultCurrencyState(savedInstanceState);
         }
 
         List<String> userNames = StreamSupport.stream(users).map(User::getName).collect(Collectors.toList());
 
         setUpPayerSpinner(inflate, userNames);
         setUpReceiversSpinner(inflate, userNames);
+        setUpCurrencySpinner(inflate);
 
         builder.setPositiveButton(android.R.string.ok, null);
         builder.setNegativeButton(android.R.string.cancel, null);
@@ -68,9 +76,20 @@ public class AddExpenseDialogFragment extends DialogFragment {
         return (List<User>) savedInstanceState.getSerializable(STATE_USERS);
     }
 
+    @SuppressWarnings("unchecked")
+    private List<Currency> getCurrenciesState(Bundle savedInstanceState) {
+        return (List<Currency>) savedInstanceState.getSerializable(STATE_CURRENCIES);
+    }
+
+    private Currency getDefaultCurrencyState(Bundle savedInstanceState) {
+        return (Currency) savedInstanceState.getSerializable(STATE_DEFAULT_CURRENCY);
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putSerializable(STATE_USERS, new ArrayList<>(users));
+        outState.putSerializable(STATE_CURRENCIES, new ArrayList<>(currencies));
+        outState.putSerializable(STATE_DEFAULT_CURRENCY, defaultCurrency);
         super.onSaveInstanceState(outState);
     }
 
@@ -79,6 +98,7 @@ public class AddExpenseDialogFragment extends DialogFragment {
         EditText amount = (EditText) dialog.findViewById(R.id.add_expense_amount);
         EditText description = (EditText) dialog.findViewById(R.id.add_expense_description);
         MultiSelectSpinner receiversSpinner = (MultiSelectSpinner) dialog.findViewById(R.id.add_expense_receivers);
+        Spinner currencySpinner = (Spinner) dialog.findViewById(R.id.add_expense_currency);
 
         List<User> receivers = getReceivers(receiversSpinner.getSelected());
 
@@ -90,12 +110,14 @@ public class AddExpenseDialogFragment extends DialogFragment {
             showToast(R.string.add_expense_select_receivers_error);
         } else {
             User payer = users.get(payerSpinner.getSelectedItemPosition());
+            Currency currency = currencies.get(currencySpinner.getSelectedItemPosition());
 
             UserExpense expense = new UserExpense.UserExpenseBuilder().
                     withUser(payer).
                     withAmount(new BigDecimal(amount.getText().toString())).
                     withReceivers(receivers).
-                    withDescription(description.getText().toString()).build();
+                    withDescription(description.getText().toString()).
+                    withCurrency(currency).build();
 
             listener.onExpenseConfirmed(expense);
             dialog.dismiss();
@@ -130,6 +152,15 @@ public class AddExpenseDialogFragment extends DialogFragment {
         single.setAdapter(dataAdapter);
     }
 
+    private void setUpCurrencySpinner(View view) {
+        List<String> currencyNames = StreamSupport.stream(currencies).map(Currency::getName).collect(Collectors.toList());
+        Spinner single = (Spinner) view.findViewById(R.id.add_expense_currency);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this.getContext(), android.R.layout.simple_spinner_item, currencyNames);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        single.setAdapter(dataAdapter);
+        single.setSelection(currencies.indexOf(defaultCurrency));
+    }
+
     public void setListener(AddExpenseDialogListener listener) {
         this.listener = listener;
     }
@@ -140,5 +171,13 @@ public class AddExpenseDialogFragment extends DialogFragment {
 
     AddExpenseDialogListener getListener() {
         return listener;
+    }
+
+    public void setCurrencies(List<Currency> currencies) {
+        this.currencies = currencies;
+    }
+
+    public void setDefaultCurrency(Currency defaultCurrency) {
+        this.defaultCurrency = defaultCurrency;
     }
 }

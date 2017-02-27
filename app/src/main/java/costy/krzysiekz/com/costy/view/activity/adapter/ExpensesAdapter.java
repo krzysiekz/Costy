@@ -10,11 +10,15 @@ import android.widget.TextView;
 import com.krzysiekz.costy.model.User;
 import com.krzysiekz.costy.model.UserExpense;
 
+import java.text.MessageFormat;
+
 import costy.krzysiekz.com.costy.R;
 import java8.util.stream.Collectors;
 import java8.util.stream.StreamSupport;
 
 public class ExpensesAdapter extends SelectableAdapter<ExpensesAdapter.ViewHolder, UserExpense> {
+
+    private String amountCurrencyPattern;
 
     public ExpensesAdapter(ClickListener listener) {
         super(listener);
@@ -24,6 +28,7 @@ public class ExpensesAdapter extends SelectableAdapter<ExpensesAdapter.ViewHolde
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_expense, parent, false);
+        amountCurrencyPattern = parent.getResources().getString(R.string.amount_currency_pattern);
 
         return new ViewHolder(itemView, listener);
     }
@@ -36,7 +41,8 @@ public class ExpensesAdapter extends SelectableAdapter<ExpensesAdapter.ViewHolde
         String recipients = TextUtils.join(", ", StreamSupport.stream(expense.getReceivers()).
                 map(User::getName).collect(Collectors.toList()));
         holder.expenseTo.setText(recipients);
-        holder.expenseAmount.setText(expense.getAmount().toPlainString());
+        holder.expenseAmount.setText(MessageFormat.format(amountCurrencyPattern,
+                expense.getAmount().toPlainString(), expense.getCurrency().getName()));
 
         holder.expenseSelectedOverlay.setBackgroundResource(isSelected(position) ? R.color.colorSelected : R.color.colorUnselected);
     }

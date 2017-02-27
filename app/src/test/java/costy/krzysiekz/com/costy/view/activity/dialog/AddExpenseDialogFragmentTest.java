@@ -6,6 +6,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
+import com.krzysiekz.costy.model.Currency;
 import com.krzysiekz.costy.model.User;
 import com.krzysiekz.costy.model.UserExpense;
 
@@ -22,6 +23,7 @@ import org.robolectric.shadows.ShadowToast;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import costy.krzysiekz.com.costy.BuildConfig;
@@ -54,10 +56,16 @@ public class AddExpenseDialogFragmentTest {
 
         expensesFragment = mock(ExpensesFragment.class);
         fragment.setUsers(createUsers());
+        fragment.setCurrencies(createCurrencies());
+        fragment.setDefaultCurrency(new Currency("EUR"));
 
         fragment.setListener(expensesFragment);
         fragment.show(activity.getSupportFragmentManager(), AddExpenseDialogFragment.TAG);
         dialog = (AlertDialog) fragment.getDialog();
+    }
+
+    private List<Currency> createCurrencies() {
+        return Arrays.asList(new Currency("PLN"), new Currency("EUR"));
     }
 
     private void setUpModulesMocks() {
@@ -124,11 +132,13 @@ public class AddExpenseDialogFragmentTest {
         String sampleDescription = "This is sample description";
 
         Spinner payerSpinner = (Spinner) dialog.findViewById(R.id.add_expense_dialog_from);
+        Spinner currencySpinner = (Spinner) dialog.findViewById(R.id.add_expense_currency);
         EditText amount = (EditText) dialog.findViewById(R.id.add_expense_amount);
         EditText description = (EditText) dialog.findViewById(R.id.add_expense_description);
         ArgumentCaptor<UserExpense> expenseCaptor = ArgumentCaptor.forClass(UserExpense.class);
         //when
         payerSpinner.setSelection(1);
+        currencySpinner.setSelection(0);
         amount.setText(sampleAmount);
         description.setText(sampleDescription);
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).performClick();
@@ -138,6 +148,7 @@ public class AddExpenseDialogFragmentTest {
         assertThat(expenseCaptor.getValue().getAmount()).isEqualTo(new BigDecimal(sampleAmount));
         assertThat(expenseCaptor.getValue().getDescription()).isEqualTo(sampleDescription);
         assertThat(expenseCaptor.getValue().getReceivers()).hasSize(2).extracting("name").contains("John", "Kate");
+        assertThat(expenseCaptor.getValue().getCurrency()).extracting(Currency::getName).contains("PLN");
     }
 
     @Test
@@ -227,6 +238,28 @@ public class AddExpenseDialogFragmentTest {
         assertThat(ShadowToast.getLatestToast()).isNotNull();
         assertThat(ShadowToast.getTextOfLatestToast()).
                 isEqualTo(fragment.getString(R.string.add_expense_select_receivers_error));
+    }
+
+    @Test
+    public void shouldPopulateCurrencySpinnerWithListOfSupportedCurrencies() {
+        //given
+        Spinner currencySpinner = (Spinner) dialog.findViewById(R.id.add_expense_currency);
+        //when
+        SpinnerAdapter currencySpinnerAdapter = currencySpinner.getAdapter();
+        //then
+        assertThat(currencySpinnerAdapter.getCount()).isEqualTo(2);
+        assertThat(currencySpinnerAdapter.getItem(0)).isEqualTo("PLN");
+        assertThat(currencySpinnerAdapter.getItem(1)).isEqualTo("EUR");
+    }
+
+    @Test
+    public void shouldSetDefaultCurrencyInSpinner() {
+        //given
+        Spinner currencySpinner = (Spinner) dialog.findViewById(R.id.add_expense_currency);
+        //when
+        String selected = (String) currencySpinner.getSelectedItem();
+        //then
+        assertThat(selected).isEqualTo("EUR");
     }
 
     private List<User> createUsers() {

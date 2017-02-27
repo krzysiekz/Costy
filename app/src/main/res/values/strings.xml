@@ -18,7 +18,7 @@
     <string name="sample_expense_from">John</string>
     <string name="expense_separator"> ----> </string>
     <string name="sample_expense_to">Kate</string>
-    <string name="sample_expense_amount">123.34$</string>
+    <string name="sample_expense_amount">123.34 PLN</string>
     <string name="sample_person_name">John Doe</string>
 
     <string name="title_activity_selected_project">SelectedProjectActivity</string>
@@ -40,5 +40,6 @@
     <string name="add_expense_provide_description_error">"Provide description!"</string>
     <string name="add_expense_select_receivers_error">"Select receivers!"</string>
     <string name="delete_item">Delete</string>
+    <string name="amount_currency_pattern">{0} {1}</string>
 
 </resources>

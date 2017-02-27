@@ -36,8 +36,9 @@ public class ExpensesPresenter implements Presenter<ExpensesView> {
     }
 
     public void showAddExpenseDialog(String projectName) {
-        List<User> users = this.repository.getProject(projectName).getUsers();
-        view.showAddExpenseDialog(users);
+        ExpenseProject project = this.repository.getProject(projectName);
+        List<User> users = project.getUsers();
+        view.showAddExpenseDialog(users, repository.getAllCurrencies(), project.getDefaultCurrency());
     }
 
     public void addExpense(String projectName, UserExpense expense) {

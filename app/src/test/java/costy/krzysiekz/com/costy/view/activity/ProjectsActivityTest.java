@@ -108,7 +108,7 @@ public class ProjectsActivityTest {
         //then
         assertThat(fragment).isNotNull();
         assertThat(fragment).isInstanceOf(AddProjectDialogFragment.class);
-        assertThat(((AddProjectDialogFragment)fragment).getCurrencies()).hasSize(2).containsAll(currencies);
+        assertThat(((AddProjectDialogFragment) fragment).getCurrencies()).hasSize(2).containsAll(currencies);
     }
 
     @Test
@@ -146,10 +146,7 @@ public class ProjectsActivityTest {
         ExpenseProject project1 = new ExpenseProject("Project 1", defaultCurrency);
         //when
         projectsActivity.showProjects(Collections.singletonList(project1));
-        projectsActivity.projectsRecyclerView.measure(0, 0);
-        projectsActivity.projectsRecyclerView.layout(0, 0, 100, 10000);
-        projectsActivity.projectsRecyclerView.findViewHolderForAdapterPosition(0).
-                itemView.performClick();
+        projectsActivity.selectableViewHandler.onItemClicked(0);
         Intent intent = shadowOf(projectsActivity).peekNextStartedActivity();
         //then
         assertThat(intent.getComponent().getClassName()).isEqualTo(SelectedProjectActivity.class.getName());
@@ -177,7 +174,7 @@ public class ProjectsActivityTest {
         ExpenseProject secondProject = new ExpenseProject("Second project", defaultCurrency);
         //when
         projectsActivity.showProjects(Arrays.asList(firstProject, secondProject));
-        projectsActivity.onItemLongClicked(1);
+        projectsActivity.selectableViewHandler.onItemLongClicked(1);
         //then
         assertThat(projectsActivity.actionMode).isNotNull();
         assertThat(adapter.getSelectedItemCount()).isEqualTo(1);
@@ -194,8 +191,8 @@ public class ProjectsActivityTest {
         ExpenseProject secondProject = new ExpenseProject("Second project", defaultCurrency);
         //when
         projectsActivity.showProjects(Arrays.asList(firstProject, secondProject));
-        projectsActivity.onItemLongClicked(0);
-        projectsActivity.onItemClicked(1);
+        projectsActivity.selectableViewHandler.onItemLongClicked(0);
+        projectsActivity.selectableViewHandler.onItemClicked(1);
         //then
         assertThat(projectsActivity.actionMode).isNotNull();
         assertThat(adapter.getSelectedItemCount()).isEqualTo(2);
@@ -209,7 +206,7 @@ public class ProjectsActivityTest {
         ExpenseProject firstProject = new ExpenseProject("First project", defaultCurrency);
         //when
         projectsActivity.showProjects(Collections.singletonList(firstProject));
-        projectsActivity.onItemLongClicked(0);
+        projectsActivity.selectableViewHandler.onItemLongClicked(0);
         MenuItem deleteItem = projectsActivity.actionMode.getMenu().findItem(R.id.menu_remove);
         //then
         assertThat(deleteItem).isNotNull();
@@ -224,9 +221,9 @@ public class ProjectsActivityTest {
         expectedArgument.put(0, project);
         //when
         projectsActivity.showProjects(Collections.singletonList(project));
-        projectsActivity.onItemLongClicked(0);
+        projectsActivity.selectableViewHandler.onItemLongClicked(0);
         MenuItem deleteItem = projectsActivity.actionMode.getMenu().findItem(R.id.menu_remove);
-        projectsActivity.onActionItemClicked(projectsActivity.actionMode, deleteItem);
+        projectsActivity.selectableViewHandler.onActionItemClicked(projectsActivity.actionMode, deleteItem);
         //then
         verify(presenterModuleMock.getProjectsPresenter()).removeProjects(expectedArgument);
     }
@@ -243,7 +240,7 @@ public class ProjectsActivityTest {
         ExpenseProject project = new ExpenseProject("First project", defaultCurrency);
         //when
         projectsActivity.showProjects(Collections.singletonList(project));
-        projectsActivity.onItemLongClicked(0);
+        projectsActivity.selectableViewHandler.onItemLongClicked(0);
         projectsActivity.removeProjects(positions);
         //then
         assertThat(adapter.getSelectedItemCount()).isEqualTo(0);

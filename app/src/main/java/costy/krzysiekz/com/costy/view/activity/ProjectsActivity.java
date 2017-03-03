@@ -8,15 +8,13 @@ import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.krzysiekz.costy.model.Currency;
 import com.krzysiekz.costy.model.ExpenseProject;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -27,13 +25,14 @@ import costy.krzysiekz.com.costy.CostyApplication;
 import costy.krzysiekz.com.costy.R;
 import costy.krzysiekz.com.costy.presenter.impl.ProjectsPresenter;
 import costy.krzysiekz.com.costy.view.ProjectsView;
-import costy.krzysiekz.com.costy.view.activity.adapter.ClickListener;
+import costy.krzysiekz.com.costy.view.SelectableView;
 import costy.krzysiekz.com.costy.view.activity.adapter.ProjectAdapter;
+import costy.krzysiekz.com.costy.view.activity.adapter.SelectableAdapter;
 import costy.krzysiekz.com.costy.view.activity.dialog.AddProjectDialogFragment;
 import costy.krzysiekz.com.costy.view.activity.dialog.AddProjectDialogListener;
 
 public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
-        AddProjectDialogListener, ClickListener, ActionMode.Callback {
+        AddProjectDialogListener, SelectableView<ExpenseProject> {
 
     ActionMode actionMode;
     ProjectsPresenter presenter;
@@ -43,6 +42,8 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
 
     @BindView(R.id.projects_recycler_view)
     RecyclerView projectsRecyclerView;
+
+    SelectableViewHandler<ExpenseProject> selectableViewHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,8 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
 
         presenter.attachView(this);
         setupProjectsRecycleView();
+
+        selectableViewHandler = new SelectableViewHandler<>(this);
 
         addProjectButton.setOnClickListener(__ -> presenter.showAddProjectDialog());
         presenter.loadProjects();
@@ -67,7 +70,7 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
     }
 
     private void setupProjectsRecycleView() {
-        ProjectAdapter adapter = new ProjectAdapter(this);
+        ProjectAdapter adapter = new ProjectAdapter(selectableViewHandler);
         projectsRecyclerView.setAdapter(adapter);
         projectsRecyclerView.setItemAnimator(new DefaultItemAnimator());
         projectsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -97,74 +100,38 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
 
     @Override
     public void removeProjects(Set<Integer> positions) {
-        ProjectAdapter adapter = (ProjectAdapter) projectsRecyclerView.getAdapter();
-        adapter.removeItems(new ArrayList<>(positions));
-        actionMode.finish();
+        selectableViewHandler.removeItems(positions);
     }
 
     @Override
-    public void onItemClicked(int position) {
-        if (actionMode != null) {
-            toggleSelection(position);
-        } else {
-            ProjectAdapter adapter = (ProjectAdapter) projectsRecyclerView.getAdapter();
-            Intent intent = new Intent(this, SelectedProjectActivity.class);
-            intent.putExtra(SelectedProjectActivity.PROJECT_NAME,
-                    adapter.getItems().get(position).getName());
-            startActivity(intent);
-        }
+    public SelectableAdapter<?, ExpenseProject> getAdapter() {
+        return (ProjectAdapter) projectsRecyclerView.getAdapter();
     }
 
     @Override
-    public boolean onItemLongClicked(int position) {
-        if (actionMode == null) {
-            actionMode = startSupportActionMode(this);
-        }
-
-        toggleSelection(position);
-        return true;
-    }
-
-    private void toggleSelection(int position) {
-        ProjectAdapter adapter = (ProjectAdapter) projectsRecyclerView.getAdapter();
-        adapter.toggleSelection(position);
-        int count = adapter.getSelectedItemCount();
-
-        if (count == 0) {
-            actionMode.finish();
-        } else {
-            actionMode.setTitle(String.valueOf(count));
-            actionMode.invalidate();
-        }
+    public void handleRemoveButtonClicked(Map<Integer, ExpenseProject> selectedItemObjects) {
+        presenter.removeProjects(selectedItemObjects);
     }
 
     @Override
-    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        mode.getMenuInflater().inflate(R.menu.selected_menu, menu);
-        return true;
+    public void setActionMode(ActionMode actionMode) {
+        this.actionMode = actionMode;
     }
 
     @Override
-    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        return false;
+    public ActionMode getActionMode() {
+        return actionMode;
     }
 
     @Override
-    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        ProjectAdapter adapter = (ProjectAdapter) projectsRecyclerView.getAdapter();
-        switch (item.getItemId()) {
-            case R.id.menu_remove:
-                presenter.removeProjects(adapter.getSelectedItemObjects());
-                return true;
-            default:
-                return false;
-        }
+    public void handleSingleItemClick(ExpenseProject clickedItem) {
+        Intent intent = new Intent(this, SelectedProjectActivity.class);
+        intent.putExtra(SelectedProjectActivity.PROJECT_NAME, clickedItem.getName());
+        startActivity(intent);
     }
 
     @Override
-    public void onDestroyActionMode(ActionMode mode) {
-        ProjectAdapter adapter = (ProjectAdapter) projectsRecyclerView.getAdapter();
-        adapter.clearSelection();
-        actionMode = null;
+    public ActionMode startSupportActionMode() {
+        return startSupportActionMode(selectableViewHandler);
     }
 }

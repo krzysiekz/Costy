@@ -156,7 +156,7 @@ public class ExpensesFragmentTest {
                 withCurrency(currency).build();
         //when
         fragment.showExpenses(Arrays.asList(firstExpense, secondExpense));
-        fragment.onItemLongClicked(0);
+        fragment.selectableViewHandler.onItemLongClicked(0);
         //then
         assertThat(fragment.actionMode).isNotNull();
         assertThat(adapter.getSelectedItemCount()).isEqualTo(1);
@@ -181,8 +181,8 @@ public class ExpensesFragmentTest {
                 withCurrency(currency).build();
         //when
         fragment.showExpenses(Arrays.asList(firstExpense, secondExpense));
-        fragment.onItemLongClicked(0);
-        fragment.onItemClicked(1);
+        fragment.selectableViewHandler.onItemLongClicked(0);
+        fragment.selectableViewHandler.onItemClicked(1);
         //then
         assertThat(adapter.getSelectedItemCount()).isEqualTo(2);
         assertThat(adapter.getSelectedItems()).isNotEmpty().containsOnly(0, 1);
@@ -206,7 +206,7 @@ public class ExpensesFragmentTest {
                 withCurrency(currency).build();
         //when
         fragment.showExpenses(Arrays.asList(firstExpense, secondExpense));
-        fragment.onItemClicked(1);
+        fragment.selectableViewHandler.onItemClicked(1);
         //then
         assertThat(adapter.getSelectedItemCount()).isEqualTo(0);
         assertThat(adapter.getSelectedItems()).isEmpty();
@@ -223,7 +223,7 @@ public class ExpensesFragmentTest {
                 withCurrency(currency).build();
         //when
         fragment.showExpenses(Collections.singletonList(secondExpense));
-        fragment.onItemLongClicked(0);
+        fragment.selectableViewHandler.onItemLongClicked(0);
         MenuItem deleteItem = fragment.actionMode.getMenu().findItem(R.id.menu_remove);
         //then
         assertThat(deleteItem).isNotNull();
@@ -242,9 +242,9 @@ public class ExpensesFragmentTest {
         expectedArgument.put(0, expense);
         //when
         fragment.showExpenses(Collections.singletonList(expense));
-        fragment.onItemLongClicked(0);
+        fragment.selectableViewHandler.onItemLongClicked(0);
         MenuItem deleteItem = fragment.actionMode.getMenu().findItem(R.id.menu_remove);
-        fragment.onActionItemClicked(fragment.actionMode, deleteItem);
+        fragment.selectableViewHandler.onActionItemClicked(fragment.actionMode, deleteItem);
         //then
         verify(presenterModuleMock.getExpensesPresenter()).removeExpenses(PROJECT_NAME, expectedArgument);
     }
@@ -265,7 +265,7 @@ public class ExpensesFragmentTest {
                 withCurrency(currency).build();
         //when
         fragment.showExpenses(Collections.singletonList(secondExpense));
-        fragment.onItemLongClicked(itemPosition);
+        fragment.selectableViewHandler.onItemLongClicked(itemPosition);
         fragment.removeExpenses(positions);
         //then
         assertThat(adapter.getSelectedItemCount()).isEqualTo(0);

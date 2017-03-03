@@ -10,8 +10,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -20,6 +18,7 @@ import com.krzysiekz.costy.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -30,15 +29,18 @@ import costy.krzysiekz.com.costy.CostyApplication;
 import costy.krzysiekz.com.costy.R;
 import costy.krzysiekz.com.costy.presenter.impl.PeoplePresenter;
 import costy.krzysiekz.com.costy.view.PeopleView;
+import costy.krzysiekz.com.costy.view.SelectableView;
+import costy.krzysiekz.com.costy.view.activity.SelectableViewHandler;
 import costy.krzysiekz.com.costy.view.activity.adapter.ClickListener;
 import costy.krzysiekz.com.costy.view.activity.adapter.PeopleAdapter;
+import costy.krzysiekz.com.costy.view.activity.adapter.SelectableAdapter;
 import costy.krzysiekz.com.costy.view.activity.dialog.AddPersonDialogFragment;
 import costy.krzysiekz.com.costy.view.activity.dialog.AddPersonDialogListener;
 
 import static costy.krzysiekz.com.costy.view.activity.SelectedProjectActivity.PROJECT_NAME;
 
 public class PeopleFragment extends Fragment
-        implements PeopleView, AddPersonDialogListener, ClickListener, ActionMode.Callback {
+        implements PeopleView, AddPersonDialogListener, ClickListener, SelectableView<User> {
 
     ActionMode actionMode;
     public PeoplePresenter presenter;
@@ -50,6 +52,8 @@ public class PeopleFragment extends Fragment
     FloatingActionButton addPersonButton;
     private String projectName;
 
+    SelectableViewHandler<User> selectableViewHandler;
+
     public PeopleFragment() {
     }
 
@@ -60,6 +64,7 @@ public class PeopleFragment extends Fragment
         CostyApplication.component().inject(this);
 
         setupPeopleRecyclerView();
+        selectableViewHandler = new SelectableViewHandler<>(this);
 
         this.projectName = getArguments().getString(PROJECT_NAME);
         presenter.attachView(this);
@@ -128,62 +133,41 @@ public class PeopleFragment extends Fragment
 
     @Override
     public void onItemClicked(int position) {
-        if (actionMode != null) {
-            toggleSelection(position);
-        }
+        selectableViewHandler.onItemClicked(position);
     }
 
     @Override
     public boolean onItemLongClicked(int position) {
-        if (actionMode == null) {
-            AppCompatActivity activity = (AppCompatActivity) getActivity();
-            actionMode = activity.startSupportActionMode(this);
-        }
-
-        toggleSelection(position);
-        return true;
-    }
-
-    private void toggleSelection(int position) {
-        PeopleAdapter adapter = (PeopleAdapter) peopleRecyclerView.getAdapter();
-        adapter.toggleSelection(position);
-        int count = adapter.getSelectedItemCount();
-
-        if (count == 0) {
-            actionMode.finish();
-        } else {
-            actionMode.setTitle(String.valueOf(count));
-            actionMode.invalidate();
-        }
+        return selectableViewHandler.onItemLongClicked(position);
     }
 
     @Override
-    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        mode.getMenuInflater().inflate(R.menu.selected_menu, menu);
-        return true;
+    public SelectableAdapter<?, User> getAdapter() {
+        return (PeopleAdapter) peopleRecyclerView.getAdapter();
     }
 
     @Override
-    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        return false;
+    public void handleRemoveButtonClicked(Map<Integer, User> selectedItemObjects) {
+        presenter.removeUsers(projectName, selectedItemObjects);
     }
 
     @Override
-    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        PeopleAdapter adapter = (PeopleAdapter) peopleRecyclerView.getAdapter();
-        switch (item.getItemId()) {
-            case R.id.menu_remove:
-                presenter.removeUsers(projectName, adapter.getSelectedItemObjects());
-                return true;
-            default:
-                return false;
-        }
+    public void setActionMode(ActionMode actionMode) {
+        this.actionMode = actionMode;
     }
 
     @Override
-    public void onDestroyActionMode(ActionMode mode) {
-        PeopleAdapter adapter = (PeopleAdapter) peopleRecyclerView.getAdapter();
-        adapter.clearSelection();
-        actionMode = null;
+    public ActionMode getActionMode() {
+        return actionMode;
+    }
+
+    @Override
+    public void handleSingleItemClick(User clickedItem) {
+    }
+
+    @Override
+    public ActionMode startSupportActionMode() {
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        return activity.startSupportActionMode(selectableViewHandler);
     }
 }

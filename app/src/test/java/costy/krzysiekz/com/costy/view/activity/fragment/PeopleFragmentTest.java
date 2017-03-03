@@ -197,7 +197,7 @@ public class PeopleFragmentTest {
         fragment.showPeople(Collections.singletonList(kate));
         fragment.onItemLongClicked(0);
         MenuItem deleteItem = fragment.actionMode.getMenu().findItem(R.id.menu_remove);
-        fragment.onActionItemClicked(fragment.actionMode, deleteItem);
+        fragment.selectableViewHandler.onActionItemClicked(fragment.actionMode, deleteItem);
         //then
         verify(presenterModuleMock.getPeoplePresenter()).removeUsers(PROJECT_NAME, expectedArgument);
     }

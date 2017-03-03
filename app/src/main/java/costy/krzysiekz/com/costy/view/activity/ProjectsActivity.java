@@ -26,13 +26,14 @@ import costy.krzysiekz.com.costy.R;
 import costy.krzysiekz.com.costy.presenter.impl.ProjectsPresenter;
 import costy.krzysiekz.com.costy.view.ProjectsView;
 import costy.krzysiekz.com.costy.view.SelectableView;
+import costy.krzysiekz.com.costy.view.activity.adapter.ClickListener;
 import costy.krzysiekz.com.costy.view.activity.adapter.ProjectAdapter;
 import costy.krzysiekz.com.costy.view.activity.adapter.SelectableAdapter;
 import costy.krzysiekz.com.costy.view.activity.dialog.AddProjectDialogFragment;
 import costy.krzysiekz.com.costy.view.activity.dialog.AddProjectDialogListener;
 
 public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
-        AddProjectDialogListener, SelectableView<ExpenseProject> {
+        AddProjectDialogListener, SelectableView<ExpenseProject>, ClickListener {
 
     ActionMode actionMode;
     ProjectsPresenter presenter;
@@ -70,7 +71,7 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
     }
 
     private void setupProjectsRecycleView() {
-        ProjectAdapter adapter = new ProjectAdapter(selectableViewHandler);
+        ProjectAdapter adapter = new ProjectAdapter(this);
         projectsRecyclerView.setAdapter(adapter);
         projectsRecyclerView.setItemAnimator(new DefaultItemAnimator());
         projectsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -133,5 +134,15 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
     @Override
     public ActionMode startSupportActionMode() {
         return startSupportActionMode(selectableViewHandler);
+    }
+
+    @Override
+    public void onItemClicked(int position) {
+        selectableViewHandler.onItemClicked(position);
+    }
+
+    @Override
+    public boolean onItemLongClicked(int position) {
+        return selectableViewHandler.onItemLongClicked(position);
     }
 }

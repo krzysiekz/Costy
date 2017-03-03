@@ -9,10 +9,9 @@ import java.util.Set;
 
 import costy.krzysiekz.com.costy.R;
 import costy.krzysiekz.com.costy.view.SelectableView;
-import costy.krzysiekz.com.costy.view.activity.adapter.ClickListener;
 import costy.krzysiekz.com.costy.view.activity.adapter.SelectableAdapter;
 
-public class SelectableViewHandler<T> implements ClickListener, ActionMode.Callback {
+public class SelectableViewHandler<T> implements ActionMode.Callback {
 
     private SelectableView<T> selectableView;
 
@@ -50,7 +49,6 @@ public class SelectableViewHandler<T> implements ClickListener, ActionMode.Callb
         selectableView.setActionMode(null);
     }
 
-    @Override
     public void onItemClicked(int position) {
         if (selectableView.getActionMode() != null) {
             toggleSelection(position);
@@ -60,7 +58,6 @@ public class SelectableViewHandler<T> implements ClickListener, ActionMode.Callb
         }
     }
 
-    @Override
     public boolean onItemLongClicked(int position) {
         if (selectableView.getActionMode() == null) {
             selectableView.setActionMode(selectableView.startSupportActionMode());

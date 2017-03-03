@@ -10,8 +10,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -19,8 +17,8 @@ import com.krzysiekz.costy.model.Currency;
 import com.krzysiekz.costy.model.User;
 import com.krzysiekz.costy.model.UserExpense;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -31,15 +29,18 @@ import costy.krzysiekz.com.costy.CostyApplication;
 import costy.krzysiekz.com.costy.R;
 import costy.krzysiekz.com.costy.presenter.impl.ExpensesPresenter;
 import costy.krzysiekz.com.costy.view.ExpensesView;
+import costy.krzysiekz.com.costy.view.SelectableView;
+import costy.krzysiekz.com.costy.view.activity.SelectableViewHandler;
 import costy.krzysiekz.com.costy.view.activity.adapter.ClickListener;
 import costy.krzysiekz.com.costy.view.activity.adapter.ExpensesAdapter;
+import costy.krzysiekz.com.costy.view.activity.adapter.SelectableAdapter;
 import costy.krzysiekz.com.costy.view.activity.dialog.AddExpenseDialogFragment;
 import costy.krzysiekz.com.costy.view.activity.dialog.AddExpenseDialogListener;
 
 import static costy.krzysiekz.com.costy.view.activity.SelectedProjectActivity.PROJECT_NAME;
 
 public class ExpensesFragment extends Fragment
-        implements ExpensesView, AddExpenseDialogListener, ClickListener, ActionMode.Callback {
+        implements ExpensesView, AddExpenseDialogListener, SelectableView<UserExpense>, ClickListener {
 
     ActionMode actionMode;
     private String projectName;
@@ -51,6 +52,8 @@ public class ExpensesFragment extends Fragment
 
     @BindView(R.id.add_expense_button)
     FloatingActionButton addExpenseButton;
+
+    SelectableViewHandler<UserExpense> selectableViewHandler;
 
     public ExpensesFragment() {
     }
@@ -65,6 +68,8 @@ public class ExpensesFragment extends Fragment
         CostyApplication.component().inject(this);
 
         setupExpensesRecycleView();
+        selectableViewHandler = new SelectableViewHandler<>(this);
+
         projectName = getArguments().getString(PROJECT_NAME);
 
         presenter.attachView(this);
@@ -118,71 +123,49 @@ public class ExpensesFragment extends Fragment
         presenter.addExpense(projectName, expense);
     }
 
+
+    @Override
+    public void removeExpenses(Set<Integer> expensesPositions) {
+        selectableViewHandler.removeItems(expensesPositions);
+    }
+
+    @Override
+    public SelectableAdapter<?, UserExpense> getAdapter() {
+        return (ExpensesAdapter) expensesRecyclerView.getAdapter();
+    }
+
+    @Override
+    public void handleRemoveButtonClicked(Map<Integer, UserExpense> selectedItemObjects) {
+        presenter.removeExpenses(projectName, selectedItemObjects);
+    }
+
+    @Override
+    public void setActionMode(ActionMode actionMode) {
+        this.actionMode = actionMode;
+    }
+
+    @Override
+    public ActionMode getActionMode() {
+        return actionMode;
+    }
+
+    @Override
+    public void handleSingleItemClick(UserExpense clickedItem) {
+    }
+
+    @Override
+    public ActionMode startSupportActionMode() {
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        return activity.startSupportActionMode(selectableViewHandler);
+    }
+
     @Override
     public void onItemClicked(int position) {
-        if (actionMode != null) {
-            toggleSelection(position);
-        }
+        selectableViewHandler.onItemClicked(position);
     }
 
     @Override
     public boolean onItemLongClicked(int position) {
-        if (actionMode == null) {
-            AppCompatActivity activity = (AppCompatActivity) getActivity();
-            actionMode = activity.startSupportActionMode(this);
-        }
-
-        toggleSelection(position);
-        return true;
-    }
-
-    private void toggleSelection(int position) {
-        ExpensesAdapter adapter = (ExpensesAdapter) expensesRecyclerView.getAdapter();
-        adapter.toggleSelection(position);
-        int count = adapter.getSelectedItemCount();
-
-        if (count == 0) {
-            actionMode.finish();
-        } else {
-            actionMode.setTitle(String.valueOf(count));
-            actionMode.invalidate();
-        }
-    }
-
-    @Override
-    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        mode.getMenuInflater().inflate(R.menu.selected_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        return false;
-    }
-
-    @Override
-    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        ExpensesAdapter adapter = (ExpensesAdapter) expensesRecyclerView.getAdapter();
-        switch (item.getItemId()) {
-            case R.id.menu_remove:
-                presenter.removeExpenses(projectName, adapter.getSelectedItemObjects());
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    @Override
-    public void onDestroyActionMode(ActionMode mode) {
-        ExpensesAdapter adapter = (ExpensesAdapter) expensesRecyclerView.getAdapter();
-        adapter.clearSelection();
-        actionMode = null;
-    }
-
-    @Override
-    public void removeExpenses(Set<Integer> expensesPositions) {
-        ExpensesAdapter adapter = (ExpensesAdapter) expensesRecyclerView.getAdapter();
-        adapter.removeItems(new ArrayList<>(expensesPositions));
-        actionMode.finish();
+        return selectableViewHandler.onItemLongClicked(position);
     }
 }

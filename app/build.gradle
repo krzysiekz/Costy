@@ -69,4 +69,5 @@ dependencies {
     }
 
     compile project(':core')
+    compile 'com.google.guava:guava:20.0'
 }

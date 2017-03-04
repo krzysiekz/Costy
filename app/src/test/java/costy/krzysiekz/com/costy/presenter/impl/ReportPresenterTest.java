@@ -46,7 +46,22 @@ public class ReportPresenterTest {
     public void shouldCallViewWithProperObjectsWhenLoadingProject() {
         //given
         String expectedReportEntry = "Kate -> John: 20 EUR";
-        ExpenseProject project = createExpenseProject();
+        Currency defaultCurrency = new Currency(DEFAULT_CURRENCY);
+        ExpenseProject project = new ExpenseProject(PROJECT_NAME, defaultCurrency);
+
+        User kate = new User("Kate");
+        User john = new User("John");
+        project.addUser(kate);
+        project.addUser(john);
+
+        List<User> receivers = Arrays.asList(john, kate);
+
+        UserExpense userExpense = getUserExpense(defaultCurrency, kate, new BigDecimal("10"), receivers);
+        UserExpense secondUserExpense = getUserExpense(defaultCurrency, john, new BigDecimal("50"), receivers);
+
+        project.addExpense(userExpense);
+        project.addExpense(secondUserExpense);
+
         ExpenseCalculator calculator = new DefaultExpenseCalculator();
         ReportPresenter presenter = new ReportPresenter(repository, calculator);
         //when
@@ -61,28 +76,44 @@ public class ReportPresenterTest {
                 containsOnly(expectedReportEntry);
     }
 
-    private ExpenseProject createExpenseProject() {
+    @Test
+    public void shouldSortReportEntriesByCurrencyAndUserBeforeSendingThenToView() {
+        //given
         Currency defaultCurrency = new Currency(DEFAULT_CURRENCY);
         ExpenseProject project = new ExpenseProject(PROJECT_NAME, defaultCurrency);
 
         User kate = new User("Kate");
         User john = new User("John");
+        User alex = new User("Alex");
         project.addUser(kate);
         project.addUser(john);
 
-        UserExpense userExpense = new UserExpense.UserExpenseBuilder().
-                withUser(kate).withAmount(new BigDecimal("10")).
-                withReceivers(Arrays.asList(john, kate)).withDescription("Kate expense").
-                withCurrency(defaultCurrency).build();
+        List<User> receivers = Arrays.asList(john, kate, alex);
 
-        UserExpense secondUserExpense = new UserExpense.UserExpenseBuilder().
-                withUser(john).withAmount(new BigDecimal("50")).
-                withReceivers(Arrays.asList(john, kate)).withDescription("John expense").
-                withCurrency(defaultCurrency).build();
+        UserExpense userExpense = getUserExpense(defaultCurrency, kate, new BigDecimal("12"), receivers);
+        UserExpense secondExpense = getUserExpense(new Currency("PLN"), john, new BigDecimal("12"), Arrays.asList(john, kate));
 
         project.addExpense(userExpense);
-        project.addExpense(secondUserExpense);
+        project.addExpense(secondExpense);
 
-        return project;
+        ExpenseCalculator calculator = new DefaultExpenseCalculator();
+        ReportPresenter presenter = new ReportPresenter(repository, calculator);
+        //when
+        when(repository.getProject(PROJECT_NAME)).thenReturn(project);
+        presenter.attachView(reportView);
+        presenter.loadReportEntries(PROJECT_NAME);
+        //then
+        verify(repository).getProject(PROJECT_NAME);
+        verify(reportView).showReportEntries(reportEntriesCaptor.capture());
+        assertThat(reportEntriesCaptor.getValue()).hasSize(3).
+                extracting(ReportEntry::toString).
+                containsSequence("Alex -> Kate: 4 EUR", "John -> Kate: 4 EUR", "Kate -> John: 6 PLN");
+    }
+
+    private UserExpense getUserExpense(Currency defaultCurrency, User kate, BigDecimal amount, List<User> receivers) {
+        return new UserExpense.UserExpenseBuilder().
+                withUser(kate).withAmount(amount).
+                withReceivers(receivers).withDescription("").
+                withCurrency(defaultCurrency).build();
     }
 }

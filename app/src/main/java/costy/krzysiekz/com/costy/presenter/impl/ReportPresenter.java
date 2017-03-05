@@ -39,8 +39,8 @@ public class ReportPresenter implements Presenter<ReportView> {
         ExpenseReport report = expenseCalculator.calculate(project);
         List<ReportEntry> reportEntries = report.getEntries();
         Collections.sort(reportEntries, (r1, r2) -> ComparisonChain.start().
-                compare(r1.getCurrency().getName(), r2.getCurrency().getName()).
-                compare(r1.getSender().getName(), r2.getSender().getName()).result());
+                compare(r1.getSender().getName(), r2.getSender().getName()).
+                compare(r1.getCurrency().getName(), r2.getCurrency().getName()).result());
         reportView.showReportEntries(reportEntries);
     }
 }

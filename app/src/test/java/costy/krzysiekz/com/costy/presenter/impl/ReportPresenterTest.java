@@ -87,14 +87,17 @@ public class ReportPresenterTest {
         User alex = new User("Alex");
         project.addUser(kate);
         project.addUser(john);
+        project.addUser(alex);
 
         List<User> receivers = Arrays.asList(john, kate, alex);
 
         UserExpense userExpense = getUserExpense(defaultCurrency, kate, new BigDecimal("12"), receivers);
         UserExpense secondExpense = getUserExpense(new Currency("PLN"), john, new BigDecimal("12"), Arrays.asList(john, kate));
+        UserExpense thirdExpense = getUserExpense(new Currency("PLN"), alex, new BigDecimal("12"), Arrays.asList(john, kate));
 
         project.addExpense(userExpense);
         project.addExpense(secondExpense);
+        project.addExpense(thirdExpense);
 
         ExpenseCalculator calculator = new DefaultExpenseCalculator();
         ReportPresenter presenter = new ReportPresenter(repository, calculator);
@@ -105,9 +108,13 @@ public class ReportPresenterTest {
         //then
         verify(repository).getProject(PROJECT_NAME);
         verify(reportView).showReportEntries(reportEntriesCaptor.capture());
-        assertThat(reportEntriesCaptor.getValue()).hasSize(3).
+        assertThat(reportEntriesCaptor.getValue()).hasSize(5).
                 extracting(ReportEntry::toString).
-                containsSequence("Alex -> Kate: 4 EUR", "John -> Kate: 4 EUR", "Kate -> John: 6 PLN");
+                containsSequence("Alex -> Kate: 4 EUR",
+                        "John -> Kate: 4 EUR",
+                        "John -> Alex: 6 PLN",
+                        "Kate -> Alex: 6 PLN",
+                        "Kate -> John: 6 PLN");
     }
 
     private UserExpense getUserExpense(Currency defaultCurrency, User kate, BigDecimal amount, List<User> receivers) {

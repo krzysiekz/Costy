@@ -26,7 +26,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static costy.krzysiekz.com.costy.utils.RecyclerViewMatcher.atPosition;
 import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
@@ -58,11 +57,10 @@ public class ProjectsActivityIntegrationTest {
                 perform(typeText(projectName), closeSoftKeyboard());
         onView(withId(android.R.id.button1)).perform(click());
         //then
-        onView(withId(R.id.projects_recycler_view)).check(new RecyclerViewItemCountAssertion(1));
         onView(withId(R.id.projects_recycler_view)).
-                check(matches((atPosition(0, hasDescendant(withId(R.id.item_project_name))))));
+                check(matches(hasDescendant(withId(R.id.item_project_name))));
         onView(withId(R.id.projects_recycler_view)).
-                check(matches((atPosition(0, hasDescendant(withText(projectName))))));
+                check(matches(hasDescendant(withText(projectName))));
     }
 
     @Test
@@ -83,7 +81,7 @@ public class ProjectsActivityIntegrationTest {
     }
 
     @Test
-    public void shouldStartExpensesActivityWhenUserClicksOnProject() {
+    public void shouldStartSelectedProjectActivityWhenUserClicksOnProject() {
         //given
         String projectName = "Some project 2";
         //when

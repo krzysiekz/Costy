@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="costy.krzysiekz.com.costy.view.activity.fragment.ExpensesFragment">
+    tools:context="costy.krzysiekz.com.costy.view.activity.fragment.ExpensesFragment"
+    android:id="@+id/expenses_fragment_id">
 
     <include layout="@layout/content_expenses" />
 

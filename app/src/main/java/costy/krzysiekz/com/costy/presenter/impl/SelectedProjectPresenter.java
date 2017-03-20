@@ -1,6 +1,8 @@
 package costy.krzysiekz.com.costy.presenter.impl;
 
 
+import com.krzysiekz.costy.model.ExpenseProject;
+
 import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
 import costy.krzysiekz.com.costy.presenter.Presenter;
 import costy.krzysiekz.com.costy.view.SelectedProjectView;
@@ -24,6 +26,7 @@ public class SelectedProjectPresenter implements Presenter<SelectedProjectView> 
     }
 
     public Boolean checkIfPeopleAdded(String projectName) {
-        return !repository.getProject(projectName).getUsers().isEmpty();
+        ExpenseProject project = repository.getProject(projectName);
+        return project != null && !project.getUsers().isEmpty();
     }
 }

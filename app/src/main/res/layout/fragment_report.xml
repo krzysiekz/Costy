@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="costy.krzysiekz.com.costy.view.activity.fragment.ReportFragment">
+    tools:context="costy.krzysiekz.com.costy.view.activity.fragment.ReportFragment"
+    android:id="@+id/report_fragment_id">
 
     <include layout="@layout/content_report" />
 

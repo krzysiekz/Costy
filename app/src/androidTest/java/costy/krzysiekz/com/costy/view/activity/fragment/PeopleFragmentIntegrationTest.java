@@ -1,13 +1,10 @@
 package costy.krzysiekz.com.costy.view.activity.fragment;
 
-import android.support.test.espresso.Espresso;
-import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,7 +14,6 @@ import java.text.MessageFormat;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import costy.krzysiekz.com.costy.R;
-import costy.krzysiekz.com.costy.utils.ElapsedTimeIdlingResource;
 import costy.krzysiekz.com.costy.utils.RecyclerViewItemCountAssertion;
 import costy.krzysiekz.com.costy.view.activity.ProjectsActivity;
 
@@ -32,7 +28,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static costy.krzysiekz.com.costy.utils.IntegrationTestUtils.addProjectAndClickOnIt;
-import static costy.krzysiekz.com.costy.utils.IntegrationTestUtils.clickNavigationDrawerItem;
 import static costy.krzysiekz.com.costy.utils.IntegrationTestUtils.createUser;
 import static org.hamcrest.Matchers.not;
 
@@ -46,22 +41,11 @@ public class PeopleFragmentIntegrationTest {
     private static final String PROJECT_TEST_NAMING = "People Fragment Test {0}";
 
     private static AtomicInteger testCounter = new AtomicInteger(0);
-    private IdlingResource idlingResource;
-
 
     @Before
     public void setUp() throws Exception {
         addProjectAndClickOnIt(MessageFormat.format(PROJECT_TEST_NAMING,
                 testCounter.incrementAndGet()));
-        clickNavigationDrawerItem(R.id.nav_people);
-        //wait a bit before interacting with fragment since there is a timing issue here
-        idlingResource = new ElapsedTimeIdlingResource(200);
-        Espresso.registerIdlingResources(idlingResource);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        Espresso.unregisterIdlingResources(idlingResource);
     }
 
     @Test

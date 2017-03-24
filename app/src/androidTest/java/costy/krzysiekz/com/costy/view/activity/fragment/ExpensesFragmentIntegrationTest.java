@@ -30,20 +30,20 @@ import java8.util.stream.StreamSupport;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.longClick;
-import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static costy.krzysiekz.com.costy.utils.IntegrationTestUtils.addProjectAndClickOnIt;
 import static costy.krzysiekz.com.costy.utils.IntegrationTestUtils.clickNavigationDrawerItem;
 import static costy.krzysiekz.com.costy.utils.IntegrationTestUtils.createExpense;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
@@ -53,6 +53,7 @@ public class ExpensesFragmentIntegrationTest {
 
     private static final List<String> USERS = Arrays.asList("User 1", "User 2");
     private static final String PROJECT_TEST_NAMING = "Expenses Fragment Test {0}";
+    private static final String DEFAULT_CURRENCY = "PLN";
 
     @Rule
     public IntentsTestRule<ProjectsActivity> mActivityRule =
@@ -65,7 +66,7 @@ public class ExpensesFragmentIntegrationTest {
     @Before
     public void setUp() throws Exception {
         addProjectAndClickOnIt(MessageFormat.format(PROJECT_TEST_NAMING,
-                testCounter.incrementAndGet()));
+                testCounter.incrementAndGet()), DEFAULT_CURRENCY);
         StreamSupport.stream(USERS).forEach(IntegrationTestUtils::createUser);
         clickNavigationDrawerItem(R.id.nav_expenses);
         //wait a bit before interacting with fragment since there is a timing issue here
@@ -104,7 +105,7 @@ public class ExpensesFragmentIntegrationTest {
         String amount = "10";
         String description = "Sample description";
         //when
-        createExpense(amount, description, USERS);
+        createExpense(USERS.get(0), amount, description, USERS, DEFAULT_CURRENCY);
         //then
         onView(withText(R.string.add_expense_select_receivers_error)).inRoot(new ToastMatcher())
                 .check(matches(isDisplayed()));
@@ -116,12 +117,7 @@ public class ExpensesFragmentIntegrationTest {
         String amount = "abc";
         String description = "Sample description";
         //when
-        onView(withId(R.id.add_expense_button)).check(matches(isDisplayed())).perform(click());
-        onView(withId(R.id.add_expense_amount)).check(matches(isDisplayed())).
-                perform(typeText(amount), closeSoftKeyboard());
-        onView(withId(R.id.add_expense_description)).check(matches(isDisplayed())).
-                perform(typeText(description), closeSoftKeyboard());
-        onView(withId(android.R.id.button1)).perform(click());
+        createExpense(USERS.get(0), amount, description, Collections.emptyList(), DEFAULT_CURRENCY);
         //then
         onView(withText(R.string.add_expense_provide_amount_error)).inRoot(new ToastMatcher())
                 .check(matches(isDisplayed()));
@@ -132,10 +128,7 @@ public class ExpensesFragmentIntegrationTest {
         //given
         String description = "Sample description";
         //when
-        onView(withId(R.id.add_expense_button)).check(matches(isDisplayed())).perform(click());
-        onView(withId(R.id.add_expense_description)).check(matches(isDisplayed())).
-                perform(typeText(description), closeSoftKeyboard());
-        onView(withId(android.R.id.button1)).perform(click());
+        createExpense(USERS.get(0), "", description, Collections.emptyList(), DEFAULT_CURRENCY);
         //then
         onView(withText(R.string.add_expense_provide_amount_error)).inRoot(new ToastMatcher())
                 .check(matches(isDisplayed()));
@@ -146,10 +139,7 @@ public class ExpensesFragmentIntegrationTest {
         //given
         String amount = "10";
         //when
-        onView(withId(R.id.add_expense_button)).check(matches(isDisplayed())).perform(click());
-        onView(withId(R.id.add_expense_amount)).check(matches(isDisplayed())).
-                perform(typeText(amount), closeSoftKeyboard());
-        onView(withId(android.R.id.button1)).perform(click());
+        createExpense(USERS.get(0), amount, "", Collections.emptyList(), DEFAULT_CURRENCY);
         //then
         onView(withText(R.string.add_expense_provide_description_error)).inRoot(new ToastMatcher())
                 .check(matches(isDisplayed()));
@@ -161,7 +151,7 @@ public class ExpensesFragmentIntegrationTest {
         String amount = "10";
         String description = "Sample description";
         //when
-        createExpense(amount, description, Collections.emptyList());
+        createExpense(USERS.get(0), amount, description, Collections.emptyList(), DEFAULT_CURRENCY);
         //then
         onView(withId(R.id.expenses_recycler_view)).
                 check(matches(hasDescendant(withId(R.id.item_expense_description))));
@@ -181,7 +171,7 @@ public class ExpensesFragmentIntegrationTest {
         String amount = "10";
         String description = "Sample description";
         //when
-        createExpense(amount, description, Collections.emptyList());
+        createExpense(USERS.get(0), amount, description, Collections.emptyList(), DEFAULT_CURRENCY);
         onView(withId(R.id.expenses_recycler_view)).
                 perform(RecyclerViewActions.actionOnItem(hasDescendant(withText(description)), longClick()));
         //then
@@ -194,11 +184,20 @@ public class ExpensesFragmentIntegrationTest {
         String amount = "10";
         String description = "Sample description";
         //when
-        createExpense(amount, description, Collections.emptyList());
+        createExpense(USERS.get(0), amount, description, Collections.emptyList(), DEFAULT_CURRENCY);
         onView(withId(R.id.expenses_recycler_view)).
                 perform(RecyclerViewActions.actionOnItem(hasDescendant(withText(description)), longClick()));
         onView(withId(R.id.menu_remove)).perform(click());
         //then
         onView(withId(R.id.expenses_recycler_view)).check(new RecyclerViewItemCountAssertion(0));
+    }
+
+    @Test
+    public void shouldHaveDefaultCurrencySelected() {
+        //when
+        onView(withId(R.id.add_expense_button)).check(matches(isDisplayed())).perform(click());
+        //then
+        onView(withId(R.id.add_expense_currency)).
+                check(matches(withSpinnerText(containsString(DEFAULT_CURRENCY))));
     }
 }

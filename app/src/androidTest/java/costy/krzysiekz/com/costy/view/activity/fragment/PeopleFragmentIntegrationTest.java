@@ -35,17 +35,19 @@ import static org.hamcrest.Matchers.not;
 @LargeTest
 public class PeopleFragmentIntegrationTest {
 
+    private static final String PROJECT_TEST_NAMING = "People Fragment Test {0}";
+    private static final String DEFAULT_CURRENCY = "EUR";
+    
     @Rule
     public IntentsTestRule<ProjectsActivity> mActivityRule =
             new IntentsTestRule<>(ProjectsActivity.class);
-    private static final String PROJECT_TEST_NAMING = "People Fragment Test {0}";
 
     private static AtomicInteger testCounter = new AtomicInteger(0);
 
     @Before
     public void setUp() throws Exception {
         addProjectAndClickOnIt(MessageFormat.format(PROJECT_TEST_NAMING,
-                testCounter.incrementAndGet()));
+                testCounter.incrementAndGet()), DEFAULT_CURRENCY);
     }
 
     @Test

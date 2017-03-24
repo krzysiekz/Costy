@@ -21,6 +21,8 @@ import static costy.krzysiekz.com.costy.utils.IntegrationTestUtils.clickNavigati
 @LargeTest
 public class SelectedProjectActivityIntegrationTest {
 
+    private static final String DEFAULT_CURRENCY = "EUR";
+
     @Rule
     public IntentsTestRule<ProjectsActivity> mActivityRule =
             new IntentsTestRule<>(ProjectsActivity.class);
@@ -28,7 +30,7 @@ public class SelectedProjectActivityIntegrationTest {
     @Test
     public void shouldShowPeopleFragment() {
         //given
-        addProjectAndClickOnIt("People Fragment Nav");
+        addProjectAndClickOnIt("People Fragment Nav", DEFAULT_CURRENCY);
         //when
         clickNavigationDrawerItem(R.id.nav_people);
         //then
@@ -38,7 +40,7 @@ public class SelectedProjectActivityIntegrationTest {
     @Test
     public void shouldShowExpensesFragment() {
         //given
-        addProjectAndClickOnIt("Expenses Fragment Nav");
+        addProjectAndClickOnIt("Expenses Fragment Nav", DEFAULT_CURRENCY);
         //when
         clickNavigationDrawerItem(R.id.nav_expenses);
         //then
@@ -48,7 +50,7 @@ public class SelectedProjectActivityIntegrationTest {
     @Test
     public void shouldShowReportFragment() {
         //given
-        addProjectAndClickOnIt("Report Fragment Nav");
+        addProjectAndClickOnIt("Report Fragment Nav", DEFAULT_CURRENCY);
         //when
         clickNavigationDrawerItem(R.id.nav_report);
         //then
@@ -58,7 +60,7 @@ public class SelectedProjectActivityIntegrationTest {
     @Test
     public void shouldShowSettingsFragment() {
         //given
-        addProjectAndClickOnIt("Settings Fragment Nav");
+        addProjectAndClickOnIt("Settings Fragment Nav", DEFAULT_CURRENCY);
         //when
         clickNavigationDrawerItem(R.id.nav_settings);
         //then

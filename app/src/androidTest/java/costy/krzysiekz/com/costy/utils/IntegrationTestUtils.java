@@ -1,14 +1,22 @@
 package costy.krzysiekz.com.costy.utils;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.contrib.DrawerActions;
 import android.support.test.espresso.contrib.NavigationViewActions;
 import android.support.test.espresso.contrib.RecyclerViewActions;
+import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
 
+import java.util.Collection;
 import java.util.List;
 
 import costy.krzysiekz.com.costy.R;
 import java8.util.stream.StreamSupport;
 
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -21,6 +29,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static android.support.test.runner.lifecycle.Stage.RESUMED;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -69,5 +78,26 @@ public class IntegrationTestUtils {
         onData(allOf(is(instanceOf(String.class)), is(currency))).
                 inRoot(isPlatformPopup()).perform(click());
         onView(withId(android.R.id.button1)).perform(click());
+    }
+
+    public static void rotateScreen() {
+        Context context = InstrumentationRegistry.getTargetContext();
+        int orientation = context.getResources().getConfiguration().orientation;
+
+        getCurrentActivity().setRequestedOrientation(
+                (orientation == Configuration.ORIENTATION_PORTRAIT) ?
+                        ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
+
+    public static Activity getCurrentActivity() {
+        final Activity[] currentActivity = new Activity[1];
+        getInstrumentation().runOnMainSync(() -> {
+            Collection resumedActivities = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(RESUMED);
+            if (resumedActivities.iterator().hasNext()) {
+                currentActivity[0] = (Activity) resumedActivities.iterator().next();
+            }
+        });
+
+        return currentActivity[0];
     }
 }

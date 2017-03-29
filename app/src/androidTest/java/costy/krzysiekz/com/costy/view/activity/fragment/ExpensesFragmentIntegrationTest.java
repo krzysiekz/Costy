@@ -30,7 +30,9 @@ import java8.util.stream.StreamSupport;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.longClick;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.isPlatformPopup;
@@ -42,6 +44,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static costy.krzysiekz.com.costy.utils.IntegrationTestUtils.addProjectAndClickOnIt;
 import static costy.krzysiekz.com.costy.utils.IntegrationTestUtils.clickNavigationDrawerItem;
 import static costy.krzysiekz.com.costy.utils.IntegrationTestUtils.createExpense;
+import static costy.krzysiekz.com.costy.utils.IntegrationTestUtils.rotateScreen;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
@@ -199,5 +202,32 @@ public class ExpensesFragmentIntegrationTest {
         //then
         onView(withId(R.id.add_expense_currency)).
                 check(matches(withSpinnerText(containsString(DEFAULT_CURRENCY))));
+    }
+
+    @Test
+    public void shouldKeepValuesInPopupWhenScreenRotated() {
+        //given
+        String amount = "10";
+        String description = "Sample description";
+        String currency = "EUR";
+        //when
+        onView(withId(R.id.add_expense_button)).check(matches(isDisplayed())).perform(click());
+        onView(withId(R.id.add_expense_dialog_from)).check(matches(isDisplayed())).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is(USERS.get(0)))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.add_expense_amount)).check(matches(isDisplayed())).
+                perform(typeText(amount), closeSoftKeyboard());
+        onView(withId(R.id.add_expense_description)).check(matches(isDisplayed())).
+                perform(typeText(description), closeSoftKeyboard());
+        onView(withId(R.id.add_expense_currency)).check(matches(isDisplayed())).perform(click());
+        onData(allOf(is(instanceOf(String.class)), is(currency))).
+                inRoot(isPlatformPopup()).perform(click());
+        rotateScreen();
+        //then
+        onView(withId(R.id.add_expense_dialog_from)).
+                check(matches(withSpinnerText(containsString(USERS.get(0)))));
+        onView(withId(R.id.add_expense_amount)).check(matches(withText(amount)));
+        onView(withId(R.id.add_expense_description)).check(matches(withText(description)));
+        onView(withId(R.id.add_expense_currency)).
+                check(matches(withSpinnerText(containsString(currency))));
     }
 }

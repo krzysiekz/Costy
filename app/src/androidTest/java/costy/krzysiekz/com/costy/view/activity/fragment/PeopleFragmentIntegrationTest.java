@@ -19,7 +19,9 @@ import costy.krzysiekz.com.costy.view.activity.ProjectsActivity;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.longClick;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
@@ -29,6 +31,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static costy.krzysiekz.com.costy.utils.IntegrationTestUtils.addProjectAndClickOnIt;
 import static costy.krzysiekz.com.costy.utils.IntegrationTestUtils.createUser;
+import static costy.krzysiekz.com.costy.utils.IntegrationTestUtils.rotateScreen;
 import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
@@ -37,7 +40,7 @@ public class PeopleFragmentIntegrationTest {
 
     private static final String PROJECT_TEST_NAMING = "People Fragment Test {0}";
     private static final String DEFAULT_CURRENCY = "EUR";
-    
+
     @Rule
     public IntentsTestRule<ProjectsActivity> mActivityRule =
             new IntentsTestRule<>(ProjectsActivity.class);
@@ -104,5 +107,19 @@ public class PeopleFragmentIntegrationTest {
         onView(withId(R.id.menu_remove)).perform(click());
         //then
         onView(withId(R.id.people_recycler_view)).check(new RecyclerViewItemCountAssertion(0));
+    }
+
+    @Test
+    public void shouldKeepValuesInPopupWhenScreenRotated() {
+        //given
+        String username = "Sample user";
+        //when
+        onView(withId(R.id.add_person_button)).perform(click());
+        onView(withId(R.id.person_name)).
+                check(matches(isDisplayed())).
+                perform(typeText(username), closeSoftKeyboard());
+        rotateScreen();
+        //then
+        onView(withId(R.id.person_name)).check(matches(withText(username)));
     }
 }

@@ -4,11 +4,7 @@ import com.orm.SchemaGenerator;
 import com.orm.SugarContext;
 import com.orm.SugarDb;
 
-import costy.krzysiekz.com.costy.model.di.PresenterModule;
-
-public class TestCostyApplication extends CostyApplication {
-
-    private PresenterModule presenterModule;
+public class IntegrationTestCostyApplication extends CostyApplication {
 
     protected void prepareDBIfNeeded() {
         recreateSqlTables();
@@ -23,16 +19,4 @@ public class TestCostyApplication extends CostyApplication {
         schemaGenerator.createDatabase(new SugarDb(getApplicationContext()).getDB());
     }
 
-    @Override
-    protected PresenterModule getPresenterModule() {
-        if (presenterModule == null) {
-            presenterModule = super.getPresenterModule();
-        }
-        return presenterModule;
-    }
-
-    public void setPresenterModule(PresenterModule presenterModule) {
-        this.presenterModule = presenterModule;
-        initComponent();
-    }
 }

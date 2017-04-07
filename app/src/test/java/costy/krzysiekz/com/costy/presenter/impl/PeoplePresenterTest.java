@@ -43,14 +43,11 @@ public class PeoplePresenterTest {
     }
 
     @Test
-    public void shouldCallRepositoryWhenAddingPerson() {
+    public void shouldCallViewWhenAddingPerson() {
         //given
-        Currency defaultCurrency = new Currency(DEFAULT_CURRENCY);
-        ExpenseProject expenseProject = new ExpenseProject(PROJECT_NAME, defaultCurrency);
         User kate = new User(USER_NAME);
-        expenseProject.addUser(kate);
         //when
-        when(repository.getProject(PROJECT_NAME)).thenReturn(expenseProject);
+        when(repository.getAllUsers(PROJECT_NAME)).thenReturn(Collections.singletonList(kate));
         presenter.attachView(peopleView);
         presenter.loadProjectPeople(PROJECT_NAME);
         //then
@@ -68,8 +65,7 @@ public class PeoplePresenterTest {
         presenter.attachView(peopleView);
         presenter.addPerson(PROJECT_NAME, personName);
         //then
-        assertThat(expenseProject.getUsers()).isNotEmpty().extracting("name").containsOnly(personName);
-        verify(repository).updateProject(expenseProject);
+        verify(repository).addPerson(PROJECT_NAME, new User(personName));
         verify(peopleView).showPeople(expenseProject.getUsers());
     }
 
@@ -87,8 +83,7 @@ public class PeoplePresenterTest {
         presenter.attachView(peopleView);
         presenter.removeUsers(PROJECT_NAME, selected);
         //then
-        assertThat(expenseProject.getUsers()).isEmpty();
-        verify(repository).updateProject(expenseProject);
+        verify(repository).removeUsers(PROJECT_NAME, selected.values());
         verify(peopleView).removePeople(new HashSet<>(Collections.singletonList(0)));
     }
 

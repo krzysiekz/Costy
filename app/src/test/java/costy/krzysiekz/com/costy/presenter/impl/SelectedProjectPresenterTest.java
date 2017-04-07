@@ -7,6 +7,9 @@ import com.krzysiekz.costy.model.User;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -34,8 +37,7 @@ public class SelectedProjectPresenterTest {
         //given
         User john = new User("John");
         //when
-        project.addUser(john);
-        when(repository.getProject(PROJECT_NAME)).thenReturn(project);
+        when(repository.getAllUsers(PROJECT_NAME)).thenReturn(Collections.singletonList(john));
         Boolean result = presenter.checkIfPeopleAdded(PROJECT_NAME);
         //then
         assertThat(result).isTrue();

@@ -10,6 +10,12 @@ public class ExpenseProject {
     private List<User> users;
     private Currency defaultCurrency;
 
+    public ExpenseProject(String name) {
+        this.expenses = new ArrayList<>();
+        this.users = new ArrayList<>();
+        this.name = name;
+    }
+
     public ExpenseProject(String projectName, Currency defaultCurrency) {
         this.expenses = new ArrayList<>();
         this.name = projectName;
@@ -39,6 +45,10 @@ public class ExpenseProject {
 
     public Currency getDefaultCurrency() {
         return defaultCurrency;
+    }
+
+    public void setDefaultCurrency(Currency defaultCurrency) {
+        this.defaultCurrency = defaultCurrency;
     }
 
     @Override

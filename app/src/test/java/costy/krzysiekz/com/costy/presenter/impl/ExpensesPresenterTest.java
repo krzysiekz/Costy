@@ -21,7 +21,6 @@ import java.util.Map;
 import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
 import costy.krzysiekz.com.costy.view.ExpensesView;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,11 +46,11 @@ public class ExpensesPresenterTest {
         //given
         ExpenseProject project = createExpenseProject();
         //when
-        when(repository.getProject(PROJECT_NAME)).thenReturn(project);
+        when(repository.getAllExpenses(PROJECT_NAME)).thenReturn(project.getExpenses());
         presenter.attachView(expensesView);
         presenter.loadProjectExpenses(PROJECT_NAME);
         //then
-        verify(repository).getProject(PROJECT_NAME);
+        verify(repository).getAllExpenses(PROJECT_NAME);
         verify(expensesView).showExpenses(project.getExpenses());
     }
 
@@ -81,14 +80,12 @@ public class ExpensesPresenterTest {
                 withUser(john).withAmount(new BigDecimal("10")).
                 withReceivers(Arrays.asList(john, kate)).withDescription("Sample expense").
                 withCurrency(defaultCurrency).build();
-        ExpenseProject project = new ExpenseProject(PROJECT_NAME, defaultCurrency);
         //when
-        when(repository.getProject(PROJECT_NAME)).thenReturn(project);
+        when(repository.getAllExpenses(PROJECT_NAME)).thenReturn(Collections.singletonList(expense));
         presenter.attachView(expensesView);
         presenter.addExpense(PROJECT_NAME, expense);
         //then
-        assertThat(project.getExpenses()).isNotEmpty().containsOnly(expense);
-        verify(repository).updateProject(project);
+        verify(repository).addExpense(PROJECT_NAME, expense);
         verify(expensesView).showExpenses(Collections.singletonList(expense));
     }
 
@@ -102,17 +99,13 @@ public class ExpensesPresenterTest {
                 withUser(john).withAmount(new BigDecimal("10")).
                 withReceivers(Arrays.asList(john, kate)).withDescription("Sample expense").
                 withCurrency(defaultCurrency).build();
-        ExpenseProject project = new ExpenseProject(PROJECT_NAME, defaultCurrency);
-        project.addExpense(expense);
         Map<Integer, UserExpense> selected = new HashMap<>();
         selected.put(0, expense);
         //when
-        when(repository.getProject(PROJECT_NAME)).thenReturn(project);
         presenter.attachView(expensesView);
         presenter.removeExpenses(PROJECT_NAME, selected);
         //then
-        assertThat(project.getExpenses()).isEmpty();
-        verify(repository).updateProject(project);
+        verify(repository).removeExpenses(PROJECT_NAME, selected.keySet());
         verify(expensesView).removeExpenses(new HashSet<>(Collections.singletonList(0)));
     }
 

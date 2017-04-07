@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import costy.krzysiekz.com.costy.R;
-import costy.krzysiekz.com.costy.utils.RecyclerViewItemCountAssertion;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -85,7 +84,6 @@ public class ProjectsActivityIntegrationTest {
         onView(withText(R.string.wrong_project_name))
                 .inRoot(withDecorView(not(mActivityRule.getActivity().getWindow().getDecorView())))
                 .check(matches(isDisplayed()));
-        onView(withId(R.id.projects_recycler_view)).check(new RecyclerViewItemCountAssertion(0));
     }
 
     @Test

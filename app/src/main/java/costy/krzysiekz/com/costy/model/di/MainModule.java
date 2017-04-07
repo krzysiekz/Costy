@@ -8,7 +8,10 @@ import com.krzysiekz.costy.service.impl.DefaultExpenseCalculator;
 import javax.inject.Singleton;
 
 import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
-import costy.krzysiekz.com.costy.model.dao.impl.InMemoryProjectsRepository;
+import costy.krzysiekz.com.costy.model.dao.converter.impl.CurrencyConverter;
+import costy.krzysiekz.com.costy.model.dao.converter.impl.ExpenseProjectConverter;
+import costy.krzysiekz.com.costy.model.dao.converter.impl.UserConverter;
+import costy.krzysiekz.com.costy.model.dao.impl.SQLLiteProjectsRepository;
 import dagger.Module;
 import dagger.Provides;
 
@@ -29,8 +32,32 @@ public class MainModule {
 
     @Provides
     @Singleton
-    ProjectsRepository provideProjectsRepository() {
-        return new InMemoryProjectsRepository();
+    CurrencyConverter provideCurrencyConverter() {
+        return new CurrencyConverter();
+    }
+
+    @Provides
+    @Singleton
+    UserConverter provideUserConverter() {
+        return new UserConverter();
+    }
+
+    @Provides
+    @Singleton
+    ExpenseProjectConverter provideExpenseProjectConverter() {
+        return new ExpenseProjectConverter();
+    }
+
+    @Provides
+    @Singleton
+    ProjectsRepository provideProjectsRepository(CurrencyConverter currencyConverter,
+                                                 UserConverter userConverter,
+                                                 ExpenseProjectConverter expenseProjectConverter) {
+        SQLLiteProjectsRepository sqlLiteProjectsRepository = new SQLLiteProjectsRepository();
+        sqlLiteProjectsRepository.setCurrencyConverter(currencyConverter);
+        sqlLiteProjectsRepository.setUserConverter(userConverter);
+        sqlLiteProjectsRepository.setExpenseProjectConverter(expenseProjectConverter);
+        return sqlLiteProjectsRepository;
     }
 
     @Provides

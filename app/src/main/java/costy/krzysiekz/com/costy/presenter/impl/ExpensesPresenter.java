@@ -31,8 +31,8 @@ public class ExpensesPresenter implements Presenter<ExpensesView> {
     }
 
     public void loadProjectExpenses(String projectName) {
-        ExpenseProject project = repository.getProject(projectName);
-        view.showExpenses(project.getExpenses());
+        List<UserExpense> expenses = repository.getAllExpenses(projectName);
+        view.showExpenses(expenses);
     }
 
     public void showAddExpenseDialog(String projectName) {
@@ -42,16 +42,12 @@ public class ExpensesPresenter implements Presenter<ExpensesView> {
     }
 
     public void addExpense(String projectName, UserExpense expense) {
-        ExpenseProject project = repository.getProject(projectName);
-        project.addExpense(expense);
-        repository.updateProject(project);
-        view.showExpenses(project.getExpenses());
+        repository.addExpense(projectName, expense);
+        view.showExpenses(repository.getAllExpenses(projectName));
     }
 
     public void removeExpenses(String projectName, Map<Integer, UserExpense> selectedExpenses) {
-        ExpenseProject project = repository.getProject(projectName);
-        project.removeExpenses(selectedExpenses.values());
-        repository.updateProject(project);
+        repository.removeExpenses(projectName, selectedExpenses.keySet());
         view.removeExpenses(selectedExpenses.keySet());
     }
 }

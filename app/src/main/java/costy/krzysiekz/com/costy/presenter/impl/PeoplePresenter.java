@@ -30,15 +30,14 @@ public class PeoplePresenter implements Presenter<PeopleView> {
     }
 
     public void loadProjectPeople(String projectName) {
-        List<User> users = this.repository.getProject(projectName).getUsers();
+        List<User> users = this.repository.getAllUsers(projectName);
         view.showPeople(users);
     }
 
     public void addPerson(String projectName, String personName) {
-        ExpenseProject project = this.repository.getProject(projectName);
-        project.addUser(new User(personName));
-        this.repository.updateProject(project);
-        view.showPeople(project.getUsers());
+        User user = new User(personName);
+        repository.addPerson(projectName, user);
+        view.showPeople(repository.getAllUsers(projectName));
     }
 
     public void removeUsers(String projectName, Map<Integer, User> selectedUsers) {
@@ -46,8 +45,7 @@ public class PeoplePresenter implements Presenter<PeopleView> {
         if (project.areUsersUsedInExpenses(selectedUsers.values())) {
             view.showPeopleUsedInExpensesError();
         } else {
-            project.removeUsers(selectedUsers.values());
-            repository.updateProject(project);
+            repository.removeUsers(projectName, selectedUsers.values());
             view.removePeople(selectedUsers.keySet());
         }
     }

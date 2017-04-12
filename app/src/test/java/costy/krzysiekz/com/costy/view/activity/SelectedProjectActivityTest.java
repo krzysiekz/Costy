@@ -32,6 +32,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 24, application = TestCostyApplication.class)
@@ -150,5 +151,18 @@ public class SelectedProjectActivityTest {
         fragments = StreamSupport.stream(fragments).filter(e -> e != null).collect(Collectors.toList());
         assertThat(fragments).isNotEmpty().hasSize(1);
         assertThat(fragments.get(0)).isInstanceOf(ReportFragment.class);
+    }
+
+    @Test
+    public void shouldGoToProjectsScreen() {
+        //given
+        RoboMenuItem item = new RoboMenuItem(R.id.nav_settings);
+        RoboMenuItem changeProjectItem = new RoboMenuItem(R.id.nav_change_project);
+        //when
+        selectedProjectActivity.onNavigationItemSelected(item);
+        selectedProjectActivity.onNavigationItemSelected(changeProjectItem);
+        Intent intent = shadowOf(selectedProjectActivity).peekNextStartedActivity();
+        //then
+        assertThat(intent.getComponent().getClassName()).isEqualTo(ProjectsActivity.class.getName());
     }
 }

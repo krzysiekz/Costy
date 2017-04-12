@@ -1,5 +1,6 @@
 package costy.krzysiekz.com.costy.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -110,7 +111,8 @@ public class SelectedProjectActivity extends AppCompatActivity implements
         } else if (id == R.id.nav_report) {
             fragment = new ReportFragment();
         } else if (id == R.id.nav_change_project) {
-
+            Intent intent = new Intent(this, ProjectsActivity.class);
+            startActivity(intent);
         }
 
         if (fragment != null) {

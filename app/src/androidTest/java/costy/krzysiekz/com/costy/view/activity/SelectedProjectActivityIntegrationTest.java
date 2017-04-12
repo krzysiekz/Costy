@@ -12,6 +12,8 @@ import costy.krzysiekz.com.costy.R;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static costy.krzysiekz.com.costy.utils.IntegrationTestUtils.addProjectAndClickOnIt;
@@ -67,5 +69,13 @@ public class SelectedProjectActivityIntegrationTest {
         onView(withId(R.id.settings_fragment_id)).check(matches(isDisplayed()));
     }
 
-
+    @Test
+    public void shouldGoToProjectsScreen() {
+        //given
+        addProjectAndClickOnIt("Change Project Nav", DEFAULT_CURRENCY);
+        //when
+        clickNavigationDrawerItem(R.id.nav_change_project);
+        //then
+        intended(hasComponent(ProjectsActivity.class.getName()));
+    }
 }

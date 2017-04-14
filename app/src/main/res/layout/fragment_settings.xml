@@ -5,10 +5,6 @@
     tools:context="costy.krzysiekz.com.costy.view.activity.fragment.SettingsFragment"
     android:id="@+id/settings_fragment_id">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Settings" />
+    <include layout="@layout/content_settings" />
 
 </FrameLayout>

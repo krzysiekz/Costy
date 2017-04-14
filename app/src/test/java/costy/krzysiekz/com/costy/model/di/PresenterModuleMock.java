@@ -8,6 +8,7 @@ import costy.krzysiekz.com.costy.presenter.impl.PeoplePresenter;
 import costy.krzysiekz.com.costy.presenter.impl.ProjectsPresenter;
 import costy.krzysiekz.com.costy.presenter.impl.ReportPresenter;
 import costy.krzysiekz.com.costy.presenter.impl.SelectedProjectPresenter;
+import costy.krzysiekz.com.costy.presenter.impl.SettingsPresenter;
 
 import static org.mockito.Mockito.mock;
 
@@ -18,6 +19,7 @@ public class PresenterModuleMock extends PresenterModule {
     private SelectedProjectPresenter selectedProjectPresenter;
     private PeoplePresenter peoplePresenter;
     private ReportPresenter reportPresenter;
+    private SettingsPresenter settingsPresenter;
 
     @Override
     ProjectsPresenter provideProjectsPresenter(ProjectsRepository projectsRepository) {
@@ -59,6 +61,14 @@ public class PresenterModuleMock extends PresenterModule {
         return reportPresenter;
     }
 
+    @Override
+    SettingsPresenter provideSettingsPresenter(ProjectsRepository repository) {
+        if (settingsPresenter == null) {
+            settingsPresenter = mock(SettingsPresenter.class);
+        }
+        return settingsPresenter;
+    }
+
     public ProjectsPresenter getProjectsPresenter() {
         return projectsPresenter;
     }
@@ -81,5 +91,9 @@ public class PresenterModuleMock extends PresenterModule {
 
     public ReportPresenter getReportPresenter() {
         return reportPresenter;
+    }
+
+    public SettingsPresenter getSettingsPresenter() {
+        return settingsPresenter;
     }
 }

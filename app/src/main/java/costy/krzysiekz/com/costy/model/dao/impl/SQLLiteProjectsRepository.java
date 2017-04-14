@@ -192,6 +192,22 @@ public class SQLLiteProjectsRepository implements ProjectsRepository {
         getExpenseProjectEntity(projectName).ifPresent(p -> removeUsers(usersToRemove, p));
     }
 
+    @Override
+    public Currency getProjectDefaultCurrency(String projectName) {
+        Optional<ExpenseProjectEntity> projectEntity = getExpenseProjectEntity(projectName);
+        return projectEntity.map(pe -> currencyConverter.fromEntity(pe.getDefaultCurrency())).get();
+    }
+
+    @Override
+    public void changeDefaultCurrency(String projectName, String newCurrency) {
+        Optional<ExpenseProjectEntity> projectEntity = getExpenseProjectEntity(projectName);
+        Optional<CurrencyEntity> currencyEntity = getCurrencyEntity(newCurrency);
+        projectEntity.ifPresent(pe -> currencyEntity.ifPresent(ce -> {
+            pe.setDefaultCurrency(ce);
+            pe.save();
+        }));
+    }
+
     private void removeUsers(Collection<User> usersToRemove, ExpenseProjectEntity p) {
         List<UserEntity> users = p.getUsers();
         List<String> namesToRemove = StreamSupport.stream(usersToRemove).map(User::getName).collect(Collectors.toList());

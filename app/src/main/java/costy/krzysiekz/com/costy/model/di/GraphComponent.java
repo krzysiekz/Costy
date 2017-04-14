@@ -7,6 +7,7 @@ import costy.krzysiekz.com.costy.view.activity.SelectedProjectActivity;
 import costy.krzysiekz.com.costy.view.activity.fragment.ExpensesFragment;
 import costy.krzysiekz.com.costy.view.activity.fragment.PeopleFragment;
 import costy.krzysiekz.com.costy.view.activity.fragment.ReportFragment;
+import costy.krzysiekz.com.costy.view.activity.fragment.SettingsFragment;
 import dagger.Component;
 
 @Singleton
@@ -22,4 +23,6 @@ public interface GraphComponent {
     void inject(PeopleFragment peopleFragment);
 
     void inject(ReportFragment reportFragment);
+
+    void inject(SettingsFragment settingsFragment);
 }

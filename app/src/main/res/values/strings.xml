@@ -39,7 +39,11 @@
     <string name="add_expense_provide_amount_error">"Provide amount!"</string>
     <string name="add_expense_provide_description_error">"Provide description!"</string>
     <string name="add_expense_select_receivers_error">"Select receivers!"</string>
+
     <string name="delete_item">Delete</string>
     <string name="amount_currency_pattern">{0} {1}</string>
+
+    <string name="settings_default_currency">Default currency</string>
+    <string name="default_currency_changed">Default currency was changed</string>
 
 </resources>

@@ -10,6 +10,7 @@ import costy.krzysiekz.com.costy.presenter.impl.PeoplePresenter;
 import costy.krzysiekz.com.costy.presenter.impl.ProjectsPresenter;
 import costy.krzysiekz.com.costy.presenter.impl.ReportPresenter;
 import costy.krzysiekz.com.costy.presenter.impl.SelectedProjectPresenter;
+import costy.krzysiekz.com.costy.presenter.impl.SettingsPresenter;
 import dagger.Module;
 import dagger.Provides;
 
@@ -44,5 +45,11 @@ public class PresenterModule {
     @Provides
     ReportPresenter provideReportPresenter(ProjectsRepository repository, ExpenseCalculator calculator) {
         return new ReportPresenter(repository, calculator);
+    }
+
+    @Singleton
+    @Provides
+    SettingsPresenter provideSettingsPresenter(ProjectsRepository repository) {
+        return new SettingsPresenter(repository);
     }
 }

@@ -7,7 +7,6 @@ import com.krzysiekz.costy.model.UserExpense;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public interface ProjectsRepository {
     void addProject(ExpenseProject project);
@@ -33,4 +32,8 @@ public interface ProjectsRepository {
     void removeExpenses(String projectName, Collection<Integer> positions);
 
     void removeUsers(String projectName, Collection<User> usersToRemove);
+
+    Currency getProjectDefaultCurrency(String projectName);
+
+    void changeDefaultCurrency(String projectName, String newCurrency);
 }

@@ -8,7 +8,6 @@ import com.krzysiekz.costy.model.UserExpense;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
 import java8.util.stream.Collectors;
@@ -94,5 +93,17 @@ public class InMemoryProjectsRepository implements ProjectsRepository {
     public void removeUsers(String projectName, Collection<User> usersToRemove) {
         ExpenseProject project = getProject(projectName);
         project.removeUsers(usersToRemove);
+    }
+
+    @Override
+    public Currency getProjectDefaultCurrency(String projectName) {
+        ExpenseProject project = getProject(projectName);
+        return project.getDefaultCurrency();
+    }
+
+    @Override
+    public void changeDefaultCurrency(String projectName, String newCurrency) {
+        ExpenseProject project = getProject(projectName);
+        project.setDefaultCurrency(new Currency(newCurrency));
     }
 }

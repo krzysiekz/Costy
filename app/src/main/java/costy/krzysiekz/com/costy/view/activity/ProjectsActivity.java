@@ -128,6 +128,7 @@ public class ProjectsActivity extends AppCompatActivity implements ProjectsView,
     public void handleSingleItemClick(ExpenseProject clickedItem) {
         Intent intent = new Intent(this, SelectedProjectActivity.class);
         intent.putExtra(SelectedProjectActivity.PROJECT_NAME, clickedItem.getName());
+        intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }
 

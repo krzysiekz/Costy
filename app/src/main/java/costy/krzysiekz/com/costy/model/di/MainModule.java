@@ -12,6 +12,7 @@ import costy.krzysiekz.com.costy.model.dao.converter.impl.CurrencyConverter;
 import costy.krzysiekz.com.costy.model.dao.converter.impl.ExpenseProjectConverter;
 import costy.krzysiekz.com.costy.model.dao.converter.impl.UserConverter;
 import costy.krzysiekz.com.costy.model.dao.impl.SQLLiteProjectsRepository;
+import costy.krzysiekz.com.costy.model.report.converter.impl.ReportToTextConverter;
 import dagger.Module;
 import dagger.Provides;
 
@@ -64,5 +65,11 @@ public class MainModule {
     @Singleton
     ExpenseCalculator provideExpenseCalculator() {
         return new DefaultExpenseCalculator();
+    }
+
+    @Provides
+    @Singleton
+    ReportToTextConverter provideReportToTextConverter() {
+        return new ReportToTextConverter();
     }
 }

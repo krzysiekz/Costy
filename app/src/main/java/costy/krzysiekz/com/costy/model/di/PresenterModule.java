@@ -5,6 +5,7 @@ import com.krzysiekz.costy.service.ExpenseCalculator;
 import javax.inject.Singleton;
 
 import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
+import costy.krzysiekz.com.costy.model.report.converter.impl.ReportToTextConverter;
 import costy.krzysiekz.com.costy.presenter.impl.ExpensesPresenter;
 import costy.krzysiekz.com.costy.presenter.impl.PeoplePresenter;
 import costy.krzysiekz.com.costy.presenter.impl.ProjectsPresenter;
@@ -43,8 +44,9 @@ public class PresenterModule {
 
     @Singleton
     @Provides
-    ReportPresenter provideReportPresenter(ProjectsRepository repository, ExpenseCalculator calculator) {
-        return new ReportPresenter(repository, calculator);
+    ReportPresenter provideReportPresenter(ProjectsRepository repository, ExpenseCalculator calculator,
+                                           ReportToTextConverter reportConverter) {
+        return new ReportPresenter(repository, calculator, reportConverter);
     }
 
     @Singleton

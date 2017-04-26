@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface ReportView extends MVPView {
     void showReportEntries(List<ReportEntry> entries);
+
+    void shareReport(String projectName, String reportAsText);
 }

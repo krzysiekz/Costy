@@ -1,5 +1,6 @@
 package costy.krzysiekz.com.costy.view.activity.fragment;
 
+import android.content.Intent;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
@@ -26,13 +27,20 @@ import costy.krzysiekz.com.costy.view.activity.ProjectsActivity;
 import java8.util.stream.StreamSupport;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.intent.Intents.intended;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasAction;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static costy.krzysiekz.com.costy.utils.IntegrationTestUtils.addProjectAndClickOnIt;
 import static costy.krzysiekz.com.costy.utils.IntegrationTestUtils.clickNavigationDrawerItem;
 import static costy.krzysiekz.com.costy.utils.IntegrationTestUtils.createExpense;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.is;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
@@ -135,5 +143,25 @@ public class ReportFragmentIntegrationTest {
                 check(matches(hasDescendant(withText("5.000 PLN"))));
         onView(withId(R.id.report_entries_recycler_view)).
                 check(matches(hasDescendant(withText("10.000 EUR"))));
+    }
+
+    @Test
+    public void shouldShareReport() throws InterruptedException {
+        //given
+        String firstExpenseAmount = "15";
+        String secondExpenseAmount = "5";
+        String description = "Sample description";
+        //when
+        createExpense(USERS.get(0), firstExpenseAmount, description, Collections.emptyList(), DEFAULT_CURRENCY);
+        createExpense(USERS.get(1), secondExpenseAmount, description, Arrays.asList(USERS.get(1),
+                USERS.get(2)), DEFAULT_CURRENCY);
+        clickNavigationDrawerItem(R.id.nav_report);
+        Thread.sleep(500);
+        onView(withId(R.id.share_report_button)).check(matches(isDisplayed())).perform(click());
+        //then
+        intended(allOf(hasAction(Intent.ACTION_CHOOSER),
+                hasExtra(is(Intent.EXTRA_INTENT),
+                        allOf(hasAction(Intent.ACTION_SEND),
+                                hasExtra(Intent.EXTRA_TEXT, "User 3 -> User 1: 5 PLN")))));
     }
 }

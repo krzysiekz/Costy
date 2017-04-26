@@ -1,7 +1,9 @@
 package costy.krzysiekz.com.costy.view.activity.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,11 +31,13 @@ import static costy.krzysiekz.com.costy.view.activity.SelectedProjectActivity.PR
 
 public class ReportFragment extends Fragment implements ReportView {
 
-
     public ReportPresenter presenter;
 
     @BindView(R.id.report_entries_recycler_view)
     public RecyclerView reportEntriesRecyclerView;
+
+    @BindView(R.id.share_report_button)
+    FloatingActionButton shareReportButton;
 
     public ReportFragment() {
     }
@@ -51,6 +55,8 @@ public class ReportFragment extends Fragment implements ReportView {
 
         presenter.attachView(this);
         presenter.loadReportEntries(projectName);
+
+        shareReportButton.setOnClickListener(__ -> presenter.shareReport(projectName));
         return view;
     }
 
@@ -71,5 +77,14 @@ public class ReportFragment extends Fragment implements ReportView {
         ReportEntryAdapter adapter = (ReportEntryAdapter) reportEntriesRecyclerView.getAdapter();
         adapter.setReportEntries(entries);
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void shareReport(String projectName, String reportAsText) {
+        Intent txtIntent = new Intent(android.content.Intent.ACTION_SEND);
+        txtIntent.setType(getString(R.string.share_content_type));
+        txtIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, projectName);
+        txtIntent.putExtra(android.content.Intent.EXTRA_TEXT, reportAsText);
+        startActivity(Intent.createChooser(txtIntent, getString(R.string.share_content_text)));
     }
 }

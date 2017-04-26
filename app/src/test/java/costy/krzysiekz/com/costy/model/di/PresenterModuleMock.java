@@ -3,6 +3,7 @@ package costy.krzysiekz.com.costy.model.di;
 import com.krzysiekz.costy.service.ExpenseCalculator;
 
 import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
+import costy.krzysiekz.com.costy.model.report.converter.impl.ReportToTextConverter;
 import costy.krzysiekz.com.costy.presenter.impl.ExpensesPresenter;
 import costy.krzysiekz.com.costy.presenter.impl.PeoplePresenter;
 import costy.krzysiekz.com.costy.presenter.impl.ProjectsPresenter;
@@ -54,7 +55,8 @@ public class PresenterModuleMock extends PresenterModule {
     }
 
     @Override
-    ReportPresenter provideReportPresenter(ProjectsRepository repository, ExpenseCalculator calculator) {
+    ReportPresenter provideReportPresenter(ProjectsRepository repository, ExpenseCalculator calculator,
+                                           ReportToTextConverter reportToTextConverter) {
         if (reportPresenter == null) {
             reportPresenter = mock(ReportPresenter.class);
         }

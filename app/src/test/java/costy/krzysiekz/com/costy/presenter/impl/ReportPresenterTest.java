@@ -3,6 +3,7 @@ package costy.krzysiekz.com.costy.presenter.impl;
 
 import com.krzysiekz.costy.model.Currency;
 import com.krzysiekz.costy.model.ExpenseProject;
+import com.krzysiekz.costy.model.ExpenseReport;
 import com.krzysiekz.costy.model.ReportEntry;
 import com.krzysiekz.costy.model.User;
 import com.krzysiekz.costy.model.UserExpense;
@@ -21,9 +22,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import costy.krzysiekz.com.costy.model.dao.ProjectsRepository;
+import costy.krzysiekz.com.costy.model.report.converter.impl.ReportToTextConverter;
 import costy.krzysiekz.com.costy.view.ReportView;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,6 +41,9 @@ public class ReportPresenterTest {
 
     @Mock
     private ProjectsRepository repository;
+
+    @Mock
+    private ReportToTextConverter reportConverter;
 
     @Captor
     private ArgumentCaptor<List<ReportEntry>> reportEntriesCaptor;
@@ -63,7 +69,7 @@ public class ReportPresenterTest {
         project.addExpense(secondUserExpense);
 
         ExpenseCalculator calculator = new DefaultExpenseCalculator();
-        ReportPresenter presenter = new ReportPresenter(repository, calculator);
+        ReportPresenter presenter = new ReportPresenter(repository, calculator, reportConverter);
         //when
         when(repository.getProject(PROJECT_NAME)).thenReturn(project);
         presenter.attachView(reportView);
@@ -100,7 +106,7 @@ public class ReportPresenterTest {
         project.addExpense(thirdExpense);
 
         ExpenseCalculator calculator = new DefaultExpenseCalculator();
-        ReportPresenter presenter = new ReportPresenter(repository, calculator);
+        ReportPresenter presenter = new ReportPresenter(repository, calculator, reportConverter);
         //when
         when(repository.getProject(PROJECT_NAME)).thenReturn(project);
         presenter.attachView(reportView);
@@ -115,6 +121,24 @@ public class ReportPresenterTest {
                         "John -> Alex: 6 PLN",
                         "Kate -> Alex: 6 PLN",
                         "Kate -> John: 6 PLN");
+    }
+
+    @Test
+    public void shouldPassConvertedReportToView() {
+        //given
+        Currency defaultCurrency = new Currency(DEFAULT_CURRENCY);
+        ExpenseProject project = new ExpenseProject(PROJECT_NAME, defaultCurrency);
+        ExpenseCalculator calculator = mock(ExpenseCalculator.class);
+        ReportPresenter presenter = new ReportPresenter(repository, calculator, reportConverter);
+        ExpenseReport report = new ExpenseReport(project);
+        //when
+        when(repository.getProject(PROJECT_NAME)).thenReturn(project);
+        when(calculator.calculate(project)).thenReturn(report);
+        when(reportConverter.convert(report)).thenReturn("Some converted report");
+        presenter.attachView(reportView);
+        presenter.shareReport(PROJECT_NAME);
+        //then
+        verify(reportView).shareReport(PROJECT_NAME, "Some converted report");
     }
 
     private UserExpense getUserExpense(Currency defaultCurrency, User kate, BigDecimal amount, List<User> receivers) {

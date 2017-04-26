@@ -1,5 +1,6 @@
 package costy.krzysiekz.com.costy.view.activity.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
@@ -27,6 +28,7 @@ import costy.krzysiekz.com.costy.view.activity.adapter.ReportEntryAdapter;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.verify;
+import static org.robolectric.Shadows.shadowOf;
 
 
 @RunWith(RobolectricTestRunner.class)
@@ -93,4 +95,26 @@ public class ReportFragmentTest {
         assertThat(((ReportEntryAdapter) recyclerView.getAdapter()).getReportEntries()).containsOnly(entry);
     }
 
+    @Test
+    public void shouldCallPresenterWhenShareButtonClicked() {
+        //when
+        fragment.shareReportButton.performClick();
+        //then
+        verify(presenterModuleMock.getReportPresenter()).shareReport(PROJECT_NAME);
+    }
+
+    @Test
+    public void shouldLaunchProperIntentWhenSharingReport() {
+        //when
+        String reportAsText = "Kate -> John: 10 EUR\nJohn -> Kate: 15 PLN";
+        fragment.shareReport(PROJECT_NAME, reportAsText);
+        //then
+        Intent chooserIntent = shadowOf(fragment.getActivity()).peekNextStartedActivity();
+        assertThat(chooserIntent).isNotNull();
+        Intent textIntent = (Intent) chooserIntent.getExtras().get(Intent.EXTRA_INTENT);
+        assertThat(textIntent).isNotNull();
+        assertThat(textIntent.getType()).isEqualTo("text/plain");
+        assertThat(textIntent.getStringExtra(Intent.EXTRA_SUBJECT)).isEqualTo(PROJECT_NAME);
+        assertThat(textIntent.getStringExtra(Intent.EXTRA_TEXT)).isEqualTo(reportAsText);
+    }
 }

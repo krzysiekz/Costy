@@ -56,12 +56,12 @@ public class ReportFragmentIntegrationTest {
 
     private static AtomicInteger testCounter = new AtomicInteger(0);
     private IdlingResource idlingResource;
-
+    private String projectName;
 
     @Before
     public void setUp() throws Exception {
-        addProjectAndClickOnIt(MessageFormat.format(PROJECT_TEST_NAMING,
-                testCounter.incrementAndGet()), DEFAULT_CURRENCY);
+        projectName = MessageFormat.format(PROJECT_TEST_NAMING, testCounter.incrementAndGet());
+        addProjectAndClickOnIt(projectName, DEFAULT_CURRENCY);
         StreamSupport.stream(USERS).forEach(IntegrationTestUtils::createUser);
         clickNavigationDrawerItem(R.id.nav_expenses);
         //wait a bit before interacting with fragment since there is a timing issue here
@@ -151,6 +151,17 @@ public class ReportFragmentIntegrationTest {
         String firstExpenseAmount = "15";
         String secondExpenseAmount = "5";
         String description = "Sample description";
+        String expectedReport = "Project: " + projectName +
+                "\n\n" +
+                "Expenses:\n" +
+                "Sample description: 15 PLN\n" +
+                "User 1 -> [User 1, User 2, User 3]\n" +
+                "\n" +
+                "Sample description: 5 PLN\n" +
+                "User 2 -> [User 1]\n" +
+                "\n" +
+                "Report:\n" +
+                "User 3 -> User 1: 5 PLN";
         //when
         createExpense(USERS.get(0), firstExpenseAmount, description, Collections.emptyList(), DEFAULT_CURRENCY);
         createExpense(USERS.get(1), secondExpenseAmount, description, Arrays.asList(USERS.get(1),
@@ -162,6 +173,6 @@ public class ReportFragmentIntegrationTest {
         intended(allOf(hasAction(Intent.ACTION_CHOOSER),
                 hasExtra(is(Intent.EXTRA_INTENT),
                         allOf(hasAction(Intent.ACTION_SEND),
-                                hasExtra(Intent.EXTRA_TEXT, "User 3 -> User 1: 5 PLN")))));
+                                hasExtra(Intent.EXTRA_TEXT, expectedReport)))));
     }
 }

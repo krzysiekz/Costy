@@ -1,9 +1,12 @@
 package com.krzysiekz.costy.model;
 
 import java.math.BigDecimal;
+import java.text.MessageFormat;
 import java.util.List;
 
 public class UserExpense {
+
+    private static final String TO_STRING_FORMAT = "{0}: {1} {2}\n{3} -> {4}";
 
     private List<User> receivers;
     private User user;
@@ -68,13 +71,7 @@ public class UserExpense {
 
     @Override
     public String toString() {
-        return "UserExpense{" +
-                "receivers=" + receivers +
-                ", user=" + user +
-                ", amount=" + amount +
-                ", description='" + description + '\'' +
-                ", currency=" + currency +
-                '}';
+        return MessageFormat.format(TO_STRING_FORMAT, description, amount, currency, user, receivers);
     }
 
     boolean isUserUsed(User user) {
